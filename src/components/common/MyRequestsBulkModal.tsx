@@ -126,7 +126,7 @@ export default function MyRequestsBulkModal({
         <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="flex flex-col items-center justify-center min-h-[400px] gap-3">
-              <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
+              <Loader2 className="w-10 h-10 text-[var(--color-primary)] animate-spin" />
               <p className="text-slate-500 text-sm animate-pulse">Loading request details...</p>
             </div>
           ) : error ? (
@@ -156,7 +156,7 @@ export default function MyRequestsBulkModal({
                   </p>
                 </div>
                 {participants.length > 0 && (
-                  <div className="bg-indigo-600 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white shadow-md active:scale-95 transition-transform cursor-pointer" onClick={() => setShowParticipants(true)}>
+                  <div className="bg-[var(--color-primary)] flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white shadow-md active:scale-95 transition-transform cursor-pointer" onClick={() => setShowParticipants(true)}>
                     <Users className="w-3.5 h-3.5" />
                     <span className="text-xs font-black">{participants.length}</span>
                   </div>
@@ -166,16 +166,16 @@ export default function MyRequestsBulkModal({
               {/* Applied By (Receiver View) */}
               {showAppliedBy && (
                 <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
-                  <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-black">
+                  <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center text-white text-xs font-black">
                     {getInitials(appliedByName)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Applied By</p>
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">{appliedByName}</h3>
                   </div>
-                  <div className="bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg flex items-center gap-1">
-                    <UserCircle className="w-3 h-3 text-indigo-600" />
-                    <span className="text-[9px] font-black text-indigo-600 tracking-tighter uppercase">Organiser</span>
+                  <div className="bg-blue-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg flex items-center gap-1">
+                    <UserCircle className="w-3 h-3 text-[var(--color-primary)]" />
+                    <span className="text-[9px] font-black text-[var(--color-primary)] tracking-tighter uppercase">Organiser</span>
                   </div>
                 </div>
               )}
@@ -344,7 +344,7 @@ export default function MyRequestsBulkModal({
                     placeholder="Search by name or reg no..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl pl-11 pr-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                    className="w-full h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl pl-11 pr-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                   />
                 </div>
 

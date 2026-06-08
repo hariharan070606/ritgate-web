@@ -38,7 +38,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               'w-full h-11 px-4 text-sm bg-slate-50 dark:bg-slate-900',
               'border-none rounded-xl transition-all duration-200 outline-none',
               'text-slate-900 dark:text-white placeholder:text-slate-400',
-              'focus:ring-2 focus:ring-indigo-500/20 focus:bg-white dark:focus:bg-slate-800',
+              'focus:ring-2 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-slate-800',
               icon && 'pl-11',
               iconRight && 'pr-11',
               error && 'ring-2 ring-rose-500/20 bg-rose-50/10',

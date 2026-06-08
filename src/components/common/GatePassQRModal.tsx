@@ -82,7 +82,7 @@ export default function GatePassQRModal({
                   />
                 ) : (
                   <div className="w-[200px] h-[200px] flex flex-col items-center justify-center gap-3">
-                    <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Loading...</span>
                   </div>
                 )}
@@ -127,7 +127,7 @@ export default function GatePassQRModal({
               {/* Share actions */}
               {showShare && (
                 <div className="flex gap-3 mt-6 w-full">
-                  <button className="flex-1 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center gap-3 text-white font-black uppercase tracking-widest text-[13px] shadow-lg shadow-indigo-200 dark:shadow-none active:scale-95 transition-transform">
+                  <button className="flex-1 h-14 bg-[var(--color-primary)] rounded-2xl flex items-center justify-center gap-3 text-white font-black uppercase tracking-widest text-[13px] shadow-lg shadow-blue-200 dark:shadow-none active:scale-95 transition-transform">
                     <Share2 className="w-5 h-5" />
                     Share
                   </button>

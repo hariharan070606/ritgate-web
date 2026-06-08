@@ -11,6 +11,7 @@ import { useToast } from '../../context/ToastContext';
 import { getAdminGateLogs } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const formatDateShort = (d: string) => {
   try { return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
@@ -23,6 +24,7 @@ interface AdminScanHistoryProps {
 }
 
 export default function AdminScanHistory({ onBack }: AdminScanHistoryProps = {}) {
+  usePageTitle('Scan History');
   const { success: showSuccess, error: showError } = useToast();
   const [gateLogs, setGateLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,7 +84,7 @@ export default function AdminScanHistory({ onBack }: AdminScanHistoryProps = {})
     <div className="space-y-6 pb-10">
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1">
+          <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1">
             <ArrowUpDown className="w-3.5 h-3.5" />
             <span className="text-[10px] font-bold tracking-widest uppercase">Admin Console</span>
           </div>
@@ -102,7 +104,7 @@ export default function AdminScanHistory({ onBack }: AdminScanHistoryProps = {})
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300" />
+          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300" />
         {searchQuery && <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X className="w-4 h-4 text-slate-400" /></button>}
       </div>
 

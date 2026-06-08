@@ -104,7 +104,7 @@ export default function ColorPickerModal({
                           'aspect-square rounded-xl transition-all duration-150',
                           'border-2 flex items-center justify-center',
                           currentColor === color
-                            ? 'border-indigo-600 dark:border-indigo-400 scale-105'
+                            ? 'border-[var(--color-primary)] dark:border-blue-400 scale-105'
                             : 'border-slate-200 dark:border-slate-700 hover:scale-105',
                         )}
                         style={{ backgroundColor: color }}
@@ -129,11 +129,11 @@ export default function ColorPickerModal({
                       onChange={(e) => setCustomColor(e.target.value)}
                       placeholder="#000000"
                       maxLength={7}
-                      className="flex-1 h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-400 transition-shadow"
+                      className="flex-1 h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] dark:focus:ring-blue-400 transition-shadow"
                     />
                     <button
                       onClick={handleCustomColor}
-                      className="px-6 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-colors"
+                      className="px-6 h-12 rounded-xl bg-[var(--color-primary)] hover:bg-blue-900 text-white font-semibold transition-colors"
                     >
                       Apply
                     </button>

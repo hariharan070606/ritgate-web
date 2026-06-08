@@ -16,6 +16,7 @@ import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { useAdaptive } from '../../utils/useAdaptive';
 import type { GatePassRequest } from '../../types';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 type Tab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -27,6 +28,7 @@ interface HRDashboardProps {
 }
 
 export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
+  usePageTitle('Dashboard');
   const { getUserId, user, logout } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const { withLock } = useActionLock();
@@ -148,7 +150,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input type="text" placeholder="Search requests..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300" />
+          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300" />
       </div>
 
       {/* Stats Tabs */}
@@ -156,7 +158,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
         {(['PENDING', 'APPROVED', 'REJECTED'] as Tab[]).map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
             className={cn('flex-1 py-3 text-[11px] font-bold uppercase tracking-wider border-b-2 transition-colors',
-              activeTab === t ? t === 'PENDING' ? 'border-indigo-500 text-indigo-600' : t === 'APPROVED' ? 'border-emerald-500 text-emerald-600' : 'border-rose-500 text-rose-600' : 'border-transparent text-slate-400')}>
+              activeTab === t ? t === 'PENDING' ? 'border-blue-700 text-[var(--color-primary)]' : t === 'APPROVED' ? 'border-emerald-500 text-emerald-600' : 'border-rose-500 text-rose-600' : 'border-transparent text-slate-400')}>
             <div>{t}</div>
             <div className={cn('text-xl font-bold mt-0.5', activeTab === t ? '' : 'text-slate-600 dark:text-white')}>
               {t === 'PENDING' ? stats.pending : t === 'APPROVED' ? stats.approved : stats.rejected}
@@ -253,7 +255,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
               <div>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Requester</p>
                 <p className="text-sm font-bold text-slate-900 dark:text-white mt-1 uppercase">{selectedRequest.requestedByStaffName || selectedRequest.studentName || selectedRequest.regNo}</p>
-                {selectedRequest.department && <p className="text-[10px] text-indigo-600 font-bold mt-1 uppercase">{selectedRequest.department}</p>}
+                {selectedRequest.department && <p className="text-[10px] text-[var(--color-primary)] font-bold mt-1 uppercase">{selectedRequest.department}</p>}
               </div>
               <Badge status={selectedRequest.status} size="md" />
             </div>
@@ -280,7 +282,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl space-y-3">
               <div><p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Batch Purpose</p><p className="text-base font-bold text-slate-900 dark:text-white uppercase">{selectedRequest.purpose}</p></div>
               <div className="flex items-center justify-between pt-3 border-t border-slate-200/50 dark:border-slate-700/50">
-                <div className="flex items-center gap-2"><Users className="w-4 h-4 text-indigo-600" /><span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase">{selectedRequest.participantCount || 0} Participants</span></div>
+                <div className="flex items-center gap-2"><Users className="w-4 h-4 text-[var(--color-primary)]" /><span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase">{selectedRequest.participantCount || 0} Participants</span></div>
                 <Badge status={selectedRequest.status} size="sm" />
               </div>
             </div>

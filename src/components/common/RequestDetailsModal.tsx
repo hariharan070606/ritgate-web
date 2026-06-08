@@ -89,9 +89,9 @@ export default function RequestDetailsModal({
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">Student Information</h3>
                     {request.requestType === 'VISITOR' && (
-                      <div className="bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-lg flex items-center gap-1.5 border border-indigo-100 dark:border-indigo-800">
-                        <UserIcon className="w-3 h-3 text-indigo-600" />
-                        <span className="text-[10px] font-black text-indigo-600 tracking-wider">VISITOR</span>
+                      <div className="bg-blue-50 dark:bg-indigo-900/30 px-3 py-1 rounded-lg flex items-center gap-1.5 border border-blue-100 dark:border-[var(--color-primary)]">
+                        <UserIcon className="w-3 h-3 text-[var(--color-primary)]" />
+                        <span className="text-[10px] font-black text-[var(--color-primary)] tracking-wider">VISITOR</span>
                       </div>
                     )}
                   </div>
@@ -152,7 +152,7 @@ export default function RequestDetailsModal({
                     <h3 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight self-start">Gate Pass QR</h3>
                     
                     <div className="relative group">
-                      <div className="absolute -inset-4 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-[40px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute -inset-4 bg-blue-500/5 dark:bg-blue-500/10 rounded-[40px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="relative p-6 bg-white rounded-[32px] shadow-[0_12px_40px_rgba(0,0,0,0.08)] border border-slate-50 items-center justify-center flex">
                         <QRCodeSVG
                           value={qrCode}

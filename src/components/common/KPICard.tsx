@@ -12,7 +12,7 @@ interface KPICardProps {
 
 export default function KPICard({ title, value, icon, color = 'blue', className }: KPICardProps) {
   const colorMap: Record<string, string> = {
-    blue: 'bg-indigo-600 shadow-indigo-500/20',
+    blue: 'bg-[var(--color-primary)] shadow-blue-500/20',
     green: 'bg-emerald-600 shadow-emerald-500/20',
     amber: 'bg-amber-500 shadow-amber-500/20',
     red: 'bg-rose-600 shadow-rose-500/20',

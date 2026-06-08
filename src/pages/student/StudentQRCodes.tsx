@@ -5,8 +5,10 @@ import { ArrowLeft, QrCode as QrIcon } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useAuth } from '../../context/AuthContext';
 import type { Student } from '../../types';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 export default function StudentQRCodes() {
+  usePageTitle('QR Codes');
   const navigate = useNavigate();
   const { user: rawUser } = useAuth();
   const user = rawUser as Student;
@@ -47,8 +49,8 @@ export default function StudentQRCodes() {
                 <h2 className="text-[20px] font-black text-slate-900 dark:text-white leading-tight">Student ID QR</h2>
                 <p className="text-[14px] font-bold text-slate-400 mt-1">Use this for campus entry</p>
               </div>
-              <div className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/30 rounded-xl">
-                 <span className="text-[11px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">STUDENT_ID</span>
+              <div className="px-3 py-1.5 bg-blue-50 dark:bg-indigo-900/20 border border-blue-100 dark:border-indigo-900/30 rounded-xl">
+                 <span className="text-[11px] font-black text-[var(--color-primary)] dark:text-blue-400 uppercase tracking-widest">STUDENT_ID</span>
               </div>
             </div>
 
@@ -82,13 +84,13 @@ export default function StudentQRCodes() {
           </motion.div>
 
           {/* Additional Help Info */}
-          <div className="bg-indigo-50 dark:bg-indigo-900/10 rounded-[24px] p-5 border border-indigo-100 dark:border-indigo-900/20 flex items-start gap-4">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-indigo-100 dark:shadow-none">
+          <div className="bg-blue-50 dark:bg-indigo-900/10 rounded-[24px] p-5 border border-blue-100 dark:border-indigo-900/20 flex items-start gap-4">
+            <div className="w-10 h-10 bg-[var(--color-primary)] rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-100 dark:shadow-none">
               <QrIcon className="w-5 h-5" />
             </div>
             <div>
               <h4 className="text-[14px] font-black text-indigo-900 dark:text-indigo-300 uppercase tracking-tight mb-1">Scanner Presence</h4>
-              <p className="text-[12px] font-bold text-indigo-600/60 dark:text-indigo-400/50 leading-relaxed">
+              <p className="text-[12px] font-bold text-[var(--color-primary)]/60 dark:text-blue-400/50 leading-relaxed">
                 Flash this code at the gate scanner for automatic attendance and logging.
               </p>
             </div>

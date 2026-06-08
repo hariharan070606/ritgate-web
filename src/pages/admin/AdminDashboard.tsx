@@ -13,6 +13,7 @@ import {
   FileText,
   Plus
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -34,6 +35,7 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps = {}) {
+  usePageTitle('Dashboard');
   const { getUserId, user } = useAuth();
   const { error: showError } = useToast();
   const adminId = getUserId();
@@ -130,7 +132,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
           {adminName}
         </h2>
         <div className="flex items-center gap-3 mt-2">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/30 px-3 py-1 rounded-full uppercase tracking-widest border border-indigo-100 dark:border-indigo-900/30">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--color-primary)] bg-blue-50 dark:bg-indigo-950/30 px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100 dark:border-indigo-900/30">
             <ShieldCheck className="w-3 h-3" />
             ADMINISTRATIVE OFFICER
           </div>
@@ -187,7 +189,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
             placeholder="SEARCH VISITOR REQUESTS..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
-            className="w-full pl-11 pr-4 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-bold focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
+            className="w-full pl-11 pr-4 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-bold focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
           />
         </div>
 
@@ -199,7 +201,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
               className={cn(
                 "flex-1 px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
                 activeTab === tab 
-                  ? "bg-white dark:bg-slate-800 text-indigo-600 shadow-sm border border-slate-100 dark:border-slate-700" 
+                  ? "bg-white dark:bg-slate-800 text-[var(--color-primary)] shadow-sm border border-slate-100 dark:border-slate-700" 
                   : "text-slate-400 hover:text-slate-600"
               )}
             >
@@ -217,7 +219,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
             <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">Visitor Requests</h3>
           </div>
           {filtered.length > 0 && (
-            <span className="text-[10px] font-bold text-indigo-600 uppercase tabular-nums tracking-widest">
+            <span className="text-[10px] font-bold text-[var(--color-primary)] uppercase tabular-nums tracking-widest">
               {filtered.length} REQUESTS
             </span>
           )}

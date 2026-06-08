@@ -11,8 +11,10 @@ import { getSecurityStats, getRecentScans } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { useNavigate } from 'react-router-dom';
 import { transitions } from '../../design-system/animations';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 export default function SecurityDashboard() {
+  usePageTitle('Dashboard');
   const { user } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState({ active: 0, exited: 0, total: 0 });
@@ -96,7 +98,7 @@ export default function SecurityDashboard() {
           {secName}
         </h2>
         <div className="flex items-center gap-3 mt-2">
-           <div className="flex items-center gap-1.5 text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/30 px-3 py-1 rounded-full uppercase tracking-widest border border-indigo-100 dark:border-indigo-900/30">
+           <div className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--color-primary)] bg-blue-50 dark:bg-indigo-950/30 px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100 dark:border-indigo-900/30">
             <MapPin className="w-3 h-3" />
             {gate}
           </div>
@@ -111,21 +113,21 @@ export default function SecurityDashboard() {
       <motion.div 
         whileTap={transitions.feedback.tap}
         onClick={() => navigate('/scanner')}
-        className="group relative cursor-pointer overflow-hidden rounded-[32px] shadow-2xl shadow-indigo-200 dark:shadow-none"
+        className="group relative cursor-pointer overflow-hidden rounded-[32px] shadow-2xl shadow-blue-200 dark:shadow-none"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-blue-700" />
+        <div className="absolute inset-0 bg-[var(--color-primary)]" />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay" />
         <div className="relative p-8 flex items-center gap-6 overflow-hidden">
           {/* Decorative Circles */}
           <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-indigo-400/20 rounded-full blur-2xl" />
+          <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl" />
           
           <div className="w-20 h-20 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-xl border border-white/20 shadow-inner">
             <Camera className="w-10 h-10 text-white" />
           </div>
           <div className="flex-1 text-left">
             <h3 className="text-2xl font-black text-white tracking-tight uppercase leading-tight">Launch Scanner</h3>
-            <p className="text-indigo-100 text-[11px] font-bold mt-1 uppercase tracking-widest opacity-80">SCAN QR FOR ENTRY / EXIT</p>
+            <p className="text-blue-100 text-[11px] font-bold mt-1 uppercase tracking-widest opacity-80">SCAN QR FOR ENTRY / EXIT</p>
           </div>
           <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10">
             <ArrowRight className="w-6 h-6 text-white" />
@@ -136,9 +138,10 @@ export default function SecurityDashboard() {
       {/* 3. Operational Metrics */}
       <div className="space-y-3 text-left">
         <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-widest px-1">Live Statistics</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <KPICard title="Inside Campus" value={stats.active} icon={<Users className="w-5 h-5" />} color="blue" />
-          <KPICard title="Total Exits" value={stats.exited} icon={<LogOut className="w-5 h-5" />} color="amber" />
+        <div className="grid grid-cols-3 gap-3">
+          <KPICard title="Active" value={stats.active} icon={<Users className="w-5 h-5" />} color="blue" />
+          <KPICard title="Entries" value={stats.total} icon={<Activity className="w-5 h-5" />} color="green" />
+          <KPICard title="Exits" value={stats.exited} icon={<LogOut className="w-5 h-5" />} color="amber" />
         </div>
       </div>
 
@@ -146,12 +149,12 @@ export default function SecurityDashboard() {
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
             <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">Recent Activity</h3>
           </div>
           <button 
             onClick={() => navigate('/scan-history')} 
-            className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest hover:opacity-70 transition-opacity"
+            className="text-[10px] font-bold text-[var(--color-primary)] uppercase tracking-widest hover:opacity-70 transition-opacity"
           >
             History
           </button>

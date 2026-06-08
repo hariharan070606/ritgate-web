@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { Bell, ArrowLeft } from 'lucide-react';
+import { Bell, ArrowLeft, Sun, Moon } from 'lucide-react';
 import { useNotifications } from '../../context/NotificationContext';
 import { useProfile } from '../../context/ProfileContext';
 import { useAdaptive } from '../../utils/useAdaptive';
+import { useTheme } from '../../context/ThemeContext';
 
 interface TopMenuBarProps {
   greeting: string;
@@ -29,6 +30,7 @@ export default function TopMenuBar({
   const { unreadCount } = useNotifications();
   const { profileImage } = useProfile();
   const { isMobile } = useAdaptive();
+  const { theme, toggleTheme } = useTheme();
 
   // Only render on mobile — desktop/tablet use the AppLayout Header
   if (!isMobile) return null;
@@ -61,7 +63,7 @@ export default function TopMenuBar({
               {profileImage ? (
                 <img src={profileImage} alt={title} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-indigo-600 flex items-center justify-center text-white text-[14px] font-black">
+                <div className="w-full h-full bg-[var(--color-primary)] flex items-center justify-center text-white text-[14px] font-black">
                   {initials}
                 </div>
               )}
@@ -78,20 +80,35 @@ export default function TopMenuBar({
           </div>
         </div>
 
-        {/* ── Right: notification bell only ─────────────── */}
-        <button
-          onClick={() => navigate('/notifications')}
-          className="relative w-11 h-11 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-slate-700 dark:text-white active:scale-90 transition-transform shrink-0"
-        >
-          <Bell className="w-5 h-5" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-rose-500 rounded-full border-2 border-white dark:border-slate-950 flex items-center justify-center px-1">
-              <span className="text-[10px] font-black text-white leading-none">
-                {unreadCount > 9 ? '9+' : unreadCount}
+        {/* ── Right: theme toggle + notification bell ────── */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            className="w-11 h-11 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center active:scale-90 transition-transform shrink-0"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark'
+              ? <Sun className="w-5 h-5 text-amber-400" />
+              : <Moon className="w-5 h-5 text-blue-700" />
+            }
+          </button>
+
+          {/* Notification bell */}
+          <button
+            onClick={() => navigate('/notifications')}
+            className="relative w-11 h-11 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-slate-700 dark:text-white active:scale-90 transition-transform shrink-0"
+          >
+            <Bell className="w-5 h-5" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-rose-500 rounded-full border-2 border-white dark:border-slate-950 flex items-center justify-center px-1">
+                <span className="text-[10px] font-black text-white leading-none">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
               </span>
-            </span>
-          )}
-        </button>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );

@@ -11,6 +11,7 @@ import { useToast } from '../../context/ToastContext';
 import { getGateLogs } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const formatDateShort = (d: string) => {
   try { return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
@@ -25,6 +26,7 @@ interface HRGateLogsProps {
 }
 
 export default function HRGateLogs({ onBack }: HRGateLogsProps) {
+  usePageTitle('Gate Logs');
   const { getUserId } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
 
@@ -114,7 +116,7 @@ export default function HRGateLogs({ onBack }: HRGateLogsProps) {
             </button>
           )}
           <div>
-            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1">
+            <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1">
               <ArrowUpDown className="w-3.5 h-3.5" />
               <span className="text-[10px] font-bold tracking-widest uppercase">Gate Management</span>
             </div>
@@ -153,7 +155,7 @@ export default function HRGateLogs({ onBack }: HRGateLogsProps) {
           placeholder="Search by name, ID, department..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300"
+          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300"
         />
         {searchQuery && (
           <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -226,12 +228,12 @@ export default function HRGateLogs({ onBack }: HRGateLogsProps) {
             <div>
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">From Date</label>
               <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/20" />
             </div>
             <div>
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">To Date</label>
               <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} min={fromDate}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/20" />
             </div>
           </div>
           <div className="flex gap-3">

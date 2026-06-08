@@ -14,8 +14,8 @@ import SplashScreen from './components/common/SplashScreen';
 export default function App() {
   return (
     <ErrorBoundary>
-      <SplashScreen />
       <ThemeProvider>
+        <SplashScreen />
         <ToastProvider>
           <AuthProvider>
             <ActionLockProvider>

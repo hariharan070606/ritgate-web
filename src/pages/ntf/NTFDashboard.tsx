@@ -12,6 +12,7 @@ import { useToast } from '../../context/ToastContext';
 import {
   getVisitorRequestsForStaff, approveVisitorRequest, rejectVisitorRequest
 } from '../../services/api.service';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { relativeTime } from '../../utils/dateUtils';
@@ -21,6 +22,7 @@ type Tab = 'PENDING' | 'APPROVED' | 'REJECTED';
 const getInitials = (name: string) => (name || 'NF').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
 export default function NTFDashboard() {
+  usePageTitle('Dashboard');
   const { getUserId, user } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const staffId = getUserId();

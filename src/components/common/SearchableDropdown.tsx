@@ -55,7 +55,7 @@ export default function SearchableDropdown({
         className={cn(
           "w-full flex items-center justify-between px-4 py-3.5 min-h-[50px] rounded-xl border-1.5 transition-all outline-none",
           disabled ? "bg-slate-50 border-slate-200 opacity-60 flex cursor-not-allowed" : 
-          isOpen ? "bg-white border-indigo-600 shadow-[0_0_0_2px_rgba(79,70,229,0.1)]" : "bg-white border-indigo-600"
+          isOpen ? "bg-white border-[var(--color-primary)] shadow-[0_0_0_2px_rgba(79,70,229,0.1)]" : "bg-white border-[var(--color-primary)]"
         )}
       >
         <span className={cn(
@@ -65,9 +65,9 @@ export default function SearchableDropdown({
           {selectedLabel || placeholder}
         </span>
         {isOpen ? (
-          <ChevronUp className="w-[18px] h-[18px] text-indigo-600" />
+          <ChevronUp className="w-[18px] h-[18px] text-[var(--color-primary)]" />
         ) : (
-          <ChevronDown className="w-[18px] h-[18px] text-indigo-600" />
+          <ChevronDown className="w-[18px] h-[18px] text-[var(--color-primary)]" />
         )}
       </button>
 
@@ -92,7 +92,7 @@ export default function SearchableDropdown({
             animate={{ opacity: 1, y: 4, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute left-0 right-0 z-[150] mt-1 bg-white border-1.5 border-indigo-600 rounded-xl shadow-xl overflow-hidden max-h-[300px] overflow-y-auto"
+            className="absolute left-0 right-0 z-[150] mt-1 bg-white border-1.5 border-[var(--color-primary)] rounded-xl shadow-xl overflow-hidden max-h-[300px] overflow-y-auto"
           >
             <div className="flex flex-col">
               {items.length === 0 ? (
@@ -108,16 +108,16 @@ export default function SearchableDropdown({
                       onClick={() => handleSelect(item)}
                       className={cn(
                         "flex items-center justify-between px-4 py-3.5 text-left transition-colors border-b last:border-b-0 border-slate-50",
-                        isSelected ? "bg-indigo-50/50" : "hover:bg-slate-50 active:bg-slate-100"
+                        isSelected ? "bg-blue-50/50" : "hover:bg-slate-50 active:bg-slate-100"
                       )}
                     >
                       <span className={cn(
                         "text-[15px]",
-                        isSelected ? "text-indigo-600 font-bold" : "text-slate-700 font-medium"
+                        isSelected ? "text-[var(--color-primary)] font-bold" : "text-slate-700 font-medium"
                       )}>
                         {item.label}
                       </span>
-                      {isSelected && <Check className="w-4 h-4 text-indigo-600" />}
+                      {isSelected && <Check className="w-4 h-4 text-[var(--color-primary)]" />}
                     </button>
                   );
                 })

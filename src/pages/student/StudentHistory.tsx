@@ -10,6 +10,7 @@ import {
   Clock,
   History
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { getUserEntryHistory, getStudentGatePassRequests } from '../../services/api.service';
@@ -30,6 +31,7 @@ interface HistoryItem {
 }
 
 export default function StudentHistory() {
+  usePageTitle('History');
   const { user: rawUser, logout } = useAuth();
   const user = rawUser as Student;
   const { refreshCount } = useRefresh();
@@ -116,7 +118,7 @@ export default function StudentHistory() {
       case 'ENTRY': return { label: 'Entry', icon: LogIn, color: 'text-emerald-500', bg: 'bg-emerald-50' };
       case 'EXIT': return { label: 'Exit', icon: LogOut, color: 'text-rose-500', bg: 'bg-rose-50' };
       case 'LATE_ENTRY': return { label: 'Late Entry', icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-50' };
-      case 'GATE_PASS': return { label: 'Gate Pass Used', icon: QrCode, color: 'text-indigo-500', bg: 'bg-indigo-50' };
+      case 'GATE_PASS': return { label: 'Gate Pass Used', icon: QrCode, color: 'text-blue-700', bg: 'bg-blue-50' };
       default: return { label: 'Unknown', icon: Clock, color: 'text-slate-400', bg: 'bg-slate-50' };
     }
   };
@@ -132,12 +134,12 @@ export default function StudentHistory() {
           {/* Summary Stats Card */}
           <div className="mt-6 bg-white dark:bg-slate-900 rounded-[28px] p-6 flex items-center justify-around shadow-sm border border-slate-50 dark:border-slate-800">
             <div className="flex flex-col items-center">
-               <span className="text-[32px] font-black text-indigo-600 leading-none mb-2">{stats.entries}</span>
+               <span className="text-[32px] font-black text-[var(--color-primary)] leading-none mb-2">{stats.entries}</span>
                <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Entries</span>
             </div>
             <div className="w-[1px] h-10 bg-slate-100 dark:bg-slate-800" />
             <div className="flex flex-col items-center">
-               <span className="text-[32px] font-black text-indigo-600 leading-none mb-2">{stats.exits}</span>
+               <span className="text-[32px] font-black text-[var(--color-primary)] leading-none mb-2">{stats.exits}</span>
                <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Exits</span>
             </div>
           </div>
@@ -175,7 +177,7 @@ export default function StudentHistory() {
                       </div>
 
                       {item.passId && (
-                        <p className="text-[12px] font-black text-indigo-600 uppercase tracking-tight">
+                        <p className="text-[12px] font-black text-[var(--color-primary)] uppercase tracking-tight">
                           Pass ID: {item.passId}
                         </p>
                       )}

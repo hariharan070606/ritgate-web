@@ -18,6 +18,7 @@ import {
   Clock,
   ExternalLink
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
@@ -31,6 +32,7 @@ import { transitions } from '../../design-system/animations';
 type TabType = 'PERSONS' | 'VEHICLES';
 
 export default function SecurityHistory() {
+  usePageTitle('Scan History');
   const [activeTab, setActiveTab] = useState<TabType>('PERSONS');
   const [history, setHistory] = useState<any[]>([]);
   const [vehicles, setVehicles] = useState<any[]>([]);
@@ -174,7 +176,7 @@ export default function SecurityHistory() {
       {/* 1. Context & Title */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1 text-left">
         <div className="flex-1">
-          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1 leading-none uppercase">
+          <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1 leading-none uppercase">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span className="text-[10px] font-bold tracking-widest leading-none">Security Audit</span>
           </div>
@@ -199,7 +201,7 @@ export default function SecurityHistory() {
             variant="primary" 
             size="sm" 
             onClick={() => handleExport('PDF')}
-            className="rounded-xl px-4 text-[10px] uppercase font-bold tracking-widest shadow-indigo-100"
+            className="rounded-xl px-4 text-[10px] uppercase font-bold tracking-widest shadow-blue-100"
           >
             PDF
           </Button>
@@ -215,7 +217,7 @@ export default function SecurityHistory() {
               className={cn(
                 "flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
                 activeTab === 'PERSONS' 
-                  ? "bg-white dark:bg-slate-800 text-indigo-600 shadow-sm border border-slate-100 dark:border-slate-700" 
+                  ? "bg-white dark:bg-slate-800 text-[var(--color-primary)] shadow-sm border border-slate-100 dark:border-slate-700" 
                   : "text-slate-400 hover:text-slate-600"
               )}
             >
@@ -227,7 +229,7 @@ export default function SecurityHistory() {
               className={cn(
                 "flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
                 activeTab === 'VEHICLES' 
-                  ? "bg-white dark:bg-slate-800 text-indigo-600 shadow-sm border border-slate-100 dark:border-slate-700" 
+                  ? "bg-white dark:bg-slate-800 text-[var(--color-primary)] shadow-sm border border-slate-100 dark:border-slate-700" 
                   : "text-slate-400 hover:text-slate-600"
               )}
             >
@@ -245,7 +247,7 @@ export default function SecurityHistory() {
               placeholder="SEARCH ARCHIVES (NAME, PLATE, PURPOSE...)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
-              className="w-full pl-11 pr-4 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-bold focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
+              className="w-full pl-11 pr-4 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-bold focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
             />
           </div>
           
@@ -253,7 +255,7 @@ export default function SecurityHistory() {
             onClick={() => setShowFilters(!showFilters)}
             className={cn(
               "h-12 px-6 rounded-2xl text-[10px] font-bold uppercase tracking-widest border transition-all flex items-center gap-2 whitespace-nowrap w-full sm:w-auto",
-              showFilters ? "bg-indigo-50 text-indigo-600 border-indigo-100" : "bg-white text-slate-500 border-slate-100 hover:bg-slate-50"
+              showFilters ? "bg-blue-50 text-[var(--color-primary)] border-blue-100" : "bg-white text-slate-500 border-slate-100 hover:bg-slate-50"
             )}
           >
             <Filter className={cn("w-3.5 h-3.5", showFilters && "animate-pulse")} />
@@ -303,7 +305,7 @@ export default function SecurityHistory() {
              <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">Archived Transactions</h3>
           </div>
           {!isLoading && (activeTab === 'PERSONS' ? filteredHistory : filteredVehicles).length > 0 && (
-            <span className="text-[10px] font-bold text-indigo-600 uppercase tabular-nums tracking-widest">
+            <span className="text-[10px] font-bold text-[var(--color-primary)] uppercase tabular-nums tracking-widest">
               {(activeTab === 'PERSONS' ? filteredHistory : filteredVehicles).length} LOGS
             </span>
           )}
@@ -336,13 +338,13 @@ export default function SecurityHistory() {
                              {name?.substring(0, 1).toUpperCase() || <Activity className="w-5 h-5" />}
                            </div>
                            <div className="flex-1 min-w-0 text-left">
-                             <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight leading-none group-hover:text-indigo-600 transition-colors">
+                             <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight leading-none group-hover:text-[var(--color-primary)] transition-colors">
                                {name || 'Unknown Subject'}
                              </h4>
                              <div className="flex items-center gap-2 mt-2">
                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest truncate max-w-[150px] opacity-80">{sub}</span>
                                <span className="text-slate-200">•</span>
-                               <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/20 px-2 py-0.5 rounded-full uppercase tracking-widest border border-indigo-100/30">
+                               <span className="text-[9px] font-bold text-[var(--color-primary)] dark:text-blue-400 bg-blue-50 dark:bg-indigo-950/20 px-2 py-0.5 rounded-full uppercase tracking-widest border border-blue-100/30">
                                  {meta}
                                </span>
                              </div>

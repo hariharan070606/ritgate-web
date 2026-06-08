@@ -13,6 +13,7 @@ import {
   Phone,
   Tag
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
@@ -26,6 +27,7 @@ import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 
 export default function SecurityVehicles() {
+  usePageTitle('Vehicles');
   const { getUserId } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const securityId = getUserId();
@@ -127,7 +129,7 @@ export default function SecurityVehicles() {
       {/* 1. Context & Title */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1 text-left">
         <div className="flex-1">
-          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1 leading-none uppercase">
+          <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1 leading-none uppercase">
             <Tag className="w-3.5 h-3.5" />
             <span className="text-[10px] font-bold tracking-widest leading-none">Vehicle Registry</span>
           </div>
@@ -144,7 +146,7 @@ export default function SecurityVehicles() {
           size="sm" 
           onClick={() => setShowRegModal(true)}
           icon={<Plus className="w-4 h-4" />}
-          className="rounded-xl h-11 px-6 text-[10px] uppercase font-bold tracking-widest shadow-indigo-100 dark:shadow-none"
+          className="rounded-xl h-11 px-6 text-[10px] uppercase font-bold tracking-widest shadow-blue-100 dark:shadow-none"
         >
           LOG TEMPORARY VECH
         </Button>
@@ -162,7 +164,7 @@ export default function SecurityVehicles() {
             value={query}
             onChange={(e) => setQuery(e.target.value.toUpperCase())}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-full pl-11 pr-4 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-bold focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
+            className="w-full pl-11 pr-4 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-bold focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
           />
         </div>
         <button 
@@ -182,7 +184,7 @@ export default function SecurityVehicles() {
              <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">Registered Units</h3>
           </div>
           {!isLoading && vehicles.length > 0 && (
-            <span className="text-[10px] font-bold text-indigo-600 uppercase tabular-nums tracking-widest">
+            <span className="text-[10px] font-bold text-[var(--color-primary)] uppercase tabular-nums tracking-widest">
               {vehicles.length} VEHICLES
             </span>
           )}
@@ -209,7 +211,7 @@ export default function SecurityVehicles() {
                                 {v.licensePlate}
                              </h3>
                              <div className="flex items-center gap-3">
-                                <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest truncate">{v.ownerName}</p>
+                                <p className="text-[10px] font-bold text-[var(--color-primary)] uppercase tracking-widest truncate">{v.ownerName}</p>
                                 <span className="h-1 w-1 rounded-full bg-slate-200" />
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest tabular-nums">{v.ownerType} • {v.vehicleType?.replace('_', ' ')}</p>
                              </div>
@@ -240,7 +242,7 @@ export default function SecurityVehicles() {
                    <select 
                       value={regData.ownerType} 
                       onChange={(e) => setRegData({...regData, ownerType: e.target.value})} 
-                      className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest outline-none focus:ring-2 focus:ring-indigo-500/10"
+                      className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest outline-none focus:ring-2 focus:ring-blue-500/10"
                    >
                     <option value="STUDENT">STUDENT</option>
                     <option value="STAFF">STAFF</option>
@@ -252,7 +254,7 @@ export default function SecurityVehicles() {
                    <select 
                       value={regData.vehicleType} 
                       onChange={(e) => setRegData({...regData, vehicleType: e.target.value})} 
-                      className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest outline-none focus:ring-2 focus:ring-indigo-500/10"
+                      className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest outline-none focus:ring-2 focus:ring-blue-500/10"
                    >
                     <option value="TWO_WHEELER">2 WHEELER</option>
                     <option value="FOUR_WHEELER">4 WHEELER</option>
@@ -268,7 +270,7 @@ export default function SecurityVehicles() {
               </p>
            </div>
            
-           <Button fullWidth size="lg" isLoading={isRegistering} onClick={handleRegister} className="h-14 rounded-2xl shadow-indigo-100 font-black tracking-widest">
+           <Button fullWidth size="lg" isLoading={isRegistering} onClick={handleRegister} className="h-14 rounded-2xl shadow-blue-100 font-black tracking-widest">
               COMMIT TO REGISTRY
            </Button>
         </div>

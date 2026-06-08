@@ -40,7 +40,7 @@ export const ROLE_COLORS: Record<string, { bg: string; text: string; gradient: s
   SECURITY: { bg: 'bg-blue-700', text: 'text-blue-700', gradient: 'from-blue-700 to-blue-800' },
   NON_TEACHING: { bg: 'bg-rose-500', text: 'text-rose-500', gradient: 'from-rose-500 to-rose-600' },
   NON_CLASS_INCHARGE: { bg: 'bg-orange-500', text: 'text-orange-500', gradient: 'from-orange-500 to-orange-600' },
-  ADMIN_OFFICER: { bg: 'bg-indigo-500', text: 'text-indigo-500', gradient: 'from-indigo-500 to-indigo-600' },
+  ADMIN_OFFICER: { bg: 'bg-blue-500', text: 'text-blue-700', gradient: 'from-blue-700 to-blue-800' },
 };
 
 export const STATUS_MAP: Record<string, { label: string; className: string; color: string }> = {

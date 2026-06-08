@@ -8,6 +8,7 @@ import { useToast } from '../../context/ToastContext';
 import { getHODContacts } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const DEPARTMENTS = ['ALL', 'CSE', 'ECE', 'IT', 'AIDS', 'AIML', 'MECH', 'EEE', 'CCE', 'CSBS', 'VLSI', 'ADMIN'];
 
@@ -20,6 +21,7 @@ const getInitials = (name: string | null | undefined) => {
 };
 
 export default function SecurityHODContacts() {
+  usePageTitle('HOD Contacts');
   const { error: showError } = useToast();
   const [hods, setHods] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

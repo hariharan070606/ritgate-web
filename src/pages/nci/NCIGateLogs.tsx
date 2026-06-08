@@ -11,6 +11,7 @@ import { useToast } from '../../context/ToastContext';
 import { getGateLogs } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const formatDateShort = (d: string) => {
   try { return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
@@ -21,6 +22,7 @@ const getInitials = (name: string) =>
   (name || 'NA').split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
 export default function NCIGateLogs() {
+  usePageTitle('Gate Logs');
   const { getUserId } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
 

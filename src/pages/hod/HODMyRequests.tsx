@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Clock
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
@@ -25,6 +26,7 @@ import { cn } from '../../utils/cn';
 import { formatDateTimeShort, getRelativeTime, isToday } from '../../utils/dateUtils';
 
 export default function HODMyRequests() {
+  usePageTitle('My Requests');
   const { user, logout, getUserId } = useAuth();
   const { refreshCount } = useRefresh();
   const { error: showToastError } = useToast();

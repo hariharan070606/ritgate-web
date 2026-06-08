@@ -11,6 +11,7 @@ import {
   Plus,
   Ban
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils/cn';
 import HODNewPassRequest from './HODNewPassRequest';
@@ -26,6 +27,7 @@ const getISTHour = () => {
 type Stage = 'SELECT' | 'SINGLE' | 'BULK' | 'GUEST';
 
 export default function HODNewPass() {
+  usePageTitle('New Pass');
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -45,7 +47,7 @@ export default function HODNewPass() {
   }, [stage, passDisabled]);
 
   const handleBack = () => {
-    if (stage === 'SELECT') navigate(-1);
+    if (stage === 'SELECT') navigate('/dashboard');
     else navigate('/new-pass');
   };
 
@@ -90,7 +92,7 @@ export default function HODNewPass() {
                <div className="grid gap-4">
                   {[
                     { id: 'SINGLE', title: 'Personal Pass', sub: 'For your official/personal exit', icon: UserPlus, color: 'text-violet-600', bg: 'bg-violet-50', restricted: true },
-                    { id: 'BULK', title: 'Bulk Gate Pass', sub: 'For students/staff group movement', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50', restricted: true },
+                    { id: 'BULK', title: 'Bulk Gate Pass', sub: 'For students/staff group movement', icon: Users, color: 'text-[var(--color-primary)]', bg: 'bg-blue-50', restricted: true },
                     { id: 'GUEST', title: 'Guest Pass', sub: 'Pre-register visitors for entry', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50', restricted: false },
                   ].map((card) => {
                     const Icon = card.icon;

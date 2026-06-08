@@ -11,14 +11,16 @@ import { useToast } from '../../context/ToastContext';
 import { getNTFOwnRequests, getGatePassQRCode } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
-import { formatDateTime, relativeTime } from '../../utils/dateUtils';
+import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 import type { GatePassRequest } from '../../types';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 interface AdminMyRequestsProps {
   onBack?: () => void;
 }
 
 export default function AdminMyRequests({ onBack }: AdminMyRequestsProps = {}) {
+  usePageTitle('All Requests');
   const { getUserId, user } = useAuth();
   const { error: showError } = useToast();
   const adminCode = getUserId();
@@ -41,9 +43,11 @@ export default function AdminMyRequests({ onBack }: AdminMyRequestsProps = {}) {
     try {
       const res = await getNTFOwnRequests(adminCode);
       if (res.success) {
-        const sorted = (res.requests || []).sort(
-          (a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime()
-        );
+        const sorted = (res.requests || [])
+          .filter((r: any) => isToday(r.createdAt || r.requestDate))
+          .sort(
+            (a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime()
+          );
         setRequests(sorted);
       } else setHasError(true);
     } catch { setHasError(true); }
@@ -107,7 +111,7 @@ export default function AdminMyRequests({ onBack }: AdminMyRequestsProps = {}) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-base shrink-0 border border-indigo-200 dark:border-indigo-800">{initials}</div>
+          <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-indigo-900/30 flex items-center justify-center text-[var(--color-primary)] dark:text-indigo-300 font-bold text-base shrink-0 border border-blue-200 dark:border-[var(--color-primary)]">{initials}</div>
           <div>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Personal Requests</p>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white leading-tight uppercase mt-1">{adminName}</h2>
@@ -123,7 +127,7 @@ export default function AdminMyRequests({ onBack }: AdminMyRequestsProps = {}) {
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input type="text" placeholder="Search your requests..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300" />
+          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300" />
       </div>
 
       {/* List */}
@@ -144,7 +148,7 @@ export default function AdminMyRequests({ onBack }: AdminMyRequestsProps = {}) {
                 <motion.div key={req.id || i} layout initial={transitions.page.initial} animate={transitions.page.animate}>
                   <Card hover onClick={() => { setSelectedRequest(req); setShowDetailModal(true); }} className="border-slate-100 dark:border-slate-800">
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="w-11 h-11 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">{initials}</div>
+                      <div className="w-11 h-11 rounded-full bg-blue-100 dark:bg-indigo-900/30 flex items-center justify-center text-[var(--color-primary)] font-bold text-sm shrink-0">{initials}</div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
                           <span className="text-sm font-bold text-slate-900 dark:text-white truncate">{adminName}</span>
@@ -180,7 +184,7 @@ export default function AdminMyRequests({ onBack }: AdminMyRequestsProps = {}) {
                       </div>
                       {isApproved && (
                         <button onClick={e => { e.stopPropagation(); handleViewQR(req); }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 rounded-xl text-white text-[11px] font-bold shadow-sm active:scale-95 transition-transform">
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-primary)] rounded-xl text-white text-[11px] font-bold shadow-sm active:scale-95 transition-transform">
                           <QrCode className="w-3.5 h-3.5" /> VIEW QR
                         </button>
                       )}

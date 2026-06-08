@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ShieldCheck, 
-  Search, 
-  Plus, 
-  Calendar, 
-  FileText, 
-  Users,
-  ChevronRight,
+import {
+  ShieldCheck,
+  Search,
   QrCode,
-  AlertCircle
+  AlertCircle,
+  FileText
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
@@ -41,6 +38,7 @@ const isStudentPassDisabled = () => {
 };
 
 export default function StudentHome() {
+  usePageTitle('Dashboard');
   const { user: rawUser, logout } = useAuth();
   const user = rawUser as Student;
   const { refreshCount } = useRefresh();
@@ -98,7 +96,7 @@ export default function StudentHome() {
       case 'REJECTED':
         return { label: 'REJECTED', color: 'bg-rose-500' };
       case 'PENDING_HOD':
-        return { label: 'AWAITING HOD', color: 'bg-indigo-500' };
+        return { label: 'AWAITING HOD', color: 'bg-blue-500' };
       case 'PENDING_STAFF':
         return { label: 'AWAITING STAFF', color: 'bg-amber-500' };
       case 'USED':
@@ -158,7 +156,7 @@ export default function StudentHome() {
             placeholder="Search recent requests..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 pl-11 pr-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all"
+            className="w-full h-11 pl-11 pr-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm focus:ring-2 focus:ring-blue-500/10 outline-none transition-all"
           />
         </div>
       </div>
@@ -173,7 +171,7 @@ export default function StudentHome() {
           >
             <div className={cn(
               "h-40 flex items-center justify-center relative overflow-hidden",
-              gatePassDisabled ? "bg-slate-400" : "bg-indigo-600"
+              gatePassDisabled ? "bg-slate-400" : "bg-[var(--color-primary)]"
             )}>
               <ShieldCheck className="w-24 h-24 text-white/20 absolute" />
               <motion.div
@@ -202,7 +200,7 @@ export default function StudentHome() {
                 disabled={gatePassDisabled}
                 className={cn(
                   "px-5 py-2.5 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all",
-                  gatePassDisabled ? "bg-slate-100 text-slate-400" : "bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none active:scale-95"
+                  gatePassDisabled ? "bg-slate-100 text-slate-400" : "bg-[var(--color-primary)] text-white shadow-lg shadow-blue-200 dark:shadow-none active:scale-95"
                 )}
               >
                 Apply Now
@@ -225,7 +223,7 @@ export default function StudentHome() {
               {filteredRequests.map((request) => {
                 const status = getStatusConfig(request.status);
                 return (
-                  <motion.div 
+                  <motion.div
                     key={request.id}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => {
@@ -234,52 +232,45 @@ export default function StudentHome() {
                     }}
                     className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 shadow-sm active:bg-slate-50 transition-colors"
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/30 rounded-lg">
-                        <span className="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tight">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className={cn(
+                        "px-2.5 py-1 rounded-md",
+                        request.passType === 'BULK'
+                          ? "bg-blue-50 dark:bg-indigo-900/20"
+                          : "bg-emerald-50 dark:bg-emerald-900/20"
+                      )}>
+                        <span className={cn(
+                          "text-[10px] font-bold",
+                          request.passType === 'BULK'
+                            ? "text-[var(--color-primary)] dark:text-blue-400"
+                            : "text-emerald-600 dark:text-emerald-400"
+                        )}>
                           {request.passType === 'BULK' ? 'Bulk Pass' : 'Single Pass'}
                         </span>
                       </div>
-                      <span className="text-[10px] font-bold text-slate-400">
-                        {formatDateTime(request.createdAt)}
-                      </span>
-                    </div>
-
-                    <h5 className="text-[15px] font-black text-slate-900 dark:text-white uppercase tracking-tight mb-3 truncate">
-                      {request.purpose || 'Gate Pass Request'}
-                    </h5>
-
-                    <div className="bg-slate-50 dark:bg-slate-950/50 rounded-xl p-3 space-y-2 mb-3">
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="text-[12px] font-bold text-slate-600 dark:text-slate-400 truncate">
-                          {request.reason || 'No additional reason provided'}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="text-[12px] font-bold text-slate-600 dark:text-slate-400">
-                          {formatDateTime(request.requestDate)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className={cn("px-3 py-1 rounded-lg", status.color)}>
-                        <span className="text-[9px] font-black text-white uppercase tracking-wider">
+                      <div className={cn("px-2.5 py-1 rounded-md", status.color)}>
+                        <span className="text-[10px] font-black text-white uppercase tracking-wider">
                           {status.label}
                         </span>
                       </div>
-                      {request.status === 'APPROVED' && request.passType !== 'BULK' && (
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); handleViewQR(request); }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 rounded-xl text-white active:scale-95 transition-transform"
-                        >
-                          <QrCode className="w-3.5 h-3.5" />
-                          <span className="text-[10px] font-black uppercase tracking-widest">View QR</span>
-                        </button>
-                      )}
                     </div>
+
+                    <h5 className="text-[14px] font-bold text-slate-900 dark:text-white mb-1 truncate">
+                      {request.purpose || 'Gate Pass Request'}
+                    </h5>
+                    <p className="text-[12px] text-slate-400 mb-3">
+                      {formatDateTime(request.requestDate || request.createdAt)}
+                    </p>
+
+                    {request.status === 'APPROVED' && request.passType !== 'BULK' && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleViewQR(request); }}
+                        className="w-full flex items-center justify-center gap-1.5 py-2 bg-[var(--color-primary)] rounded-xl text-white active:scale-95 transition-transform"
+                      >
+                        <QrCode className="w-3.5 h-3.5" />
+                        <span className="text-[12px] font-bold">View QR Code</span>
+                      </button>
+                    )}
                   </motion.div>
                 );
               })}

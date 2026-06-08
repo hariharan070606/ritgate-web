@@ -301,6 +301,7 @@ export interface SessionData {
   user: User;
   role: UserRole;
   deviceId: string;
+  loginAt?: number; // epoch ms
 }
 
 // ── Toast ─────────────────────────────────────────────────────────────────────

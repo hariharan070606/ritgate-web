@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Tell Tailwind v4 to use .dark class for dark: variants */
+@variant dark (&:where(.dark, .dark *));
+
+
 /* ══════════════════════════════════════════════════════════
    RITGate Design System — Adaptive Foundation
    Mobile: PWA-quality app experience
@@ -33,9 +37,9 @@
   --color-text: #0f172a;
   --color-text-secondary: #475569;
   --color-text-muted: #94a3b8;
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-primary-subtle: rgba(79, 70, 229, 0.08);
+  --color-primary: #1e40af;
+  --color-primary-hover: #1e3a8a;
+  --color-primary-subtle: rgba(30, 64, 175, 0.08);
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -74,9 +78,9 @@
   --color-text: #f1f5f9;
   --color-text-secondary: #94a3b8;
   --color-text-muted: #64748b;
-  --color-primary: #6366f1;
-  --color-primary-hover: #818cf8;
-  --color-primary-subtle: rgba(99, 102, 241, 0.12);
+  --color-primary: #3b82f6;
+  --color-primary-hover: #60a5fa;
+  --color-primary-subtle: rgba(59, 130, 246, 0.12);
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
@@ -434,4 +438,24 @@ html, body {
   html {
     scroll-behavior: smooth;
   }
+}
+
+/* ── Mobile keyboard push-up ────────────────────────────── */
+/* When the virtual keyboard is open, iOS/Android shrink the
+   visual viewport. Inputs inside scrollable containers scroll
+   into view automatically. Fixed bottom bars need extra padding
+   so they don't overlap the focused field. */
+@supports (height: 100dvh) {
+  /* Scroll focused inputs into view by ensuring the page can
+     scroll past fixed bottom nav */
+  input:focus,
+  textarea:focus {
+    scroll-margin-bottom: 80px;
+  }
+}
+
+/* Bottom action bars inside forms get extra breathing room on
+   mobile when a keyboard might be open */
+.form-bottom-action {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
 }

@@ -159,7 +159,7 @@ export default function VisitorManagementPage() {
           {stage === 'LIST' ? (
             <button
               onClick={() => setStage('REGISTER')}
-              className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-2xl bg-[var(--color-primary)] flex items-center justify-center text-white active:scale-95 transition-transform"
             >
               <Plus className="w-5 h-5" />
             </button>
@@ -173,7 +173,7 @@ export default function VisitorManagementPage() {
             <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                <div className="bg-white dark:bg-slate-900 rounded-[32px] p-6 border border-slate-100 dark:border-slate-800 shadow-sm">
                   <div className="flex items-center gap-4 mb-4">
-                     <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl flex items-center justify-center text-indigo-600">
+                     <div className="w-12 h-12 bg-blue-50 dark:bg-indigo-900/10 rounded-2xl flex items-center justify-center text-[var(--color-primary)]">
                         <ShieldCheck className="w-7 h-7" />
                      </div>
                      <div>
@@ -189,7 +189,7 @@ export default function VisitorManagementPage() {
                <div className="space-y-3">
                   <div className="flex items-center justify-between px-1">
                      <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Recent Pre-Registrations</h4>
-                     <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md uppercase">{visitors.length} Logs</span>
+                     <span className="text-[10px] font-bold text-[var(--color-primary)] bg-blue-50 px-2 py-0.5 rounded-md uppercase">{visitors.length} Logs</span>
                   </div>
 
                   {isLoading ? <SkeletonList count={3} /> : visitors.length === 0 ? (
@@ -221,7 +221,7 @@ export default function VisitorManagementPage() {
                                 setQrData({ qrCode: v.qrCode, manualCode: v.manualCode, name: v.name, id: v.id });
                                 setShowQR(true);
                               }}
-                              className="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center active:scale-95 transition-transform"
+                              className="w-11 h-11 rounded-2xl bg-[var(--color-primary)] text-white flex items-center justify-center active:scale-95 transition-transform"
                             >
                                <QrCode className="w-5.5 h-5.5" />
                             </button>
@@ -298,7 +298,7 @@ export default function VisitorManagementPage() {
                             <button
                                key={vt}
                                onClick={() => setVehicleType(vt)}
-                               className={cn("px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all", vehicleType === vt ? "bg-indigo-600 border-indigo-600 text-white" : "bg-white border-slate-100 text-slate-400")}
+                               className={cn("px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all", vehicleType === vt ? "bg-[var(--color-primary)] border-[var(--color-primary)] text-white" : "bg-white border-slate-100 text-slate-400")}
                             >
                                {vt}
                             </button>
@@ -350,7 +350,7 @@ export default function VisitorManagementPage() {
                   <button 
                      onClick={handleSubmit}
                      disabled={isSubmitting}
-                     className="w-full h-15 bg-indigo-600 rounded-2xl text-white font-black text-[15px] uppercase tracking-widest shadow-xl shadow-indigo-100 active:scale-95 transition-all flex items-center justify-center gap-2"
+                     className="w-full h-15 bg-[var(--color-primary)] rounded-2xl text-white font-black text-[15px] uppercase tracking-widest shadow-xl shadow-blue-100 active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
                      {isSubmitting ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (
                         <>

@@ -109,8 +109,8 @@ export default function HRApproval({ request, onBack, onSuccess }: HRApprovalPro
         <div className="bg-white dark:bg-slate-900 rounded-[32px] p-8 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
-                <ShieldCheck className="w-6 h-6 text-indigo-600" />
+              <div className="w-10 h-10 bg-blue-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
+                <ShieldCheck className="w-6 h-6 text-[var(--color-primary)]" />
               </div>
               <div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight uppercase">Decision Required</h3>
@@ -166,7 +166,7 @@ export default function HRApproval({ request, onBack, onSuccess }: HRApprovalPro
           <button
             onClick={handleApprove}
             disabled={loading}
-            className="h-16 rounded-[24px] bg-indigo-600 text-white font-black text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-indigo-200 dark:shadow-none transition-all active:scale-[0.98]"
+            className="h-16 rounded-[24px] bg-[var(--color-primary)] text-white font-black text-[15px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-blue-200 dark:shadow-none transition-all active:scale-[0.98]"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
             Approve
@@ -197,7 +197,7 @@ export default function HRApproval({ request, onBack, onSuccess }: HRApprovalPro
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
                 placeholder="Mention valid points for rejection..."
-                className="w-full h-32 bg-slate-50 dark:bg-slate-800 rounded-3xl p-6 text-[15px] font-bold text-slate-900 dark:text-white outline-none border-2 border-transparent focus:border-indigo-600 transition-colors resize-none mb-8"
+                className="w-full h-32 bg-slate-50 dark:bg-slate-800 rounded-3xl p-6 text-[15px] font-bold text-slate-900 dark:text-white outline-none border-2 border-transparent focus:border-[var(--color-primary)] transition-colors resize-none mb-8"
               />
 
               <button

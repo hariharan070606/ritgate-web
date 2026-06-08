@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PurposeSelect from '../../components/common/PurposeSelect';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, 
@@ -13,7 +14,8 @@ import {
   ShieldCheck,
   Plus,
   LayoutGrid,
-  Check
+  Check,
+  Paperclip
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -21,6 +23,7 @@ import { useActionLock } from '../../context/ActionLockContext';
 import { getStudentsByStaffDepartment, createBulkGatePass } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { SkeletonList } from '../../components/ui/Skeleton';
+import { nowIST, nowISTPlus } from '../../utils/dateUtils';
 
 interface Student {
   id: number;
@@ -43,6 +46,8 @@ export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
 
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
+  const [attachmentUri, setAttachmentUri] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [includeStaff, setIncludeStaff] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [students, setStudents] = useState<Student[]>([]);
@@ -139,11 +144,12 @@ export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
           staffCode,
           purpose: purpose.trim(),
           reason: reason.trim(),
-          exitDateTime: new Date().toISOString(),
-          returnDateTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          exitDateTime: nowIST(),
+          returnDateTime: nowISTPlus(24),
           students: Array.from(selectedStudents),
           includeStaff,
           receiverId: includeStaff ? undefined : (receiverId || undefined),
+          attachmentUri: attachmentUri || undefined,
         });
         if (res.success) {
           showToastSuccess('Success', `Bulk authorization sent for ${selectedStudents.size} students`);
@@ -299,21 +305,46 @@ export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
          <div className="space-y-4">
             <div className="space-y-2">
                <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Purpose</label>
-               <input 
-                  value={purpose}
-                  onChange={(e) => setPurpose(e.target.value)}
-                  placeholder="Ex: Field Trip, Symposium..."
-                  className="w-full h-14 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl px-4 text-[14px] font-bold text-slate-900 dark:text-white outline-none"
-               />
+               <PurposeSelect value={purpose} onChange={setPurpose} />
             </div>
             <div className="space-y-2">
                <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Reason</label>
                <textarea 
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  placeholder="Provde more context..."
+                  placeholder="Provide more context..."
                   className="w-full h-24 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 text-[14px] font-bold text-slate-900 dark:text-white outline-none resize-none"
                />
+            </div>
+
+            {/* Supporting Document */}
+            <div className="space-y-2">
+               <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Supporting Document <span className="text-slate-300 normal-case font-bold">(optional)</span></label>
+               <input ref={fileInputRef} type="file" accept="image/*,.pdf,.doc,.docx" onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = () => setAttachmentUri(reader.result as string);
+                  reader.readAsDataURL(file);
+               }} className="hidden" />
+               {attachmentUri ? (
+                  <div className="flex items-center gap-3 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
+                     <Paperclip className="w-4.5 h-4.5 text-amber-600 shrink-0" />
+                     <span className="text-[13px] font-bold text-amber-700 dark:text-amber-300 flex-1 truncate">
+                        {fileInputRef.current?.files?.[0]?.name || 'Document attached'}
+                     </span>
+                     <button onClick={() => { setAttachmentUri(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                        className="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-500 hover:bg-amber-200 transition-colors">
+                        <X className="w-3.5 h-3.5" />
+                     </button>
+                  </div>
+               ) : (
+                  <button onClick={() => fileInputRef.current?.click()}
+                     className="w-full flex items-center gap-3 px-4 py-3.5 bg-white dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-slate-400 hover:border-amber-400 hover:text-amber-500 transition-colors">
+                     <Paperclip className="w-4.5 h-4.5 shrink-0" />
+                     <span className="text-[13px] font-bold">Attach permission letter, circular, etc.</span>
+                  </button>
+               )}
             </div>
          </div>
 

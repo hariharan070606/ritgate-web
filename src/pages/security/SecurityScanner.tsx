@@ -10,6 +10,7 @@ import {
   Hash,
   Zap,
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -18,6 +19,7 @@ import { useActionLock } from '../../context/ActionLockContext';
 import { cn } from '../../utils/cn';
 
 export default function SecurityScanner() {
+  usePageTitle('QR Scanner');
   const navigate = useNavigate();
   const { getUserId, user } = useAuth();
   const { error: showError } = useToast();

@@ -10,6 +10,7 @@ import {
   Clock,
   AlertCircle
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
@@ -22,9 +23,10 @@ import SinglePassDetailsModal from '../../components/common/SinglePassDetailsMod
 import MyRequestsBulkModal from '../../components/common/MyRequestsBulkModal';
 import type { Staff } from '../../types';
 import { cn } from '../../utils/cn';
-import { formatDateTime, relativeTime } from '../../utils/dateUtils';
+import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 
 export default function StaffMyRequests() {
+  usePageTitle('My Requests');
   const { user: rawUser, logout, getUserId } = useAuth();
   const user = rawUser as Staff;
   const { refreshCount } = useRefresh();
@@ -67,7 +69,9 @@ export default function StaffMyRequests() {
         }
       });
       const unique = Array.from(uniqueMap.values());
-      const sorted = unique.sort((a, b) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime());
+      // Only show today's requests
+      const todayOnly = unique.filter((r: any) => isToday(r.createdAt || r.requestDate));
+      const sorted = todayOnly.sort((a, b) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime());
       
       setRequests(sorted);
     } catch (err) {
@@ -251,7 +255,7 @@ export default function StaffMyRequests() {
                             e.stopPropagation();
                             handleViewQR(request);
                           }}
-                          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95 transition-transform"
+                          className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] rounded-xl text-white shadow-lg shadow-blue-100 dark:shadow-none active:scale-95 transition-transform"
                         >
                           <QrCode className="w-4 h-4 text-white" />
                           <span className="text-[11px] font-black uppercase tracking-widest">View QR</span>

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import PurposeSelect from '../../components/common/PurposeSelect';
 import { motion } from 'framer-motion';
 import { 
   FileText, 
@@ -81,17 +82,7 @@ export default function HODNewPassRequest({ user, onBack }: HODNewPassRequestPro
       <div className="space-y-5">
         <div className="space-y-2">
           <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Purpose / Title</label>
-          <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-500">
-              <LayoutGrid className="w-5 h-5" />
-            </div>
-            <input 
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              placeholder="Ex: Official Meeting, Medical..."
-              className="w-full h-14 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl pl-12 pr-4 text-[15px] font-bold text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-violet-500/10 shadow-sm"
-            />
-          </div>
+          <PurposeSelect value={purpose} onChange={setPurpose} />
         </div>
 
         <div className="space-y-2">

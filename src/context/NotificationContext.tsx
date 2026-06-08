@@ -98,16 +98,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated, fetchNotifications]);
 
   const markAsRead = useCallback(async (id: number) => {
-    try {
-      await markNotificationRead(id);
-      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
-    } catch {
-      // Optimistic update if API fails? 
-    }
+    // Dismiss on view — remove from list immediately
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    try { await markNotificationRead(id); } catch { /* silent */ }
   }, []);
 
   const markAllAsRead = useCallback(() => {
-    notifications.filter((n) => !n.isRead).forEach((n) => markNotificationRead(n.id));
+    notifications.filter((n) => !n.isRead).forEach((n) => markNotificationRead(n.id).catch(() => {}));
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
   }, [notifications]);
 

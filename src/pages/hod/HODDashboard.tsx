@@ -13,6 +13,7 @@ import {
   Check,
   X
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
@@ -36,6 +37,7 @@ import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 type ActiveTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export default function HODDashboard() {
+  usePageTitle('Dashboard');
   const { user, logout, getUserId } = useAuth();
   const { refreshCount } = useRefresh();
   const { success: showToastSuccess, error: showToastError } = useToast();
@@ -125,13 +127,18 @@ export default function HODDashboard() {
     return matchesSearch && matchesTab;
   });
 
-  const handleApprove = async (req: any, remark: string = '') => {
+  const handleApprove = async (id: number, remark: string = '') => {
+    const req = requests.find(r => r.id === id) || selectedRequest;
+    if (!req) return;
     setProcessing(true);
     await withLock(async () => {
        try {
+         const numericId = typeof req.id === 'string' && req.id.startsWith('VISITOR-')
+           ? parseInt(req.id.replace('VISITOR-', ''), 10)
+           : req.id;
          const res = req.passType === 'VISITOR'
-            ? await approveVisitorByHOD(req.id.replace('VISITOR-', ''), hodCode)
-            : await approveGatePassByHOD(hodCode, req.id, remark);
+            ? await approveVisitorByHOD(numericId, hodCode)
+            : await approveGatePassByHOD(hodCode, numericId, remark);
          
          if (res.success) {
            showToastSuccess('Authorized', 'Request has been approved');
@@ -143,14 +150,19 @@ export default function HODDashboard() {
     setProcessing(false);
   };
 
-  const handleReject = async (req: any, remark: string) => {
+  const handleReject = async (id: number, remark: string) => {
+    const req = requests.find(r => r.id === id) || selectedRequest;
+    if (!req) return;
     if (!remark.trim()) return showToastError('Required', 'Please provide a reason for rejection');
     setProcessing(true);
     await withLock(async () => {
        try {
+         const numericId = typeof req.id === 'string' && req.id.startsWith('VISITOR-')
+           ? parseInt(req.id.replace('VISITOR-', ''), 10)
+           : req.id;
          const res = req.passType === 'VISITOR'
-            ? await rejectVisitorByHOD(req.id.replace('VISITOR-', ''), remark)
-            : await rejectGatePassByHOD(hodCode, req.id, remark);
+            ? await rejectVisitorByHOD(numericId, remark)
+            : await rejectGatePassByHOD(hodCode, numericId, remark);
          
          if (res.success) {
            showToastSuccess('Rejected', 'Request has been rejected');
@@ -165,10 +177,17 @@ export default function HODDashboard() {
   const hodName = (user as any)?.hodName || (user as any)?.name || 'HOD Member';
   const initials = hodName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'GOOD MORNING,';
+    if (hour < 17) return 'GOOD AFTERNOON,';
+    return 'GOOD EVENING,';
+  };
+
   return (
     <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen">
-      <TopMenuBar 
-        greeting="GOOD MORNING,"
+      <TopMenuBar
+        greeting={getGreeting()}
         title={hodName.toUpperCase()}
       />
 
@@ -188,7 +207,7 @@ export default function HODDashboard() {
         </div>
 
         {/* Stats Tabs */}
-        <div className="flex bg-white dark:bg-slate-900 rounded-[24px] p-2 shadow-sm border border-slate-50 dark:border-slate-800 focus-within:ring-2 focus-within:ring-indigo-500/10 transition-all">
+        <div className="flex bg-white dark:bg-slate-900 rounded-[24px] p-2 shadow-sm border border-slate-50 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500/10 transition-all">
           {(['PENDING', 'APPROVED', 'REJECTED'] as ActiveTab[]).map((tab) => {
             const stats = getStats();
             const isActive = activeTab === tab;
@@ -305,7 +324,7 @@ export default function HODDashboard() {
                       {isPending && (
                         <div className="flex gap-2">
                            <button 
-                             onClick={(e) => { e.stopPropagation(); handleApprove(request); }}
+                             onClick={(e) => { e.stopPropagation(); handleApprove(request.id); }}
                              className="px-3.5 py-2 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-xl text-emerald-600 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest active:scale-95 transition-transform"
                            >
                              Approve
@@ -365,8 +384,8 @@ export default function HODDashboard() {
               role: selectedRequest.userType || 'Staff',
               department: selectedRequest.department || ''
             }}
-            onApprove={handleApprove}
-            onReject={handleReject}
+            onApprove={(req, remark) => handleApprove(selectedRequest.id, remark || '')}
+            onReject={(req, remark) => handleReject(selectedRequest.id, remark)}
             showActions={activeTab === 'PENDING'}
           />
         )}

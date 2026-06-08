@@ -33,9 +33,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       case 'danger':
         return cn(baseClasses, 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700', className);
       case 'ghost':
-        return cn(baseClasses, 'bg-transparent border-2 border-indigo-500 text-indigo-500 hover:bg-indigo-50 shadow-none', className);
+        return cn(baseClasses, 'bg-transparent border-2 border-blue-700 text-blue-700 hover:bg-blue-50 shadow-none', className);
       default:
-        return cn(baseClasses, 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white hover:from-indigo-600 hover:to-indigo-700', className);
+        return cn(baseClasses, 'bg-[var(--color-primary)] text-white hover:opacity-90', className);
     }
   };
 

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import PurposeSelect from '../../components/common/PurposeSelect';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -12,6 +13,7 @@ import {
   LayoutGrid,
   Ban
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useActionLock } from '../../context/ActionLockContext';
@@ -34,6 +36,7 @@ const getISTHour = () => {
 type Stage = 'SELECT' | 'SINGLE' | 'BULK' | 'GUEST';
 
 export default function StaffNewPass() {
+  usePageTitle('New Pass');
   const navigate = useNavigate();
   const location = useLocation();
   const { user: rawUser, getUserId, role } = useAuth();
@@ -83,7 +86,7 @@ export default function StaffNewPass() {
   };
 
   const handleBack = () => {
-    if (stage === 'SELECT') navigate(-1);
+    if (stage === 'SELECT') navigate('/dashboard');
     else navigate('/new-pass');
   };
 
@@ -175,11 +178,11 @@ export default function StaffNewPass() {
                <div className="grid gap-4">
                   {[
                     { id: 'SINGLE', title: 'Personal Pass', sub: 'For your official/private exit', icon: UserPlus, color: 'text-violet-600', bg: 'bg-violet-50', restricted: true },
-                    { id: 'BULK', title: 'Batch Authorization', sub: 'For student group field trips', icon: Users, color: 'text-amber-600', bg: 'bg-amber-50', restricted: true },
+                    { id: 'BULK', title: 'Batch Authorization', sub: 'Group exit for department students', icon: Users, color: 'text-amber-600', bg: 'bg-amber-50', restricted: true },
                     { id: 'GUEST', title: 'Guest Pass', sub: 'Pre-register visitors for entry', icon: FileText, color: 'text-emerald-600', bg: 'bg-emerald-50', restricted: false },
                   ].filter(item => {
-                    // NCI, NTF, and Admin Officer only get Single + Guest — no bulk
-                    if (item.id === 'BULK' && ['NON_CLASS_INCHARGE', 'NON_TEACHING', 'ADMIN_OFFICER'].includes(role || '')) return false;
+                    // HR, NCI, NTF, and Admin Officer only get Single + Guest — no bulk
+                    if (item.id === 'BULK' && ['HR', 'NON_CLASS_INCHARGE', 'NON_TEACHING', 'ADMIN_OFFICER'].includes(role || '')) return false;
                     return true;
                   }).map((item) => {
                     const isDisabled = item.restricted && passDisabled;
@@ -246,12 +249,7 @@ export default function StaffNewPass() {
 
                    <div className="space-y-2">
                      <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Purpose of Exit</label>
-                     <input 
-                       value={purpose}
-                       onChange={(e) => setPurpose(e.target.value)}
-                       placeholder="Ex: Personal Work, Medical..."
-                       className="w-full h-14 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl px-4 text-[15px] font-bold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm outline-none"
-                     />
+                     <PurposeSelect value={purpose} onChange={setPurpose} />
                    </div>
 
                    <div className="space-y-2">

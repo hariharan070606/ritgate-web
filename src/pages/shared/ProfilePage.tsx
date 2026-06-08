@@ -1,41 +1,28 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Camera, 
-  Trash2, 
-  ShieldCheck, 
-  Bell, 
-  Moon, 
-  Sun, 
-  LogOut, 
-  ChevronRight, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Clock, 
-  User,
+import {
+  Camera,
+  Trash2,
   Mail,
   Smartphone,
   CreditCard,
-  Target,
-  ArrowLeft,
-  Check
+  ArrowLeft
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useProfile } from '../../context/ProfileContext';
 import { useToast } from '../../context/ToastContext';
-import { 
-  getStudentGatePassRequests, 
-  getStaffOwnRequests, 
+import {
+  getStudentGatePassRequests,
+  getStaffOwnRequests,
   getHODMyRequests,
-  getNCIOwnRequests,
-  getNTFOwnRequests
 } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { isToday } from '../../utils/dateUtils';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
-import { Skeleton } from '../../components/ui/Skeleton';
+import ThemePresetSelector from '../../components/common/ThemePresetSelector';
 
 interface ProfilePageProps {
   user?: any;
@@ -43,10 +30,11 @@ interface ProfilePageProps {
 }
 
 export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps = {}) {
+  usePageTitle('Profile');
   const navigate = useNavigate();
-  const { user: authUser, role, getUserId, logout } = useAuth();
+  const { user: authUser, role, getUserId } = useAuth();
   const user = propUser || authUser;
-  const { theme, setTheme } = useTheme();
+  const { resetTheme } = useTheme();
   const { profileImage, captureImage, clearProfileImage } = useProfile();
   const { success: showToastSuccess, error: showToastError } = useToast();
 
@@ -57,6 +45,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
   const [editPhone, setEditPhone] = useState((user as any)?.contactNo || (user as any)?.phone || '');
   const [editEmail, setEditEmail] = useState((user as any)?.email || '');
   const [saving, setSaving] = useState(false);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
 
   const userId = getUserId();
   const userName = (() => {
@@ -120,7 +109,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
   };
 
   const menuItems = [
-    { label: 'ID', value: userId, icon: CreditCard, color: 'text-indigo-500' },
+    { label: 'ID', value: userId, icon: CreditCard, color: 'text-blue-700' },
     { label: 'EMAIL', value: editEmail, icon: Mail, color: 'text-violet-500', editable: true, field: 'email' },
     { label: 'PHONE', value: editPhone, icon: Smartphone, color: 'text-emerald-500', editable: true, field: 'phone' },
   ];
@@ -149,21 +138,32 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
           {/* 1. Header Section */}
           <div className="flex flex-col items-center mb-8">
              <div className="relative mb-4">
-                <div className="w-[100px] h-[100px] rounded-full border-2 border-indigo-500 p-1 flex items-center justify-center bg-white dark:bg-slate-900 shadow-xl shadow-indigo-100">
+                <div className="w-[100px] h-[100px] rounded-full border-2 border-blue-700 p-1 flex items-center justify-center bg-white dark:bg-slate-900 shadow-xl shadow-blue-100">
                    {profileImage ? (
                       <img src={profileImage} alt={userName} className="w-full h-full rounded-full object-cover" />
                    ) : (
-                      <div className="w-full h-full rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-[36px] font-black text-indigo-500">
+                      <div className="w-full h-full rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-[36px] font-black text-blue-700">
                          {initials}
                       </div>
                    )}
                 </div>
+                {/* Camera / change photo button */}
                 <button 
                   onClick={() => captureImage()}
-                  className="absolute bottom-0 right-0 w-8 h-8 bg-indigo-600 rounded-full border-4 border-white dark:border-slate-900 flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform"
+                  className="absolute bottom-0 right-0 w-8 h-8 bg-[var(--color-primary)] rounded-full border-4 border-white dark:border-slate-900 flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform"
                 >
                    <Camera className="w-4 h-4" />
                 </button>
+                {/* Remove photo button — only shown when a photo is set */}
+                {profileImage && (
+                  <button
+                    onClick={() => setShowRemoveConfirm(true)}
+                    className="absolute top-0 right-0 w-7 h-7 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center text-white shadow-md active:scale-90 transition-transform"
+                    aria-label="Remove photo"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
              </div>
              <h2 className="text-[22px] font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1">{userName}</h2>
              <p className="text-[13px] font-bold text-slate-400 opacity-80">{role} | DEPT: {department}</p>
@@ -188,32 +188,11 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
 
           {/* 3. Theme Section */}
           <div className="mb-8">
-             <div className="flex items-center justify-between mb-4 px-2">
-                <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Interface Theme</h3>
-                <button onClick={() => setTheme('light')} className="text-[10px] font-bold text-slate-300">Reset</button>
-             </div>
-             <div className="bg-white dark:bg-slate-900 rounded-[28px] p-2 border border-slate-100 dark:border-slate-800 shadow-sm flex gap-2">
-                <button 
-                  onClick={() => setTheme('light')}
-                  className={cn(
-                    "flex-1 h-12 rounded-2xl flex items-center justify-center gap-2 transition-all",
-                    theme === 'light' ? "bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100/50" : "text-slate-400"
-                  )}
-                >
-                   <Sun className="w-5 h-5" />
-                   <span className="text-[12px] font-black uppercase tracking-widest">Light</span>
-                </button>
-                <button 
-                  onClick={() => setTheme('dark')}
-                  className={cn(
-                    "flex-1 h-12 rounded-2xl flex items-center justify-center gap-2 transition-all",
-                    theme === 'dark' ? "bg-slate-800 text-white shadow-sm border border-slate-700" : "text-slate-400"
-                  )}
-                >
-                   <Moon className="w-5 h-5" />
-                   <span className="text-[12px] font-black uppercase tracking-widest">Dark</span>
-                </button>
-             </div>
+            <div className="flex items-center justify-between mb-3 px-1">
+              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Interface Theme</h3>
+              <button onClick={resetTheme} className="text-[10px] font-bold text-slate-400 dark:text-slate-500">Reset</button>
+            </div>
+            <ThemePresetSelector />
           </div>
 
           {/* 4. Personal Info Section */}
@@ -233,7 +212,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
                            <input 
                               value={item.field === 'email' ? editEmail : editPhone}
                               onChange={(e) => item.field === 'email' ? setEditEmail(e.target.value) : setEditPhone(e.target.value)}
-                              className="w-full text-[14px] font-black text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border-none focus:ring-1 focus:ring-indigo-500 outline-none"
+                              className="w-full text-[14px] font-black text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border-none focus:ring-1 focus:ring-blue-500 outline-none"
                            />
                         ) : (
                            <p className="text-[14px] font-black text-slate-900 dark:text-white truncate uppercase tracking-tight italic">
@@ -248,21 +227,12 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
                 <button 
                   onClick={handleSaveProfile}
                   disabled={saving}
-                  className="w-full h-14 bg-indigo-600 rounded-2xl mt-4 text-white font-black text-[14px] uppercase tracking-widest shadow-lg shadow-indigo-100 active:scale-95 transition-all flex items-center justify-center gap-2"
+                  className="w-full h-14 bg-[var(--color-primary)] rounded-2xl mt-4 text-white font-black text-[14px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                    {saving ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Save Changes'}
                 </button>
              )}
           </div>
-
-          {/* 5. Logout Section */}
-          <button 
-            onClick={logout}
-            className="w-full h-15 bg-white dark:bg-slate-900 border border-rose-100 dark:border-rose-900/30 rounded-[28px] flex items-center justify-center gap-3 text-rose-500 font-black text-[15px] uppercase tracking-[0.1em] shadow-sm active:bg-rose-50 transition-colors"
-          >
-             <LogOut className="w-5 h-5" />
-             Log Out of Session
-          </button>
 
           <div className="mt-12 text-center pb-12">
              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.4em] mb-1">RIT Gate Matrix v2.0</p>
@@ -270,6 +240,53 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
           </div>
         </div>
       </TopRefreshControl>
+
+      {/* Remove Photo Confirmation */}
+      <AnimatePresence>
+        {showRemoveConfirm && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowRemoveConfirm(false)}
+              className="fixed inset-0 z-[180] bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 16 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 260 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[190] w-[300px] bg-white dark:bg-slate-900 rounded-[28px] overflow-hidden shadow-2xl"
+            >
+              <div className="p-7 text-center">
+                <div className="w-14 h-14 rounded-full bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center mx-auto mb-4">
+                  <Trash2 className="w-7 h-7 text-rose-500" />
+                </div>
+                <h3 className="text-[18px] font-black text-slate-900 dark:text-white mb-2">Remove Photo?</h3>
+                <p className="text-[13px] font-medium text-slate-500 leading-relaxed">
+                  Your profile picture will be removed and replaced with your initials.
+                </p>
+              </div>
+              <div className="flex border-t border-slate-100 dark:border-slate-800">
+                <button
+                  onClick={() => setShowRemoveConfirm(false)}
+                  className="flex-1 py-4 text-[14px] font-bold text-slate-500 dark:text-slate-400 active:bg-slate-50 dark:active:bg-slate-800 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => { clearProfileImage(); setShowRemoveConfirm(false); showToastSuccess('Photo Removed', 'Your profile picture has been removed'); }}
+                  className="flex-1 py-4 text-[14px] font-black text-white bg-rose-500 active:bg-rose-600 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -5,9 +6,11 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useProfile } from '../context/ProfileContext';
 import { ROLE_LABELS } from '../config/api.config';
 import { getMobileNavItems } from '../config/navigation';
 import RITLogo from '../components/common/RITLogo';
+import ConfirmationModal from '../components/common/ConfirmationModal';
 import { cn } from '../utils/cn';
 
 interface SidebarProps {
@@ -18,6 +21,8 @@ interface SidebarProps {
 export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { role, user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const { profileImage } = useProfile();
   const location = useLocation();
 
   const navItems = getMobileNavItems(role || 'STUDENT');
@@ -65,7 +70,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               className="flex flex-col min-w-0 overflow-hidden"
             >
               <span className="text-[15px] font-bold text-slate-900 dark:text-white leading-none tracking-tight">
-                RIT <span className="text-indigo-600">Gate</span>
+                RIT <span className="text-[var(--color-primary)]">Gate</span>
               </span>
               <span className="text-[10px] font-medium text-slate-400 mt-0.5 tracking-wide">
                 Gate Pass System
@@ -87,8 +92,11 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
           >
             <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                  {initials}
+                <div className="w-9 h-9 rounded-xl overflow-hidden shrink-0 bg-[var(--color-primary)] flex items-center justify-center">
+                  {profileImage
+                    ? <img src={profileImage} alt={userName} className="w-full h-full object-cover" />
+                    : <span className="text-white font-bold text-sm">{initials}</span>
+                  }
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-semibold text-slate-900 dark:text-white truncate leading-tight">
@@ -108,8 +116,11 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       {/* Collapsed avatar */}
       {collapsed && (
         <div className="flex justify-center py-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
-            {initials}
+          <div className="w-9 h-9 rounded-xl overflow-hidden bg-[var(--color-primary)] flex items-center justify-center">
+            {profileImage
+              ? <img src={profileImage} alt={userName} className="w-full h-full object-cover" />
+              : <span className="text-white font-bold text-sm">{initials}</span>
+            }
           </div>
         </div>
       )}
@@ -130,19 +141,19 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 'group flex items-center gap-3 rounded-lg min-h-[40px] transition-all duration-150 relative select-none',
                 collapsed ? 'justify-center px-0 py-2' : 'px-3 py-2',
                 isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400'
+                  ? 'bg-blue-50 dark:bg-indigo-950/50 text-[var(--color-primary)] dark:text-blue-400'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white',
               )}
             >
               {/* Active left bar */}
               {isActive && !collapsed && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-600 rounded-r-full" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--color-primary)] rounded-r-full" />
               )}
 
               <item.icon className={cn(
                 'shrink-0 transition-transform duration-150',
                 collapsed ? 'w-5 h-5' : 'w-[18px] h-[18px]',
-                isActive ? 'text-indigo-600 dark:text-indigo-400' : '',
+                isActive ? 'text-[var(--color-primary)] dark:text-blue-400' : '',
                 !isActive && 'group-hover:scale-110',
               )} />
 
@@ -168,9 +179,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* ── Bottom Controls ───────────────────────────────── */}
-      <div className={cn(
-        'shrink-0 border-t border-slate-100 dark:border-slate-800 py-2 px-2 space-y-0.5',
-      )}>
+      <div className="shrink-0 border-t border-slate-100 dark:border-slate-800 py-2 px-2 space-y-0.5">
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
@@ -183,7 +192,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         >
           {theme === 'dark'
             ? <Sun className="w-[18px] h-[18px] text-amber-500 shrink-0" />
-            : <Moon className="w-[18px] h-[18px] text-indigo-400 shrink-0" />
+            : <Moon className="w-[18px] h-[18px] text-blue-400 shrink-0" />
           }
           <AnimatePresence>
             {!collapsed && (
@@ -200,38 +209,9 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
           </AnimatePresence>
         </button>
 
-        {/* Collapse toggle */}
-        <button
-          onClick={onToggle}
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className={cn(
-            'group flex items-center gap-3 rounded-lg min-h-[40px] w-full transition-all duration-150',
-            'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white',
-            collapsed ? 'justify-center px-0 py-2' : 'px-3 py-2',
-          )}
-        >
-          {collapsed
-            ? <ChevronRight className="w-[18px] h-[18px] shrink-0" />
-            : <ChevronLeft className="w-[18px] h-[18px] shrink-0" />
-          }
-          <AnimatePresence>
-            {!collapsed && (
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
-                className="text-[13px] font-medium"
-              >
-                Collapse
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </button>
-
         {/* Logout */}
         <button
-          onClick={logout}
+          onClick={() => setShowLogoutModal(true)}
           title={collapsed ? 'Log Out' : undefined}
           className={cn(
             'group flex items-center gap-3 rounded-lg min-h-[40px] w-full transition-all duration-150',
@@ -255,6 +235,15 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
           </AnimatePresence>
         </button>
       </div>
+      <ConfirmationModal
+        visible={showLogoutModal}
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={() => { setShowLogoutModal(false); logout(); }}
+        title="Log Out"
+        message="Are you sure you want to log out of RIT Gate?"
+        confirmText="Log Out"
+        confirmColor="bg-rose-500 hover:bg-rose-600"
+      />
     </motion.aside>
   );
 }

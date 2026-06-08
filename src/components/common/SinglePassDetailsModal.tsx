@@ -167,7 +167,7 @@ export default function SinglePassDetailsModal({
               </div>
               <div className="flex-1 min-w-0">
                 {request.requestType === 'VISITOR' && (
-                  <div className="bg-indigo-600 inline-block px-2 py-0.5 rounded-md mb-1">
+                  <div className="bg-[var(--color-primary)] inline-block px-2 py-0.5 rounded-md mb-1">
                     <span className="text-[9px] font-black text-white uppercase tracking-wider">
                       {(request.role || 'VISITOR')}
                     </span>
@@ -248,8 +248,8 @@ export default function SinglePassDetailsModal({
                   </div>
                 )}
                 {request.hodRemark && (
-                  <div className="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-3 rounded-r-xl">
-                    <p className="text-[10px] font-black text-indigo-600 uppercase mb-1">HOD</p>
+                  <div className="bg-blue-50 dark:bg-indigo-900/10 border-l-4 border-blue-700 p-3 rounded-r-xl">
+                    <p className="text-[10px] font-black text-[var(--color-primary)] uppercase mb-1">HOD</p>
                     <p className="text-sm font-medium text-slate-700 dark:text-slate-300 italic">"{request.hodRemark}"</p>
                   </div>
                 )}
@@ -328,7 +328,7 @@ export default function SinglePassDetailsModal({
                 value={remark}
                 onChange={(e) => setRemark(e.target.value)}
                 placeholder="Add review notes (required for rejection)..."
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all outline-none resize-none"
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all outline-none resize-none"
                 rows={2}
                 disabled={processing}
               />

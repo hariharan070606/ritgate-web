@@ -10,8 +10,10 @@ import { registerVisitor, getDepartments, getStaffByDepartment } from '../../ser
 import { useActionLock } from '../../context/ActionLockContext';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 export default function SecurityVisitorReg() {
+  usePageTitle('Visitor Registration');
   const { getUserId } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const { withLock } = useActionLock();
@@ -66,7 +68,7 @@ export default function SecurityVisitorReg() {
     <div className="max-w-xl mx-auto space-y-8 pb-10">
       {/* 1. Context & Title */}
       <div className="text-left px-1">
-        <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1 leading-none">
+        <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1 leading-none">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Security Protocol</span>
         </div>
@@ -97,7 +99,7 @@ export default function SecurityVisitorReg() {
                  value={formData.numberOfPeople} 
                  onChange={(e) => setFormData({...formData, numberOfPeople: parseInt(e.target.value) || 1})} 
                  min="1"
-                 className="w-full h-12 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all font-mono pl-4"
+                 className="w-full h-12 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500/20 transition-all font-mono pl-4"
                />
             </div>
           </div>
@@ -116,7 +118,7 @@ export default function SecurityVisitorReg() {
              <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Department *</label>
                 <div className="relative">
-                  <select value={formData.departmentId} onChange={(e) => setFormData({...formData, departmentId: e.target.value, staffCode: ''})} className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-500/20 appearance-none text-slate-900 dark:text-white uppercase tracking-wider transition-all">
+                  <select value={formData.departmentId} onChange={(e) => setFormData({...formData, departmentId: e.target.value, staffCode: ''})} className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500/20 appearance-none text-slate-900 dark:text-white uppercase tracking-wider transition-all">
                     <option value="">SELECT DEPT</option>
                     {departments.map(d => <option key={d.id || d.code || d} value={d.id || d.code || d}>{d.name || d.id || d}</option>)}
                   </select>
@@ -126,7 +128,7 @@ export default function SecurityVisitorReg() {
              <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Authorized Official *</label>
                 <div className="relative">
-                  <select value={formData.staffCode} onChange={(e) => setFormData({...formData, staffCode: e.target.value})} disabled={!formData.departmentId} className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-500/20 appearance-none text-slate-900 dark:text-white uppercase tracking-wider disabled:opacity-50 transition-all">
+                  <select value={formData.staffCode} onChange={(e) => setFormData({...formData, staffCode: e.target.value})} disabled={!formData.departmentId} className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500/20 appearance-none text-slate-900 dark:text-white uppercase tracking-wider disabled:opacity-50 transition-all">
                     <option value="">CHOOSE PERSON</option>
                     {staffList.map(s => <option key={s.staffCode || s.id} value={s.staffCode || s.id}>{s.name || s.staffName || s.fullName}</option>)}
                   </select>
@@ -147,7 +149,7 @@ export default function SecurityVisitorReg() {
             <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Vehicle Type</label>
                 <div className="relative">
-                  <select value={formData.vehicleType} onChange={(e) => setFormData({...formData, vehicleType: e.target.value})} className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-500/20 appearance-none text-slate-900 dark:text-white uppercase tracking-wider transition-all">
+                  <select value={formData.vehicleType} onChange={(e) => setFormData({...formData, vehicleType: e.target.value})} className="w-full h-12 px-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500/20 appearance-none text-slate-900 dark:text-white uppercase tracking-wider transition-all">
                     <option value="">SELECT TYPE</option>
                     <option value="TWO_WHEELER">2 WHEELER</option>
                     <option value="FOUR_WHEELER">4 WHEELER</option>
@@ -158,7 +160,7 @@ export default function SecurityVisitorReg() {
           </div>
         </div>
 
-        <Button fullWidth size="lg" onClick={handleSubmit} isLoading={isSubmitting} className="h-14 rounded-2xl shadow-indigo-100">
+        <Button fullWidth size="lg" onClick={handleSubmit} isLoading={isSubmitting} className="h-14 rounded-2xl shadow-blue-100">
           COMPLETE REGISTRATION
         </Button>
       </Card>

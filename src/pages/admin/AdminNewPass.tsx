@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PurposeSelect from '../../components/common/PurposeSelect';
 import { motion } from 'framer-motion';
 import { ShieldCheck, FileText, Send, Loader2, QrCode, Ban } from 'lucide-react';
 import Card from '../../components/ui/Card';
@@ -10,6 +11,7 @@ import { useToast } from '../../context/ToastContext';
 import { submitNTFGatePass, approveGatePassByHR, getGatePassQRCode } from '../../services/api.service';
 import { useActionLock } from '../../context/ActionLockContext';
 import { transitions } from '../../design-system/animations';
+import { nowIST } from '../../utils/dateUtils';
 
 /** Returns current hour in IST (UTC+5:30) */
 const getISTHour = () => {
@@ -58,7 +60,7 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
           staffCode: adminCode,
           purpose: purpose.trim(),
           reason: reason.trim(),
-          requestDate: new Date().toISOString(),
+          requestDate: nowIST(),
         });
         if (!submitRes.success) {
           showError('Failed', submitRes.message || 'Submission failed.');
@@ -101,7 +103,7 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
     <div className="max-w-md mx-auto space-y-6 pb-10 text-left">
       {/* Header */}
       <div className="text-left px-1">
-        <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1">
+        <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span className="text-[10px] font-bold tracking-widest uppercase">Admin Authorization</span>
         </div>
@@ -110,13 +112,13 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
       </div>
 
       {/* Info Card */}
-      <div className="p-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 rounded-2xl flex items-start gap-3">
-        <div className="w-8 h-8 rounded-full bg-white dark:bg-indigo-900 flex items-center justify-center shrink-0 shadow-sm border border-indigo-100 dark:border-indigo-800">
-          <QrCode className="w-4 h-4 text-indigo-600" />
+      <div className="p-4 bg-blue-50 dark:bg-indigo-950/20 border border-blue-100 dark:border-indigo-900/30 rounded-2xl flex items-start gap-3">
+        <div className="w-8 h-8 rounded-full bg-white dark:bg-indigo-900 flex items-center justify-center shrink-0 shadow-sm border border-blue-100 dark:border-[var(--color-primary)]">
+          <QrCode className="w-4 h-4 text-[var(--color-primary)]" />
         </div>
         <div>
-          <p className="text-xs font-bold text-indigo-700 dark:text-indigo-300">Instant Issuance</p>
-          <p className="text-[11px] text-indigo-600/70 dark:text-indigo-400/70 mt-0.5 leading-relaxed">Your gate pass will be approved automatically and a QR code will be generated immediately upon submission.</p>
+          <p className="text-xs font-bold text-[var(--color-primary)] dark:text-indigo-300">Instant Issuance</p>
+          <p className="text-[11px] text-[var(--color-primary)]/70 dark:text-blue-400/70 mt-0.5 leading-relaxed">Your gate pass will be approved automatically and a QR code will be generated immediately upon submission.</p>
         </div>
       </div>
 
@@ -139,7 +141,7 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
       <motion.div initial={transitions.page.initial} animate={transitions.page.animate}>
         <Card className="bg-slate-50 dark:bg-slate-900">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-black text-sm">
+            <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-black text-sm">
               {adminName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
             </div>
             <div>
@@ -154,13 +156,7 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
       <motion.div initial={transitions.page.initial} animate={transitions.page.animate} className="space-y-4">
         <div>
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 px-1">Purpose *</label>
-          <input
-            type="text"
-            value={purpose}
-            onChange={e => setPurpose(e.target.value)}
-            placeholder="e.g. Official Duty"
-            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white transition-all focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300 outline-none"
-          />
+          <PurposeSelect value={purpose} onChange={setPurpose} variant="compact" />
         </div>
 
         <div>
@@ -170,7 +166,7 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
             onChange={e => setReason(e.target.value)}
             placeholder="Describe the reason..."
             rows={4}
-            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white transition-all focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300 outline-none resize-none"
+            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white transition-all focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300 outline-none resize-none"
           />
         </div>
       </motion.div>
@@ -181,7 +177,7 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
         size="lg"
         onClick={handleSubmit}
         disabled={submitting || !purpose.trim() || !reason.trim() || passDisabled}
-        className="h-14 rounded-2xl font-black uppercase tracking-widest gap-2 bg-indigo-600 hover:bg-indigo-700"
+        className="h-14 rounded-2xl font-black uppercase tracking-widest gap-2 bg-[var(--color-primary)] hover:bg-blue-900"
       >
         {submitting ? (
           <Loader2 className="w-5 h-5 animate-spin" />

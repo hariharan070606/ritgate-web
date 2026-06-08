@@ -14,11 +14,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: 'bg-gradient-to-br from-indigo-700 to-indigo-600 text-white shadow-lg active:opacity-90',
+  primary: 'bg-[var(--color-primary)] text-white shadow-lg active:opacity-90 hover:opacity-90',
   secondary: 'bg-white text-slate-900 border border-slate-200 shadow-sm dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700',
   danger: 'bg-gradient-to-br from-rose-600 to-rose-700 text-white shadow-lg shadow-rose-500/20',
-  ghost: 'bg-transparent text-indigo-600 dark:text-indigo-400',
-  outline: 'border-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400',
+  ghost: 'bg-transparent text-[var(--color-primary)] dark:text-blue-400',
+  outline: 'border-2 border-[var(--color-primary)] text-[var(--color-primary)] dark:border-blue-400 dark:text-blue-400',
   success: 'bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-500/20',
 };
 
@@ -38,7 +38,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         transition={{ duration: transitions.feedback.duration }}
         className={cn(
           'inline-flex items-center justify-center font-bold tracking-tight transition-all duration-200 outline-none select-none',
-          'focus-visible:ring-2 focus-visible:ring-indigo-500/30 focus-visible:ring-offset-2',
+          'focus-visible:ring-2 focus-visible:ring-blue-500/30 focus-visible:ring-offset-2',
           'disabled:opacity-40 disabled:cursor-not-allowed',
           variants[variant],
           sizes[size],

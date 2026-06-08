@@ -56,7 +56,7 @@ export default function ProfilePhotoManager({
         </div>
         
         {showEditBadge && (
-          <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-indigo-600 border-3 border-white dark:border-slate-900 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+          <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[var(--color-primary)] border-3 border-white dark:border-slate-900 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
             <Camera className="w-4 h-4 text-white" />
           </div>
         )}
@@ -94,7 +94,7 @@ export default function ProfilePhotoManager({
                 <div className="space-y-3">
                   <label className="w-full flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl cursor-pointer active:scale-[0.98] transition-all group">
                     <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                      <Camera className="w-6 h-6 text-indigo-600" />
+                      <Camera className="w-6 h-6 text-[var(--color-primary)]" />
                     </div>
                     <span className="text-base font-bold text-slate-900 dark:text-white">Take Photo</span>
                     <input type="file" accept="image/*" capture="user" className="hidden" onChange={handleFileChange} />
@@ -102,7 +102,7 @@ export default function ProfilePhotoManager({
 
                   <label className="w-full flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl cursor-pointer active:scale-[0.98] transition-all group">
                     <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                      <ImageIcon className="w-6 h-6 text-indigo-600" />
+                      <ImageIcon className="w-6 h-6 text-[var(--color-primary)]" />
                     </div>
                     <span className="text-base font-bold text-slate-900 dark:text-white">Choose from Gallery</span>
                     <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />

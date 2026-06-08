@@ -9,6 +9,7 @@ import {
   Clock,
   AlertCircle
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
@@ -23,9 +24,10 @@ import { cn } from '../../utils/cn';
 import type { Student } from '../../types';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 
-type ActiveTab = 'PENDING_STAFF' | 'PENDING_HOD' | 'APPROVED' | 'REJECTED';
+type ActiveTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export default function StudentRequests() {
+  usePageTitle('My Requests');
   const { user: rawUser, logout } = useAuth();
   const user = rawUser as Student;
   const { refreshCount } = useRefresh();
@@ -35,7 +37,7 @@ export default function StudentRequests() {
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<ActiveTab>('PENDING_STAFF');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('PENDING');
   
   const [showQRModal, setShowQRModal] = useState(false);
   const [showSingleModal, setShowSingleModal] = useState(false);
@@ -74,8 +76,7 @@ export default function StudentRequests() {
 
   const getStats = () => {
     return {
-      PENDING_STAFF: requests.filter(r => r.status === 'PENDING_STAFF').length,
-      PENDING_HOD: requests.filter(r => r.status === 'PENDING_HOD').length,
+      PENDING: requests.filter(r => r.status === 'PENDING_STAFF' || r.status === 'PENDING_HOD').length,
       APPROVED: requests.filter(r => r.status === 'APPROVED').length,
       REJECTED: requests.filter(r => r.status === 'REJECTED').length,
     };
@@ -104,17 +105,19 @@ export default function StudentRequests() {
   };
 
   const filteredRequests = requests.filter(r => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       r.purpose?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       r.id?.toString().includes(searchQuery);
-    const matchesTab = r.status === activeTab;
+    const matchesTab = activeTab === 'PENDING'
+      ? (r.status === 'PENDING_STAFF' || r.status === 'PENDING_HOD')
+      : r.status === activeTab;
     return matchesSearch && matchesTab;
   });
 
   const getStatusConfig = (status: string) => {
     if (status === 'APPROVED') return { text: 'ACTIVE', color: 'text-emerald-600', bg: 'bg-emerald-50', dot: 'bg-emerald-500' };
     if (status === 'REJECTED') return { text: 'REJECTED', color: 'text-rose-600', bg: 'bg-rose-50', dot: 'bg-rose-500' };
-    if (status === 'PENDING_HOD') return { text: 'AWAITING HOD', color: 'text-indigo-600', bg: 'bg-indigo-50', dot: 'bg-indigo-500' };
+    if (status === 'PENDING_HOD') return { text: 'AWAITING HOD', color: 'text-[var(--color-primary)]', bg: 'bg-blue-50', dot: 'bg-blue-500' };
     return { text: 'AWAITING STAFF', color: 'text-amber-600', bg: 'bg-amber-50', dot: 'bg-amber-500' };
   };
 
@@ -142,15 +145,15 @@ export default function StudentRequests() {
 
         {/* Status Tabs */}
         <div className="flex bg-white dark:bg-slate-900 rounded-[20px] p-2 shadow-sm border border-slate-50 dark:border-slate-800">
-          {(['PENDING_STAFF', 'PENDING_HOD', 'APPROVED', 'REJECTED'] as ActiveTab[]).map((tab) => {
+          {(['PENDING', 'APPROVED', 'REJECTED'] as ActiveTab[]).map((tab) => {
             const stats = getStats();
             const isActive = activeTab === tab;
-            const labels = { PENDING_STAFF: 'Pending', PENDING_HOD: 'With HOD', APPROVED: 'Approved', REJECTED: 'Rejected' };
-            const colors = { PENDING_STAFF: 'text-amber-500', PENDING_HOD: 'text-indigo-600', APPROVED: 'text-emerald-500', REJECTED: 'text-rose-500' };
-            const borders = { PENDING_STAFF: 'border-amber-500', PENDING_HOD: 'border-indigo-600', APPROVED: 'border-emerald-500', REJECTED: 'border-rose-500' };
+            const labels: Record<ActiveTab, string> = { PENDING: 'Pending', APPROVED: 'Approved', REJECTED: 'Rejected' };
+            const colors: Record<ActiveTab, string> = { PENDING: 'text-amber-500', APPROVED: 'text-emerald-500', REJECTED: 'text-rose-500' };
+            const borders: Record<ActiveTab, string> = { PENDING: 'border-amber-500', APPROVED: 'border-emerald-500', REJECTED: 'border-rose-500' };
 
             return (
-              <button 
+              <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={cn(
@@ -246,7 +249,7 @@ export default function StudentRequests() {
                             e.stopPropagation();
                             handleViewQR(request);
                           }}
-                          className="flex items-center gap-2 px-4.5 py-2.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95 transition-transform"
+                          className="flex items-center gap-2 px-4.5 py-2.5 bg-[var(--color-primary)] rounded-xl text-white shadow-lg shadow-blue-100 dark:shadow-none active:scale-95 transition-transform"
                         >
                           <QrCode className="w-4 h-4 text-white" />
                           <span className="text-[11px] font-black uppercase tracking-widest">View QR</span>
@@ -263,8 +266,7 @@ export default function StudentRequests() {
                 <FileText className="w-10 h-10 text-slate-200 dark:text-slate-800" />
               </div>
               <h5 className="text-[17px] font-black text-slate-900 dark:text-white mb-1.5">
-                {activeTab === 'PENDING_STAFF' ? 'No Pending Requests' :
-                 activeTab === 'PENDING_HOD' ? 'No Requests With HOD' :
+                {activeTab === 'PENDING' ? 'No Pending Requests' :
                  activeTab === 'APPROVED' ? 'No Approved Requests' : 'No Rejected Requests'}
               </h5>
               <p className="text-[13px] font-medium text-slate-400 max-w-[200px] leading-relaxed italic">

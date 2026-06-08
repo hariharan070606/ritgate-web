@@ -10,7 +10,9 @@ import {
   AlertTriangle,
   Clock,
   BellOff,
+  X,
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useNotifications } from '../../context/NotificationContext';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
 import { SkeletonList } from '../../components/ui/Skeleton';
@@ -18,12 +20,12 @@ import { cn } from '../../utils/cn';
 import { relativeTime } from '../../utils/dateUtils';
 
 export default function NotificationsPage() {
+  usePageTitle('Notifications');
   const navigate = useNavigate();
   const {
     notifications,
     isLoading,
     markAsRead,
-    markAllAsRead,
     clearAllNotifications,
     fetchNotifications,
   } = useNotifications();
@@ -50,7 +52,7 @@ export default function NotificationsPage() {
       case 'EXIT':
         return { icon: Clock, color: 'text-violet-500', bg: 'bg-violet-50 dark:bg-violet-950/30' };
       default:
-        return { icon: Bell, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-950/30' };
+        return { icon: Bell, color: 'text-blue-700', bg: 'bg-blue-50 dark:bg-indigo-950/30' };
     }
   };
 
@@ -111,26 +113,25 @@ export default function NotificationsPage() {
                       layout
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, x: -20, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      onClick={() => !notif.isRead && markAsRead(notif.id)}
+                      exit={{ opacity: 0, x: 40, scale: 0.95 }}
+                      transition={{ duration: 0.18 }}
                       className={cn(
-                        'relative p-4 rounded-2xl border transition-all active:scale-[0.98] cursor-pointer',
+                        'relative p-4 rounded-2xl border transition-all',
                         !notif.isRead
-                          ? 'bg-white dark:bg-slate-900 border-indigo-100 dark:border-indigo-900/30 shadow-sm'
+                          ? 'bg-white dark:bg-slate-900 border-blue-100 dark:border-indigo-900/30 shadow-sm'
                           : 'bg-white/60 dark:bg-slate-900/60 border-slate-100 dark:border-slate-800',
                       )}
                     >
                       {/* Unread dot */}
                       {!notif.isRead && (
-                        <div className="absolute top-4 right-4 w-2 h-2 bg-indigo-600 rounded-full" />
+                        <div className="absolute top-4 left-4 w-2 h-2 bg-[var(--color-primary)] rounded-full" />
                       )}
 
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 pl-4">
                         <div className={cn('w-11 h-11 rounded-2xl flex items-center justify-center shrink-0', bg)}>
                           <Icon className={cn('w-5 h-5', color)} />
                         </div>
-                        <div className="flex-1 min-w-0 pr-4">
+                        <div className="flex-1 min-w-0 pr-8">
                           <h4 className={cn(
                             'text-[14px] font-black truncate mb-0.5 tracking-tight',
                             !notif.isRead ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400',
@@ -151,6 +152,15 @@ export default function NotificationsPage() {
                           </div>
                         </div>
                       </div>
+
+                      {/* Dismiss button */}
+                      <button
+                        onClick={() => markAsRead(notif.id)}
+                        className="absolute top-3 right-3 w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-600 active:scale-90 transition-all"
+                        aria-label="Dismiss"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
                     </motion.div>
                   );
                 })}

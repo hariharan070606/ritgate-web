@@ -11,6 +11,7 @@ import {
   getVisitorRequestsForStaff, approveVisitorRequest, rejectVisitorRequest,
   getNTFOwnRequests, getGatePassQRCode
 } from '../../services/api.service';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 
@@ -21,6 +22,7 @@ const fmtDate = (d: string) => { try { return new Date(d).toLocaleDateString('en
 const getInitials = (name: string) => (name || 'NF').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
 export default function NCIDashboard() {
+  usePageTitle('Dashboard');
   const { getUserId, user } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const staffCode = getUserId();
@@ -135,7 +137,7 @@ export default function NCIDashboard() {
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input type="text" placeholder="Search requests..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300" />
+          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300" />
       </div>
 
       {/* Stats Tabs */}

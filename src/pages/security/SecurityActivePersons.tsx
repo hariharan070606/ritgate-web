@@ -12,8 +12,10 @@ import { getActivePersons, manualExit } from '../../services/api.service';
 import { formatTime } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 export default function SecurityActivePersons() {
+  usePageTitle('Active Persons');
   const { getUserId } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const securityId = getUserId();
@@ -103,7 +105,7 @@ export default function SecurityActivePersons() {
     <div className="space-y-8 pb-10">
       {/* 1. Context & Title */}
       <div className="text-left px-1">
-        <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1 leading-none uppercase">
+        <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1 leading-none uppercase">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span className="text-[10px] font-bold tracking-widest leading-none">Operations Management</span>
         </div>
@@ -125,7 +127,7 @@ export default function SecurityActivePersons() {
           placeholder="SEARCH BY NAME OR SUBJECT TYPE..."
           value={search}
           onChange={(e) => setSearch(e.target.value.toUpperCase())}
-          className="w-full pl-12 pr-4 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[11px] font-bold focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
+          className="w-full pl-12 pr-4 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[11px] font-bold focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
         />
       </div>
 
@@ -137,7 +139,7 @@ export default function SecurityActivePersons() {
              <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">Live Subjects</h3>
            </div>
            {!isLoading && filtered.length > 0 && (
-             <span className="text-[10px] font-bold text-indigo-600 uppercase tabular-nums tracking-widest">{filtered.length} ACTIVE</span>
+             <span className="text-[10px] font-bold text-[var(--color-primary)] uppercase tabular-nums tracking-widest">{filtered.length} ACTIVE</span>
            )}
         </div>
 
@@ -161,7 +163,7 @@ export default function SecurityActivePersons() {
                         <div className="flex-1 min-w-0 text-left">
                           <p className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight leading-none truncate">{person.name || person.personName}</p>
                           <div className="flex items-center gap-2 mt-2">
-                            <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 px-2 py-0.5 rounded-full uppercase tracking-widest border border-indigo-100/50">
+                            <span className="text-[9px] font-bold text-[var(--color-primary)] dark:text-blue-400 bg-blue-50 dark:bg-indigo-950/30 px-2 py-0.5 rounded-full uppercase tracking-widest border border-blue-100/50">
                               {person.type || person.personType}
                             </span>
                             <span className="text-[9px] font-bold text-slate-400 flex items-center gap-1 uppercase tracking-widest">
@@ -198,7 +200,7 @@ export default function SecurityActivePersons() {
             <div className="space-y-2">
                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-tight">Confirm Manual Termination</h3>
                <p className="text-xs font-medium text-slate-400 leading-relaxed uppercase tracking-widest">
-                 Terminate session for <span className="text-indigo-600 font-bold">{selectedPerson.name || selectedPerson.personName}</span>? This action is irrevocable.
+                 Terminate session for <span className="text-[var(--color-primary)] font-bold">{selectedPerson.name || selectedPerson.personName}</span>? This action is irrevocable.
                </p>
             </div>
             <div className="flex gap-3 pt-2">

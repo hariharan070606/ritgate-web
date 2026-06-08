@@ -143,7 +143,7 @@ export default function NotificationDropdown({
             <div className="flex-1 overflow-y-auto">
               {loading ? (
                 <div className="py-20 flex flex-col items-center gap-3">
-                  <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+                  <Loader2 className="w-8 h-8 text-blue-700 animate-spin" />
                   <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Fetching...</span>
                 </div>
               ) : notifications.length === 0 ? (
@@ -163,12 +163,12 @@ export default function NotificationDropdown({
                         key={notif.id}
                         className={cn(
                           "relative flex gap-4 px-5 py-4 border-b border-slate-50 dark:border-slate-800/50 cursor-pointer active:bg-slate-50 dark:active:bg-slate-800 transition-colors",
-                          !notif.isRead && "bg-indigo-50/40 dark:bg-indigo-900/10"
+                          !notif.isRead && "bg-blue-50/40 dark:bg-indigo-900/10"
                         )}
                       >
                         {/* Unread indicator */}
                         {!notif.isRead && (
-                          <div className="absolute left-2 top-11 -translate-y-1/2 w-1.5 h-6 bg-indigo-500 rounded-full" />
+                          <div className="absolute left-2 top-11 -translate-y-1/2 w-1.5 h-6 bg-blue-500 rounded-full" />
                         )}
 
                         <div 

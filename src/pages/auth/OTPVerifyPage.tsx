@@ -1,35 +1,22 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { 
-  ArrowLeft, 
-  Fingerprint, 
-  Scan, 
-  Zap, 
-  Mail, 
-  RefreshCw 
-} from 'lucide-react';
-import Button from '../../components/ui/Button';
+import { ArrowLeft, ShieldCheck as Shield, Fingerprint, QrCode, Zap, Loader2, RefreshCw, Mail, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useToast } from '../../context/ToastContext';
 import { OTP_CONFIG } from '../../config/api.config';
-import RITLogo from '../../components/common/RITLogo';
-import { cn } from '../../utils/cn';
 import type { UserRole } from '../../types';
-import { transitions } from '../../design-system/animations';
 
 export default function OTPVerifyPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { userId, role, maskedEmail } = (location.state as { userId: string; role: UserRole; maskedEmail?: string }) || {};
   const { verifyOTPRequest, sendOTPRequest } = useAuth();
-  const { success: showSuccess, error: showError, info } = useToast();
 
-  const [otp, setOtp] = useState<string[]>(Array(OTP_CONFIG.LENGTH).fill(''));
+  const [otpDigits, setOtpDigits] = useState(Array(OTP_CONFIG.LENGTH).fill(''));
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(OTP_CONFIG.RESEND_DELAY_SECONDS);
   const [isResending, setIsResending] = useState(false);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [errorModal, setErrorModal] = useState<string | null>(null);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     if (!userId || !role) navigate('/login', { replace: true });
@@ -42,47 +29,53 @@ export default function OTPVerifyPage() {
   }, [resendTimer]);
 
   useEffect(() => {
-    inputRefs.current[0]?.focus();
+    const t = setTimeout(() => otpRefs.current[0]?.focus(), 300);
+    return () => clearTimeout(t);
   }, []);
 
-  const handleChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return;
-    const newOtp = [...otp];
-    newOtp[index] = value.slice(-1);
-    setOtp(newOtp);
-
-    if (value && index < OTP_CONFIG.LENGTH - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
-    if (newOtp.every((d) => d) && newOtp.join('').length === OTP_CONFIG.LENGTH) {
-      handleVerify(newOtp.join(''));
+  const handleOtpChange = (value: string, index: number) => {
+    const digit = value.replace(/[^0-9]/g, '').slice(-1);
+    const newDigits = [...otpDigits];
+    newDigits[index] = digit;
+    setOtpDigits(newDigits);
+    if (digit && index < OTP_CONFIG.LENGTH - 1) otpRefs.current[index + 1]?.focus();
+    if (newDigits.every(d => d !== '') && newDigits.join('').length === OTP_CONFIG.LENGTH) {
+      handleVerify(newDigits.join(''));
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+  const handleOtpKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === 'Backspace' && !otpDigits[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
     }
+    if (e.key === 'Enter') handleVerify();
   };
 
-  const handleVerify = async (otpCode?: string) => {
-    const code = otpCode || otp.join('');
-    if (code.length !== OTP_CONFIG.LENGTH) return;
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_CONFIG.LENGTH);
+    if (text.length) {
+      const digits = text.split('').concat(Array(OTP_CONFIG.LENGTH - text.length).fill(''));
+      setOtpDigits(digits.slice(0, OTP_CONFIG.LENGTH));
+      otpRefs.current[Math.min(text.length, OTP_CONFIG.LENGTH - 1)]?.focus();
+    }
+    e.preventDefault();
+  };
 
+  const handleVerify = async (code?: string) => {
+    const otpCode = code ?? otpDigits.join('');
+    if (otpCode.length !== OTP_CONFIG.LENGTH) return;
     setIsLoading(true);
     try {
-      const res = await verifyOTPRequest(userId, code, role);
+      const res = await verifyOTPRequest(userId, otpCode, role);
       if (res.success) {
-        showSuccess('Verified', 'Identity confirmed successfully');
         navigate('/dashboard', { replace: true });
       } else {
-        showError('Verification Failed', res.message || 'Invalid code');
-        setOtp(Array(OTP_CONFIG.LENGTH).fill(''));
-        inputRefs.current[0]?.focus();
+        setErrorModal(res.message || 'Invalid OTP code. Please try again.');
+        setOtpDigits(Array(OTP_CONFIG.LENGTH).fill(''));
+        setTimeout(() => otpRefs.current[0]?.focus(), 100);
       }
     } catch {
-      showError('Error', 'Verification failed');
+      setErrorModal('Verification failed due to a network error.');
     } finally {
       setIsLoading(false);
     }
@@ -94,154 +87,238 @@ export default function OTPVerifyPage() {
     try {
       const res = await sendOTPRequest(userId, role);
       if (res.success) {
-        info('New Code Sent', 'Check your email');
         setResendTimer(OTP_CONFIG.RESEND_DELAY_SECONDS);
+        setOtpDigits(Array(OTP_CONFIG.LENGTH).fill(''));
+        setTimeout(() => otpRefs.current[0]?.focus(), 100);
       } else {
-        showError('Request Failed', res.message);
+        setErrorModal(res.message || 'Could not resend OTP.');
       }
     } catch {
-      showError('Error', 'Could not resend code');
+      setErrorModal('Could not resend code.');
     } finally {
       setIsResending(false);
     }
   };
 
-  const formatTimer = (seconds: number) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
-  };
+  const formatTimer = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
+  const activeIndex = otpDigits.findIndex(d => d === '');
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center bg-[#F8FAFF] overflow-hidden px-6 pt-6 pb-6">
-      {/* 1. Top Header Bar */}
-      <div className="w-full max-w-sm flex items-center justify-between mb-4">
-        <button 
-          onClick={() => navigate(-1)}
-          className="p-2 -ml-2 text-slate-800 hover:bg-slate-100 rounded-full transition-colors"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-      </div>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ width: '100%', maxWidth: 420 }}>
 
-      {/* 2. Top Branding Section */}
-      <motion.div
-        initial={transitions.page.initial}
-        animate={transitions.page.animate}
-        className="w-full max-w-sm flex flex-col items-center mb-6"
-      >
-        <RITLogo size={72} className="mb-3 shadow-xl" />
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight uppercase">
-          RIT GATE
-        </h1>
-        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
-          SECURE ACCESS CONTROL SYSTEM
-        </p>
-
-        {/* Action Pills */}
-        <div className="flex gap-2 mt-4">
-          {[
-            { icon: Fingerprint, label: 'Biometric' },
-            { icon: Scan, label: 'Badge Scan' },
-            { icon: Zap, label: 'Instant' },
-          ].map((pill, i) => (
-            <button 
-              key={i} 
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#EFF3F9] rounded-full border border-[#DCE4ED] transition-all shadow-sm"
-            >
-              <pill.icon className="w-3 h-3 text-slate-600" />
-              <span className="text-[9px] font-bold text-slate-700 uppercase tracking-tight">{pill.label}</span>
-            </button>
-          ))}
+        {/* Hero */}
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
+          <div style={{
+            width: 100, height: 100, borderRadius: '50%',
+            background: '#1E293B', margin: '0 auto 16px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Shield size={48} color="#FFFFFF" />
+          </div>
+          <h1 style={{ fontSize: 36, fontWeight: 900, color: '#000000', letterSpacing: 2, margin: 0 }}>RIT GATE</h1>
+          <p style={{ fontSize: 12, color: '#64748B', marginTop: 6, marginBottom: 16, letterSpacing: 1.3, textTransform: 'uppercase', fontWeight: 600 }}>
+            Secure Access Control System
+          </p>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {[
+              { icon: <Fingerprint size={13} />, label: 'Biometric' },
+              { icon: <QrCode size={13} />, label: 'Badge Scan' },
+              { icon: <Zap size={13} />, label: 'Instant' },
+            ].map((item, i) => (
+              <span key={i} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '6px 12px', borderRadius: 999,
+                background: '#F8FAFC', border: '1px solid #E2E8F0',
+                fontSize: 11, fontWeight: 700, color: '#1E293B',
+                textTransform: 'uppercase', letterSpacing: 0.5,
+              }}>
+                {item.icon}{item.label}
+              </span>
+            ))}
+          </div>
         </div>
-      </motion.div>
 
-      {/* 3. Verification Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="w-full max-w-sm"
-      >
-        <div className="bg-white rounded-[2rem] p-7 shadow-[0_30px_60px_-15px_rgba(37,99,235,0.06)] border border-slate-50">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-slate-900 leading-none">Verify Identity</h2>
-            <p className="text-sm font-medium text-slate-500 mt-2">Enter the one-time password sent to your email.</p>
+        {/* Card */}
+        <div style={{
+          background: '#FFFFFF', borderRadius: 24,
+          border: '1px solid #E2E8F0', padding: '24px 20px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+        }}>
+          {/* Header row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+            <button
+              onClick={() => navigate('/login')}
+              style={{
+                width: 36, height: 36, borderRadius: '50%', background: '#F1F5F9',
+                border: 'none', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}
+            >
+              <ArrowLeft size={16} color="#64748B" />
+            </button>
+            <div>
+              <h2 style={{ fontSize: 24, fontWeight: 800, color: '#000000', margin: 0 }}>Verify Identity</h2>
+              <p style={{ fontSize: 13, color: '#64748B', margin: 0 }}>Enter the one-time password sent to your email.</p>
+            </div>
           </div>
 
-          <div className="space-y-5">
-            <div className="space-y-3">
-              <label className="block text-[10px] font-black text-slate-900 uppercase tracking-widest px-1">
-                VERIFICATION CODE
-              </label>
-              <div className="grid grid-cols-6 gap-2">
-                {otp.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => { inputRefs.current[i] = el; }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleChange(i, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(i, e)}
-                    placeholder=" "
-                    className={cn(
-                      "w-full aspect-[2/3] text-center text-xl font-bold rounded-xl border-2 transition-all outline-none",
-                      digit ? "border-blue-600 bg-white ring-4 ring-blue-500/5 text-slate-900" : "border-slate-100 bg-[#F8FAFF] text-slate-900"
-                    )}
-                  />
-                ))}
-              </div>
+          {/* OTP boxes */}
+          <div style={{ marginBottom: 12 }}>
+            <label style={{ display: 'block', fontSize: 10, fontWeight: 800, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 10, textAlign: 'center' }}>
+              Verification Code
+            </label>
+            <div style={{ display: 'flex', gap: 8 }} onPaste={handleOtpPaste}>
+              {otpDigits.map((digit, i) => (
+                <input
+                  key={i}
+                  ref={ref => { otpRefs.current[i] = ref; }}
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={1}
+                  value={digit}
+                  onChange={e => handleOtpChange(e.target.value, i)}
+                  onKeyDown={e => handleOtpKeyDown(e, i)}
+                  style={{
+                    flex: 1, minWidth: 0, height: 56,
+                    background: digit ? '#F8FAFC' : '#F8FAFC',
+                    border: digit
+                      ? '2px solid #1E293B'
+                      : i === activeIndex
+                      ? '2px solid #3B82F6'
+                      : '1.5px solid #E2E8F0',
+                    borderRadius: 12,
+                    fontSize: 22, fontWeight: 800, textAlign: 'center',
+                    color: '#0F172A', outline: 'none',
+                    boxShadow: i === activeIndex && !digit ? '0 0 0 3px rgba(59,130,246,0.12)' : 'none',
+                    transition: 'border 0.15s, box-shadow 0.15s',
+                    fontFamily: 'inherit',
+                  }}
+                />
+              ))}
             </div>
+          </div>
 
-            {maskedEmail && (
-              <p className="text-[11px] font-medium text-slate-500 text-center uppercase tracking-tight">
-                Sent to <span className="text-slate-900 font-bold">{maskedEmail}</span>
-              </p>
-            )}
+          {maskedEmail && (
+            <p style={{ fontSize: 12, color: '#64748B', textAlign: 'center', margin: '0 0 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <Mail size={14} />
+              Sent to <strong style={{ color: '#0F172A' }}>{maskedEmail}</strong>
+            </p>
+          )}
 
-            <div className="flex items-center justify-between px-1">
-              {resendTimer > 0 ? (
-                <span className="text-xs font-bold text-slate-400 leading-none">
-                  Resend in <span className="text-slate-700">{formatTimer(resendTimer)}</span>
-                </span>
-              ) : (
-                <button
-                  onClick={handleResend}
-                  disabled={isResending}
-                  className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 disabled:opacity-50 transition-colors leading-none"
-                >
-                  <RefreshCw className={cn("w-3.5 h-3.5", isResending && "animate-spin")} />
-                  {isResending ? 'Sending...' : 'Resend OTP'}
-                </button>
-              )}
+          {/* Resend / Change ID row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            {resendTimer > 0 ? (
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#64748B' }}>
+                Resend in <strong style={{ color: '#0F172A' }}>{formatTimer(resendTimer)}</strong>
+              </span>
+            ) : (
               <button
-                onClick={() => navigate('/login')}
-                className="text-xs font-bold text-slate-900 leading-none"
+                onClick={handleResend}
+                disabled={isResending}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  fontSize: 13, fontWeight: 800, color: '#0F172A',
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  textDecoration: 'underline', textUnderlineOffset: 4, opacity: isResending ? 0.5 : 1,
+                }}
               >
-                Change ID
+                <RefreshCw size={14} style={isResending ? { animation: 'spin 1s linear infinite' } : {}} />
+                {isResending ? 'Sending...' : 'Resend OTP'}
+              </button>
+            )}
+            <button
+              onClick={() => navigate('/login')}
+              style={{ fontSize: 13, fontWeight: 700, color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              Change ID
+            </button>
+          </div>
+
+          {/* Verify button */}
+          <button
+            onClick={() => handleVerify()}
+            disabled={otpDigits.join('').length !== OTP_CONFIG.LENGTH || isLoading}
+            style={{
+              width: '100%', height: 54,
+              background: otpDigits.join('').length !== OTP_CONFIG.LENGTH || isLoading ? '#94A3B8' : '#1E293B',
+              borderRadius: 16, border: 'none',
+              cursor: otpDigits.join('').length !== OTP_CONFIG.LENGTH || isLoading ? 'not-allowed' : 'pointer',
+              color: '#FFFFFF', fontSize: 15, fontWeight: 800,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              letterSpacing: '0.1em', textTransform: 'uppercase',
+              transition: 'background 0.2s',
+            }}
+          >
+            {isLoading
+              ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
+              : 'Verify & Login'}
+          </button>
+        </div>
+
+        <p style={{ textAlign: 'center', fontSize: 11, color: '#CBD5E1', marginTop: 20, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase' }}>
+          Access Verification System
+        </p>
+      </div>
+
+      {/* Error Modal */}
+      {errorModal && (
+        <div
+          onClick={() => setErrorModal(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 50,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: 20, background: 'rgba(15,23,42,0.5)',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: '#FFFFFF', borderRadius: 32, padding: 24,
+              width: '100%', maxWidth: 360,
+              boxShadow: '0 20px 60px rgba(0,0,0,0.20)',
+              animation: 'slideUp 0.25s ease',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+              <div style={{
+                width: 62, height: 62, borderRadius: 20, background: '#EF4444',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <X size={30} color="#FFFFFF" />
+              </div>
+              <button
+                onClick={() => setErrorModal(null)}
+                style={{
+                  width: 36, height: 36, borderRadius: '50%', background: '#F1F5F9',
+                  border: 'none', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <X size={18} color="#64748B" />
               </button>
             </div>
-
-            <Button
-              fullWidth
-              size="lg"
-              isLoading={isLoading}
-              onClick={() => handleVerify()}
-              disabled={otp.some(d => !d)}
-              className="h-13 font-black tracking-widest rounded-xl bg-[#202939] hover:bg-[#151B26] text-white uppercase shadow-lg shadow-slate-200"
+            <h3 style={{ fontSize: 24, fontWeight: 800, color: '#000000', marginBottom: 8 }}>Error</h3>
+            <p style={{ fontSize: 14, color: '#64748B', lineHeight: 1.6, marginBottom: 24 }}>{errorModal}</p>
+            <button
+              onClick={() => setErrorModal(null)}
+              style={{
+                width: '100%', height: 56, background: '#1E293B', borderRadius: 20,
+                border: 'none', cursor: 'pointer', color: '#FFFFFF',
+                fontSize: 15, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase',
+              }}
             >
-              Verify & Login
-            </Button>
+              Dismiss
+            </button>
           </div>
         </div>
-      </motion.div>
+      )}
 
-      {/* Footer System Indicator */}
-      <div className="mt-auto">
-        <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Access Verification System</p>
-      </div>
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+      `}</style>
     </div>
   );
 }

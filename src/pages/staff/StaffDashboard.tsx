@@ -12,6 +12,7 @@ import {
   RefreshCw,
   LogOut
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
@@ -38,6 +39,7 @@ import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 type ActiveTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export default function StaffDashboard() {
+  usePageTitle('Dashboard');
   const { user: rawUser, logout, getUserId } = useAuth();
   const user = rawUser as Staff;
   const { refreshCount } = useRefresh();
@@ -147,13 +149,14 @@ export default function StaffDashboard() {
   });
 
   const handleApprove = async (id: number, remark: string) => {
-    if (!selectedRequest) return;
+    const req = requests.find(r => r.id === id) || selectedRequest;
+    if (!req) return;
     setProcessing(true);
     await withLock(async () => {
        try {
-         const res = selectedRequest.requestType === 'VISITOR'
-            ? await approveVisitorRequest(selectedRequest.requestId || selectedRequest.originalId, staffCode)
-            : await approveGatePassByStaff(staffCode, selectedRequest.id, remark);
+         const res = req.requestType === 'VISITOR'
+            ? await approveVisitorRequest(req.requestId || req.originalId, staffCode)
+            : await approveGatePassByStaff(staffCode, id, remark);
          
          if (res.success) {
            showToastSuccess('Approved', 'Request authorized successfully');
@@ -168,13 +171,14 @@ export default function StaffDashboard() {
   };
 
   const handleReject = async (id: number, remark: string) => {
-    if (!selectedRequest) return;
+    const req = requests.find(r => r.id === id) || selectedRequest;
+    if (!req) return;
     setProcessing(true);
     await withLock(async () => {
        try {
-         const res = selectedRequest.requestType === 'VISITOR'
-            ? await rejectVisitorRequest(selectedRequest.requestId || selectedRequest.originalId, remark)
-            : await rejectGatePassByStaff(staffCode, selectedRequest.id, remark);
+         const res = req.requestType === 'VISITOR'
+            ? await rejectVisitorRequest(req.requestId || req.originalId, remark)
+            : await rejectGatePassByStaff(staffCode, id, remark);
          
          if (res.success) {
            showToastSuccess('Rejected', 'Request has been rejected');
@@ -212,10 +216,17 @@ export default function StaffDashboard() {
   const staffName = (user as any)?.staffName || (user as any)?.name || (user as any)?.firstName || 'Staff Member';
   const initials = staffName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'GOOD MORNING,';
+    if (hour < 17) return 'GOOD AFTERNOON,';
+    return 'GOOD EVENING,';
+  };
+
   return (
     <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen">
-      <TopMenuBar 
-        greeting="GOOD MORNING,"
+      <TopMenuBar
+        greeting={getGreeting()}
         title={staffName.toUpperCase()}
       />
 
@@ -235,7 +246,7 @@ export default function StaffDashboard() {
         </div>
 
         {/* Stats Tabs */}
-        <div className="flex bg-white dark:bg-slate-900 rounded-[24px] p-2 shadow-sm border border-slate-50 dark:border-slate-800 focus-within:ring-2 focus-within:ring-indigo-500/10 transition-all">
+        <div className="flex bg-white dark:bg-slate-900 rounded-[24px] p-2 shadow-sm border border-slate-50 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500/10 transition-all">
           {(['PENDING', 'APPROVED', 'REJECTED'] as ActiveTab[]).map((tab) => {
             const stats = getStats();
             const isActive = activeTab === tab;

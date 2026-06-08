@@ -14,6 +14,7 @@ import {
   RefreshCw,
   Clock
 } from 'lucide-react';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { getVisitorRequestsForSecurity } from '../../services/api.service';
@@ -38,6 +39,7 @@ interface VisitorRequest {
 }
 
 export default function SecurityVisitorQR() {
+  usePageTitle('Visitor QR');
   const { user, logout, getUserId } = useAuth();
   const { success: showToastSuccess, error: showToastError } = useToast();
   const securityId = getUserId();
@@ -160,7 +162,7 @@ export default function SecurityVisitorQR() {
                   )}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-indigo-600 font-black text-lg">
+                    <div className="w-12 h-12 bg-blue-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-[var(--color-primary)] font-black text-lg">
                       {visitor.name[0].toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0 text-left">

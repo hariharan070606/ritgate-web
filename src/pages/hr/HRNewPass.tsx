@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PurposeSelect from '../../components/common/PurposeSelect';
 import { motion } from 'framer-motion';
 import { QrCode, ShieldCheck, FileText, Info, Loader2, Ban } from 'lucide-react';
 import Card from '../../components/ui/Card';
@@ -11,6 +12,8 @@ import { submitNTFGatePass, approveGatePassByHR, getGatePassQRCode } from '../..
 import { useActionLock } from '../../context/ActionLockContext';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { nowIST } from '../../utils/dateUtils';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 /** Returns current hour in IST (UTC+5:30) */
 const getISTHour = () => {
@@ -20,6 +23,7 @@ const getISTHour = () => {
 };
 
 export default function HRNewPass() {
+  usePageTitle('New Pass');
   const { getUserId, user } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const { withLock } = useActionLock();
@@ -56,7 +60,7 @@ export default function HRNewPass() {
           staffCode: hrCode,
           purpose: purpose.trim(),
           reason: reason.trim(),
-          requestDate: new Date().toISOString(),
+          requestDate: nowIST(),
         });
         if (!submitRes.success) {
           showError('Submission Failed', submitRes.message || 'Failed to submit gate pass.');
@@ -101,7 +105,7 @@ export default function HRNewPass() {
     <div className="max-w-md mx-auto space-y-6 pb-10">
       {/* Header */}
       <div className="text-left px-1">
-        <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1">
+        <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span className="text-[10px] font-bold tracking-widest uppercase">HR Authorization</span>
         </div>
@@ -111,9 +115,9 @@ export default function HRNewPass() {
 
       {/* Info Banner */}
       <motion.div initial={transitions.page.initial} animate={transitions.page.animate}>
-        <div className="flex items-start gap-3 p-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 rounded-2xl">
-          <Info className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
-          <p className="text-xs text-indigo-700 dark:text-indigo-300 font-medium leading-relaxed">
+        <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-indigo-950/20 border border-blue-100 dark:border-indigo-900/30 rounded-2xl">
+          <Info className="w-5 h-5 text-[var(--color-primary)] dark:text-blue-400 shrink-0 mt-0.5" />
+          <p className="text-xs text-[var(--color-primary)] dark:text-indigo-300 font-medium leading-relaxed">
             As HR, your gate pass is instantly approved and a QR code is generated immediately. No approval chain needed.
           </p>
         </div>
@@ -138,7 +142,7 @@ export default function HRNewPass() {
       <motion.div initial={transitions.page.initial} animate={transitions.page.animate}>
         <Card>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-base shrink-0">
+            <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-bold text-base shrink-0">
               {initials}
             </div>
             <div className="flex-1 min-w-0">
@@ -154,16 +158,7 @@ export default function HRNewPass() {
       <motion.div initial={transitions.page.initial} animate={transitions.page.animate} className="space-y-4">
         <div>
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 px-1">Purpose *</label>
-          <div className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl">
-            <FileText className="w-4 h-4 text-slate-400 shrink-0" />
-            <input
-              type="text"
-              value={purpose}
-              onChange={e => setPurpose(e.target.value)}
-              placeholder="Enter purpose of exit..."
-              className="flex-1 text-sm bg-transparent outline-none text-slate-900 dark:text-white placeholder:text-slate-300"
-            />
-          </div>
+          <PurposeSelect value={purpose} onChange={setPurpose} variant="compact" />
         </div>
 
         <div>
@@ -173,7 +168,7 @@ export default function HRNewPass() {
             onChange={e => setReason(e.target.value)}
             placeholder="Enter reason for gate pass..."
             rows={4}
-            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white resize-none outline-none focus:ring-2 focus:ring-indigo-500/10 placeholder:text-slate-300"
+            className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white resize-none outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300"
           />
         </div>
       </motion.div>

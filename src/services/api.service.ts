@@ -317,7 +317,19 @@ export async function getHODDepartmentStudents(hodCode: string): Promise<{ succe
 export async function getHODDepartmentStaff(hodCode: string): Promise<{ success: boolean; staff: any[] }> {
   try {
     const { data } = await api.get(`/hod/${hodCode}/department/staff`);
-    return { success: true, staff: data.staff || [] };
+    const raw = data.staff || [];
+    const staff = raw.map((s: any) => ({
+      ...s,
+      staffName:
+        s.staffName ||
+        s.name ||
+        (s.firstName && s.lastName ? `${s.firstName} ${s.lastName}`.trim() : null) ||
+        s.firstName ||
+        s.lastName ||
+        s.fullName ||
+        '',
+    }));
+    return { success: true, staff };
   } catch { return { success: false, staff: [] }; }
 }
 

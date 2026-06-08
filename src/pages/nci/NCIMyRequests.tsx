@@ -8,9 +8,11 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { getNTFOwnRequests, getGatePassQRCode } from '../../services/api.service';
 import { cn } from '../../utils/cn';
-import { formatDateTime, relativeTime } from '../../utils/dateUtils';
+import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 export default function NCIMyRequests() {
+  usePageTitle('My Requests');
   const { getUserId, user } = useAuth();
   const { error: showError } = useToast();
   const staffCode = getUserId();
@@ -32,9 +34,11 @@ export default function NCIMyRequests() {
       try {
         const res = await getNTFOwnRequests(staffCode);
         if (res.success) {
-          const sorted = (res.requests || []).sort(
-            (a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime()
-          );
+          const sorted = (res.requests || [])
+            .filter((r: any) => isToday(r.createdAt || r.requestDate))
+            .sort(
+              (a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime()
+            );
           setRequests(sorted);
         }
       } catch (error) {
@@ -186,7 +190,7 @@ export default function NCIMyRequests() {
                       {isApproved && (
                         <button
                           onClick={e => { e.stopPropagation(); handleViewQR(request); }}
-                          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95 transition-transform"
+                          className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] rounded-xl text-white shadow-lg shadow-blue-100 dark:shadow-none active:scale-95 transition-transform"
                         >
                           <QrCode className="w-4 h-4" />
                           <span className="text-[11px] font-black uppercase tracking-widest">View QR</span>

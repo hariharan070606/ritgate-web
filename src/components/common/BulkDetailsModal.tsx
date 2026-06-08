@@ -114,7 +114,7 @@ export default function BulkDetailsModal({
         <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="flex flex-col items-center justify-center min-h-[400px] gap-3">
-              <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
+              <Loader2 className="w-10 h-10 text-[var(--color-primary)] animate-spin" />
               <p className="text-slate-500 text-sm animate-pulse">Loading details...</p>
             </div>
           ) : error ? (
@@ -129,7 +129,7 @@ export default function BulkDetailsModal({
             <div className="p-4 space-y-4">
               {/* Profile Row */}
               <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-                <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg shadow-indigo-200 dark:shadow-none">
+                <div className="w-14 h-14 bg-[var(--color-primary)] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg shadow-blue-200 dark:shadow-none">
                   {(details?.requestedByStaffName || 'U').charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -141,9 +141,9 @@ export default function BulkDetailsModal({
                   </p>
                 </div>
                 {participants.length > 0 && (
-                  <div className="bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors">
-                    <Users className="w-3.5 h-3.5 text-indigo-600" />
-                    <span className="text-xs font-black text-indigo-600">{participants.length}</span>
+                  <div className="bg-blue-50 dark:bg-indigo-900/30 px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors">
+                    <Users className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+                    <span className="text-xs font-black text-[var(--color-primary)]">{participants.length}</span>
                   </div>
                 )}
               </div>
@@ -159,7 +159,7 @@ export default function BulkDetailsModal({
                 <div className="p-4">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Date</p>
                   <div className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                    <Calendar className="w-3.5 h-3.5 text-blue-700" />
                     <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
                       {formatDateShort(details?.exitDateTime || details?.requestDate)}
                     </p>
@@ -211,8 +211,8 @@ export default function BulkDetailsModal({
                     </div>
                   )}
                   {details?.hodRemark && (
-                    <div className="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-3 rounded-r-xl">
-                      <p className="text-[10px] font-black text-indigo-600 uppercase mb-1">HOD</p>
+                    <div className="bg-blue-50 dark:bg-indigo-900/10 border-l-4 border-blue-700 p-3 rounded-r-xl">
+                      <p className="text-[10px] font-black text-[var(--color-primary)] uppercase mb-1">HOD</p>
                       <p className="text-sm font-medium text-slate-700 dark:text-slate-300 italic">"{details.hodRemark}"</p>
                     </div>
                   )}
@@ -231,7 +231,7 @@ export default function BulkDetailsModal({
               value={remark}
               onChange={(e) => setRemark(e.target.value)}
               placeholder="Add review notes (optional)..."
-              className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all outline-none resize-none"
+              className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all outline-none resize-none"
               rows={2}
             />
             <div className="flex gap-3">

@@ -125,7 +125,7 @@ export default function QRCodeModal({
 
         {/* QR Code Container */}
         <div className="p-6 bg-white rounded-3xl shadow-xl border border-slate-100 relative group overflow-hidden">
-           <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+           <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
            <AnimatePresence mode="wait">
              {qrCode ? (
                <motion.div 
@@ -145,7 +145,7 @@ export default function QRCodeModal({
                </motion.div>
              ) : (
                <div className="w-[200px] h-[200px] flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
                </div>
              )}
            </AnimatePresence>
@@ -160,7 +160,7 @@ export default function QRCodeModal({
                  <code className="text-xl font-black text-slate-900 dark:text-white tracking-[0.2em]">{manualCode}</code>
                  <div className={cn(
                    "w-8 h-8 rounded-xl flex items-center justify-center transition-all",
-                   copied ? "bg-emerald-500 text-white" : "text-slate-400 hover:text-indigo-600"
+                   copied ? "bg-emerald-500 text-white" : "text-slate-400 hover:text-[var(--color-primary)]"
                  )}>
                     {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                  </div>
