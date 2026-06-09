@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   ArrowRight,
@@ -77,13 +77,11 @@ const handleSendOTP = async (id?: string) => {
 
         {/* Hero */}
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <div style={{
-            width: 100, height: 100, borderRadius: '50%',
-            background: '#1E293B', margin: '0 auto 16px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <Shield size={48} color="#FFFFFF" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="RIT Gate"
+            style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', margin: '0 auto 16px', display: 'block' }}
+          />
           <h1 style={{ fontSize: 36, fontWeight: 900, color: '#000000', letterSpacing: 2, margin: 0 }}>RIT GATE</h1>
           <p style={{ fontSize: 12, color: '#64748B', marginTop: 6, marginBottom: 16, letterSpacing: 1.3, textTransform: 'uppercase', fontWeight: 600 }}>
             Secure Access Control System
