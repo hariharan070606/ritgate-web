@@ -33,11 +33,19 @@ import SinglePassDetailsModal from '../../components/common/SinglePassDetailsMod
 import MyRequestsBulkModal from '../../components/common/MyRequestsBulkModal';
 import { cn } from '../../utils/cn';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
+import { useAdaptive } from '../../utils/useAdaptive';
+import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
+import DesktopStatCard from '../../components/desktop/DesktopStatCard';
+import DesktopToolbar from '../../components/desktop/DesktopToolbar';
+import DesktopSegmentedTabs from '../../components/desktop/DesktopSegmentedTabs';
+import Button from '../../components/ui/Button';
+import EmptyState from '../../components/ui/EmptyState';
 
 type ActiveTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export default function HODDashboard() {
   usePageTitle('Dashboard');
+  const { isDesktop } = useAdaptive();
   const { user, logout, getUserId } = useAuth();
   const { refreshCount } = useRefresh();
   const { success: showToastSuccess, error: showToastError } = useToast();
@@ -185,15 +193,23 @@ export default function HODDashboard() {
   };
 
   return (
-    <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen">
-      <TopMenuBar
+    <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen lg:bg-transparent lg:min-h-0">
+      {!isDesktop && <TopMenuBar
         greeting={getGreeting()}
         title={hodName.toUpperCase()}
-      />
+      />}
 
-      <div className="px-5 pt-4 space-y-4">
+      {isDesktop && (
+        <DesktopPageHeader
+          eyebrow={getGreeting().replace(',', '')}
+          title="HOD Dashboard"
+          subtitle="Authorize department requests, bulk passes, and visitor clearances"
+        />
+      )}
+
+      <div className="px-5 pt-4 space-y-4 lg:px-0 lg:pt-0 lg:space-y-5">
         {/* Search Bar */}
-        <div className="relative">
+        <div className="relative lg:hidden">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
             <Search className="w-5 h-5" />
           </div>
@@ -206,8 +222,34 @@ export default function HODDashboard() {
           />
         </div>
 
+        {isDesktop && (
+          <div className="grid grid-cols-3 gap-4">
+            <DesktopStatCard label="Pending" value={getStats().PENDING} icon={Clock} tone="amber" active={activeTab === 'PENDING'} onClick={() => setActiveTab('PENDING')} />
+            <DesktopStatCard label="Approved" value={getStats().APPROVED} icon={CheckCircle2} tone="emerald" active={activeTab === 'APPROVED'} onClick={() => setActiveTab('APPROVED')} />
+            <DesktopStatCard label="Rejected" value={getStats().REJECTED} icon={XCircle} tone="rose" active={activeTab === 'REJECTED'} onClick={() => setActiveTab('REJECTED')} />
+          </div>
+        )}
+
+        {isDesktop && (
+          <DesktopToolbar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder="Search by student, visitor, purpose, or request ID..."
+          >
+            <DesktopSegmentedTabs
+              value={activeTab}
+              onChange={setActiveTab}
+              options={[
+                { value: 'PENDING', label: 'Pending', count: getStats().PENDING },
+                { value: 'APPROVED', label: 'Approved', count: getStats().APPROVED },
+                { value: 'REJECTED', label: 'Rejected', count: getStats().REJECTED },
+              ]}
+            />
+          </DesktopToolbar>
+        )}
+
         {/* Stats Tabs */}
-        <div className="flex bg-white dark:bg-slate-900 rounded-[24px] p-2 shadow-sm border border-slate-50 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500/10 transition-all">
+        <div className="flex bg-white dark:bg-slate-900 rounded-[24px] p-2 shadow-sm border border-slate-50 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500/10 transition-all lg:hidden">
           {(['PENDING', 'APPROVED', 'REJECTED'] as ActiveTab[]).map((tab) => {
             const stats = getStats();
             const isActive = activeTab === tab;
@@ -235,9 +277,68 @@ export default function HODDashboard() {
       </div>
 
       <TopRefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }}>
-        <div className="px-5 pt-4 pb-28">
+        <div className="px-5 pt-4 pb-28 lg:px-0 lg:pt-6 lg:pb-8">
           {loading ? (
             <SkeletonList count={4} />
+          ) : isDesktop && filteredRequests.length > 0 ? (
+            <section className="desktop-card overflow-hidden">
+              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+                <div>
+                  <h3 className="text-base font-bold text-slate-950 dark:text-white">Department Requests</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Today&apos;s {activeTab.toLowerCase()} approvals</p>
+                </div>
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filteredRequests.length} Requests</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="desktop-table">
+                  <thead>
+                    <tr>
+                      <th>Requester</th>
+                      <th>Type</th>
+                      <th>Purpose</th>
+                      <th>Requested</th>
+                      <th>Status</th>
+                      <th className="text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredRequests.map((request) => {
+                      const isBulk = request.passType === 'BULK';
+                      const isVisitor = request.passType === 'VISITOR';
+                      const isPending = activeTab === 'PENDING';
+                      return (
+                        <tr key={request.id} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
+                          <td>
+                            <p className="font-bold text-slate-950 dark:text-white">{request.studentName || 'Unknown'}</p>
+                            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                              {isBulk ? (request.requestedByStaffName || 'Staff') : isVisitor ? request.visitorPhone || 'Guest' : `${request.regNo || 'N/A'} - ${request.department || 'Dept'}`}
+                            </p>
+                          </td>
+                          <td>{isBulk ? 'Bulk Student Pass' : isVisitor ? (request.role || 'Visitor') : 'Single Pass'}</td>
+                          <td className="max-w-[320px] truncate">{request.purpose || request.reason || 'General'}</td>
+                          <td>{formatDateTime(request.exitDateTime || request.requestDate || request.createdAt)}</td>
+                          <td>
+                            <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
+                              request.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :
+                              request.status === 'REJECTED' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' :
+                              'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300'
+                            )}>
+                              {(request.status === 'PENDING_HOD' || request.status === 'PENDING') ? 'PENDING' : request.status}
+                            </span>
+                          </td>
+                          <td className="text-right">
+                            <div className="flex justify-end gap-2">
+                              {isPending && <Button size="sm" variant="success" onClick={() => handleApprove(request.id)}>Approve</Button>}
+                              <Button size="sm" variant="secondary" onClick={() => { setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </section>
           ) : filteredRequests.length > 0 ? (
             <div className="space-y-4">
               {filteredRequests.map((request) => {
@@ -343,6 +444,13 @@ export default function HODDashboard() {
               })}
             </div>
           ) : (
+            isDesktop ? (
+              <EmptyState
+                icon={<CheckCircle2 className="w-8 h-8" />}
+                title={`No ${activeTab.toLowerCase()} requests`}
+                description="Any incoming gate passes for your department will appear here."
+              />
+            ) : (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mb-5">
                 <CheckCircle2 className="w-10 h-10 text-slate-200 dark:text-slate-800" />
@@ -352,6 +460,7 @@ export default function HODDashboard() {
                 Any incoming gate passes for your department will appear here.
               </p>
             </div>
+            )
           )}
         </div>
       </TopRefreshControl>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QrCode, Search, AlertCircle, FileText, Users } from 'lucide-react';
+import { QrCode, Search, AlertCircle, FileText, Users, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
 import Modal from '../../components/ui/Modal';
 import RequestTimeline from '../../components/common/RequestTimeline';
@@ -17,6 +17,11 @@ import { transitions } from '../../design-system/animations';
 import { useAdaptive } from '../../utils/useAdaptive';
 import type { GatePassRequest } from '../../types';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
+import DesktopStatCard from '../../components/desktop/DesktopStatCard';
+import DesktopToolbar from '../../components/desktop/DesktopToolbar';
+import DesktopSegmentedTabs from '../../components/desktop/DesktopSegmentedTabs';
+import EmptyState from '../../components/ui/EmptyState';
 
 type Tab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -32,7 +37,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
   const { getUserId, user, logout } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const { withLock } = useActionLock();
-  const { isMobile } = useAdaptive();
+  const { isMobile, isDesktop } = useAdaptive();
   const hrCode = getUserId();
   const hrName = (user as any)?.hrName || (user as any)?.name || 'HR Executive';
   const initials = hrName.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
@@ -137,7 +142,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:space-y-6">
       {/* Mobile header with notification bell */}
       {isMobile && (
         <TopMenuBar
@@ -146,15 +151,49 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
         />
       )}
 
+      {isDesktop && (
+        <DesktopPageHeader
+          eyebrow={greeting.replace(',', '')}
+          title="HR Dashboard"
+          subtitle="Review today's gate pass approvals and visitor clearances"
+        />
+      )}
+
+      {isDesktop && (
+        <div className="grid grid-cols-3 gap-4">
+          <DesktopStatCard label="Pending" value={stats.pending} icon={Clock} tone="amber" active={activeTab === 'PENDING'} onClick={() => setActiveTab('PENDING')} />
+          <DesktopStatCard label="Approved" value={stats.approved} icon={CheckCircle2} tone="emerald" active={activeTab === 'APPROVED'} onClick={() => setActiveTab('APPROVED')} />
+          <DesktopStatCard label="Rejected" value={stats.rejected} icon={XCircle} tone="rose" active={activeTab === 'REJECTED'} onClick={() => setActiveTab('REJECTED')} />
+        </div>
+      )}
+
       {/* Search */}
-      <div className="relative">
+      <div className="relative lg:hidden">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input type="text" placeholder="Search requests..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
           className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300" />
       </div>
 
+      {isDesktop && (
+        <DesktopToolbar
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search by purpose, HOD code, requester, or ID..."
+        >
+          <DesktopSegmentedTabs
+            value={activeTab}
+            onChange={setActiveTab}
+            options={[
+              { value: 'PENDING', label: 'Pending', count: stats.pending },
+              { value: 'APPROVED', label: 'Approved', count: stats.approved },
+              { value: 'REJECTED', label: 'Rejected', count: stats.rejected },
+            ]}
+          />
+        </DesktopToolbar>
+      )}
+
       {/* Stats Tabs */}
-      <div className="flex border-b border-slate-100 dark:border-slate-800">
+      <div className="flex border-b border-slate-100 dark:border-slate-800 lg:hidden">
         {(['PENDING', 'APPROVED', 'REJECTED'] as Tab[]).map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
             className={cn('flex-1 py-3 text-[11px] font-bold uppercase tracking-wider border-b-2 transition-colors',
@@ -168,6 +207,75 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       </div>
 
       {/* Request List */}
+      {isDesktop ? (
+        <section className="desktop-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+            <div>
+              <h3 className="text-base font-bold text-slate-950 dark:text-white">Approval Queue</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Today&apos;s {activeTab.toLowerCase()} requests</p>
+            </div>
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filtered.length} Requests</span>
+          </div>
+          {filtered.length === 0 ? (
+            <EmptyState
+              title={`No ${activeTab.toLowerCase()} requests`}
+              description="Requests that need HR attention will appear here."
+              icon={<FileText className="w-8 h-8" />}
+            />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="desktop-table">
+                <thead>
+                  <tr>
+                    <th>Requester</th>
+                    <th>Type</th>
+                    <th>Purpose</th>
+                    <th>Exit Date</th>
+                    <th>Status</th>
+                    <th className="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(req => {
+                    const isBulk = req.requestType === 'BULK';
+                    const isVisitor = req.requestType === 'VISITOR';
+                    const name = isBulk ? (req.requestedByStaffName || req.hodCode || 'Staff') : isVisitor ? (req.visitorName || req.studentName || 'Visitor') : (req.requestedByStaffName || req.studentName || req.regNo || `Request #${req.id}`);
+                    const sub = isBulk ? `${req.userType || 'HOD'} - ${req.department || 'N/A'}` : isVisitor ? `${req.visitorPhone || ''} - ${req.department || 'Department'}` : `${req.requestedByStaffCode || req.regNo || 'N/A'} - ${req.department || 'Department'}`;
+                    const statusVal = isVisitor ? req.status : (req.hrApproval || req.status);
+                    const isPending = statusVal === 'PENDING_HR' || statusVal === 'PENDING';
+                    return (
+                      <tr key={`${req.requestType}-${req.id}`} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
+                        <td>
+                          <p className="font-bold text-slate-950 dark:text-white">{name}</p>
+                          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{sub}</p>
+                        </td>
+                        <td>{isBulk ? 'Bulk GatePass' : isVisitor ? 'Visitor Request' : 'Single GatePass'}</td>
+                        <td className="max-w-[320px] truncate">{req.purpose || req.reason || 'General'}</td>
+                        <td>{fmtDate(req.exitDateTime || req.requestDate || req.createdAt || '')}</td>
+                        <td>
+                          <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
+                            statusVal === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :
+                            statusVal === 'REJECTED' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' :
+                            'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300'
+                          )}>
+                            {(statusVal === 'PENDING_HR' || statusVal === 'PENDING' || !statusVal) ? 'PENDING' : statusVal}
+                          </span>
+                        </td>
+                        <td className="text-right">
+                          <div className="flex justify-end gap-2">
+                            {isPending && <Button size="sm" variant="success" onClick={() => handleApprove(req)} disabled={processing}>Approve</Button>}
+                            <Button size="sm" variant="secondary" onClick={() => { setSelectedRequest(req); isBulk ? setShowBulkDetail(true) : setShowDetail(true); }}>View</Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      ) : (
       <div className="space-y-3">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center py-16 gap-3">
@@ -246,6 +354,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
           </AnimatePresence>
         )}
       </div>
+      )}
 
       {/* Single Detail Modal */}
       <Modal isOpen={showDetail} onClose={() => setShowDetail(false)} title="Request Details" size="lg">

@@ -21,6 +21,12 @@ import RequestDetailsModal from '../../components/common/RequestDetailsModal';
 import { cn } from '../../utils/cn';
 import type { Student } from '../../types';
 import { formatDateTime, isToday } from '../../utils/dateUtils';
+import { useAdaptive } from '../../utils/useAdaptive';
+import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
+import DesktopStatCard from '../../components/desktop/DesktopStatCard';
+import DesktopToolbar from '../../components/desktop/DesktopToolbar';
+import EmptyState from '../../components/ui/EmptyState';
+import Button from '../../components/ui/Button';
 
 /** Returns current time in IST (UTC+5:30) */
 const getISTTime = () => {
@@ -40,6 +46,7 @@ const isStudentPassDisabled = () => {
 export default function StudentHome() {
   usePageTitle('Dashboard');
   const { user: rawUser, logout } = useAuth();
+  const { isDesktop } = useAdaptive();
   const user = rawUser as Student;
   const { refreshCount } = useRefresh();
   const { success: showSuccess, error: showError } = useToast();
@@ -137,16 +144,45 @@ export default function StudentHome() {
   );
 
   const gatePassDisabled = isStudentPassDisabled();
+  const stats = {
+    pending: requests.filter(r => String(r.status || '').startsWith('PENDING')).length,
+    approved: requests.filter(r => r.status === 'APPROVED' || r.status === 'APPROVED_BY_HOD').length,
+    rejected: requests.filter(r => r.status === 'REJECTED').length,
+  };
 
   return (
-    <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen">
-      <TopMenuBar 
+    <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen lg:bg-transparent lg:min-h-0">
+      {!isDesktop && <TopMenuBar 
         greeting={getGreeting()}
         title={`${user?.firstName} ${user?.lastName || ''}`.toUpperCase()}
-      />
+      />}
 
-      <div className="px-4 pt-4">
+      {isDesktop && (
+        <DesktopPageHeader
+          eyebrow={getGreeting().replace(',', '')}
+          title="Student Dashboard"
+          subtitle="Request, track, and access your gate pass approvals"
+          action={<Button disabled={gatePassDisabled} onClick={() => (window.location.href = '/new-request')} icon={<ShieldCheck className="w-4 h-4" />}>Request Gate Pass</Button>}
+        />
+      )}
+
+      <div className="px-4 pt-4 lg:px-0 lg:pt-0 lg:space-y-5">
+        {isDesktop && (
+          <div className="grid grid-cols-3 gap-4">
+            <DesktopStatCard label="Pending" value={stats.pending} icon={AlertCircle} tone="amber" />
+            <DesktopStatCard label="Approved" value={stats.approved} icon={ShieldCheck} tone="emerald" />
+            <DesktopStatCard label="Rejected" value={stats.rejected} icon={FileText} tone="rose" />
+          </div>
+        )}
+
         {/* Search Bar */}
+        {isDesktop ? (
+          <DesktopToolbar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder="Search recent requests by purpose or ID..."
+          />
+        ) : (
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
             <Search className="w-4 h-4" />
@@ -159,15 +195,16 @@ export default function StudentHome() {
             className="w-full h-11 pl-11 pr-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm focus:ring-2 focus:ring-blue-500/10 outline-none transition-all"
           />
         </div>
+        )}
       </div>
 
       <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
-        <div className="px-4 pt-4 pb-28">
+        <div className="px-4 pt-4 pb-28 lg:px-0 lg:pt-6 lg:pb-8">
           {/* Main Action Card */}
           <motion.div 
             whileTap={{ scale: gatePassDisabled ? 1 : 0.98 }}
             onClick={() => !gatePassDisabled && (window.location.href = '/new-request')}
-            className="rounded-[24px] overflow-hidden shadow-md shadow-indigo-500/10 border border-slate-100 dark:border-indigo-900/20"
+            className="rounded-[24px] overflow-hidden shadow-md shadow-indigo-500/10 border border-slate-100 dark:border-indigo-900/20 lg:hidden"
           >
             <div className={cn(
               "h-40 flex items-center justify-center relative overflow-hidden",
@@ -209,7 +246,7 @@ export default function StudentHome() {
           </motion.div>
 
           {/* Section Header */}
-          <div className="mt-8 mb-3 px-1">
+          <div className="mt-8 mb-3 px-1 lg:mt-0">
             <h4 className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
               Recent Requests
             </h4>
@@ -218,6 +255,56 @@ export default function StudentHome() {
           {/* Requests List */}
           {loading ? (
             <SkeletonList count={3} />
+          ) : isDesktop && filteredRequests.length > 0 ? (
+            <section className="desktop-card overflow-hidden">
+              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+                <div>
+                  <h3 className="text-base font-bold text-slate-950 dark:text-white">Recent Requests</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Today&apos;s gate pass activity</p>
+                </div>
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filteredRequests.length} Requests</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="desktop-table">
+                  <thead>
+                    <tr>
+                      <th>Request</th>
+                      <th>Type</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th className="text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredRequests.map((request) => {
+                      const status = getStatusConfig(request.status);
+                      return (
+                        <tr key={request.id} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35" onClick={() => { setSelectedRequest(request); setShowDetailsModal(true); }}>
+                          <td>
+                            <p className="font-bold text-slate-950 dark:text-white">{request.purpose || 'Gate Pass Request'}</p>
+                            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Request #{request.id}</p>
+                          </td>
+                          <td>{request.passType === 'BULK' ? 'Bulk Pass' : 'Single Pass'}</td>
+                          <td>{formatDateTime(request.requestDate || request.createdAt)}</td>
+                          <td>
+                            <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase text-white', status.color)}>
+                              {status.label}
+                            </span>
+                          </td>
+                          <td className="text-right">
+                            {request.status === 'APPROVED' && request.passType !== 'BULK' ? (
+                              <Button size="sm" onClick={(e) => { e.stopPropagation(); handleViewQR(request); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
+                            ) : (
+                              <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setShowDetailsModal(true); }}>View</Button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </section>
           ) : filteredRequests.length > 0 ? (
             <div className="space-y-3">
               {filteredRequests.map((request) => {
@@ -276,6 +363,14 @@ export default function StudentHome() {
               })}
             </div>
           ) : (
+            isDesktop ? (
+              <EmptyState
+                title="No requests found"
+                description="Your recent gate pass activity will appear here."
+                icon={<FileText className="w-8 h-8" />}
+                action={<Button disabled={gatePassDisabled} onClick={() => (window.location.href = '/new-request')}>Request Gate Pass</Button>}
+              />
+            ) : (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-10 flex flex-col items-center text-center">
               <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-3">
                 <FileText className="w-8 h-8 text-slate-200 dark:text-slate-700" />
@@ -283,6 +378,7 @@ export default function StudentHome() {
               <h5 className="text-[15px] font-bold text-slate-900 dark:text-white mb-1">No requests found</h5>
               <p className="text-[12px] font-medium text-slate-400">Your recent gate pass activity will appear here.</p>
             </div>
+            )
           )}
         </div>
       </TopRefreshControl>

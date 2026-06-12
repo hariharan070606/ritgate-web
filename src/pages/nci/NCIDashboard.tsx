@@ -14,6 +14,12 @@ import {
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { useAdaptive } from '../../utils/useAdaptive';
+import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
+import DesktopStatCard from '../../components/desktop/DesktopStatCard';
+import DesktopToolbar from '../../components/desktop/DesktopToolbar';
+import DesktopSegmentedTabs from '../../components/desktop/DesktopSegmentedTabs';
+import EmptyState from '../../components/ui/EmptyState';
 
 type Tab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -24,6 +30,7 @@ const getInitials = (name: string) => (name || 'NF').split(' ').map(n => n[0]).j
 export default function NCIDashboard() {
   usePageTitle('Dashboard');
   const { getUserId, user } = useAuth();
+  const { isDesktop } = useAdaptive();
   const { success: showSuccess, error: showError } = useToast();
   const staffCode = getUserId();
   const staffName = (user as any)?.staffName || (user as any)?.name || 'Staff';
@@ -116,9 +123,18 @@ export default function NCIDashboard() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:space-y-6">
+      {isDesktop && (
+        <DesktopPageHeader
+          eyebrow={new Date().getHours() < 12 ? 'GOOD MORNING' : new Date().getHours() < 17 ? 'GOOD AFTERNOON' : 'GOOD EVENING'}
+          title="NCI Dashboard"
+          subtitle="Monitor visitor pre-registration and campus entry requests"
+          action={<Button variant="secondary" size="sm" onClick={fetchData} icon={<RefreshCw className={cn('w-4 h-4', isLoading && 'animate-spin')} />}>Refresh</Button>}
+        />
+      )}
+
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between lg:hidden">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-white font-bold text-base shrink-0">{initials}</div>
           <div>
@@ -134,14 +150,40 @@ export default function NCIDashboard() {
       </div>
 
       {/* Search */}
+      {isDesktop && (
+        <div className="grid grid-cols-3 gap-4">
+          <DesktopStatCard label="Pending" value={stats.pending} icon={RefreshCw} tone="amber" active={activeTab === 'PENDING'} onClick={() => setActiveTab('PENDING')} />
+          <DesktopStatCard label="Approved" value={stats.approved} icon={Users} tone="emerald" active={activeTab === 'APPROVED'} onClick={() => setActiveTab('APPROVED')} />
+          <DesktopStatCard label="Rejected" value={stats.rejected} icon={AlertCircle} tone="rose" active={activeTab === 'REJECTED'} onClick={() => setActiveTab('REJECTED')} />
+        </div>
+      )}
+
+      {isDesktop ? (
+        <DesktopToolbar
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search visitor requests by name, purpose, phone, or email..."
+        >
+          <DesktopSegmentedTabs
+            value={activeTab}
+            onChange={setActiveTab}
+            options={[
+              { value: 'PENDING', label: 'Pending', count: stats.pending },
+              { value: 'APPROVED', label: 'Approved', count: stats.approved },
+              { value: 'REJECTED', label: 'Rejected', count: stats.rejected },
+            ]}
+          />
+        </DesktopToolbar>
+      ) : (
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input type="text" placeholder="Search requests..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
           className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300" />
       </div>
+      )}
 
       {/* Stats Tabs */}
-      <div className="flex border-b border-slate-100 dark:border-slate-800">
+      <div className="flex border-b border-slate-100 dark:border-slate-800 lg:hidden">
         {(['PENDING', 'APPROVED', 'REJECTED'] as Tab[]).map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
             className={cn('flex-1 py-3 text-[11px] font-bold uppercase tracking-wider border-b-2 transition-colors',
@@ -155,6 +197,75 @@ export default function NCIDashboard() {
       </div>
 
       {/* Visitor Request List */}
+      {isDesktop ? (
+        <section className="desktop-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+            <div>
+              <h3 className="text-base font-bold text-slate-950 dark:text-white">Visitor Requests</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Website visitors awaiting NCI review</p>
+            </div>
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filtered.length} Requests</span>
+          </div>
+          {filtered.length === 0 ? (
+            <EmptyState
+              title={`No ${activeTab.toLowerCase()} visitor requests`}
+              description="Visitor requests for NCI review will appear here."
+              icon={<Users className="w-8 h-8" />}
+            />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="desktop-table">
+                <thead>
+                  <tr>
+                    <th>Visitor</th>
+                    <th>Type</th>
+                    <th>Purpose</th>
+                    <th>Visit</th>
+                    <th>Status</th>
+                    <th className="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(req => {
+                    const id = req.requestId || req.id;
+                    const name = req.requesterName || req.name || 'Visitor';
+                    const typeLabel = (req.role || req.type || 'Visitor').charAt(0).toUpperCase() + (req.role || req.type || 'Visitor').slice(1).toLowerCase();
+                    const isProcessing = processing === id;
+                    return (
+                      <tr key={id} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35" onClick={() => { setSelectedRequest(req); setShowDetail(true); }}>
+                        <td>
+                          <p className="font-bold text-slate-950 dark:text-white">{name}</p>
+                          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{req.visitorEmail || req.email || ''}{req.visitorPhone ? ` - ${req.visitorPhone}` : ''}</p>
+                        </td>
+                        <td>{typeLabel}</td>
+                        <td className="max-w-[360px] truncate">{req.purpose || 'Campus Visit'}</td>
+                        <td>{req.visitDate ? `${req.visitDate}${req.visitTime ? ` at ${req.visitTime}` : ''}` : fmtDate(req.createdAt || '')}</td>
+                        <td>
+                          <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
+                            req.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :
+                            req.status === 'REJECTED' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' :
+                            'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300'
+                          )}>{req.status}</span>
+                        </td>
+                        <td className="text-right">
+                          {req.status === 'PENDING' ? (
+                            <div className="flex justify-end gap-2">
+                              <Button variant="success" size="sm" onClick={(e) => { e.stopPropagation(); handleApprove(req); }} disabled={isProcessing}>Approve</Button>
+                              <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); handleReject(req); }} disabled={isProcessing}>Reject</Button>
+                            </div>
+                          ) : (
+                            <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); setShowDetail(true); }}>View</Button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      ) : (
       <div className="space-y-3">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center py-16 gap-3">
@@ -225,6 +336,7 @@ export default function NCIDashboard() {
           </AnimatePresence>
         )}
       </div>
+      )}
 
       {/* Detail Modal */}
       <Modal isOpen={showDetail} onClose={() => setShowDetail(false)} title="Visitor Request Details" size="md">

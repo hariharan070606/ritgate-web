@@ -17,6 +17,11 @@ import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { relativeTime } from '../../utils/dateUtils';
 import { EMPTY_COPY } from '../../config/nativeCopy';
+import { useAdaptive } from '../../utils/useAdaptive';
+import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
+import DesktopStatCard from '../../components/desktop/DesktopStatCard';
+import DesktopToolbar from '../../components/desktop/DesktopToolbar';
+import DesktopSegmentedTabs from '../../components/desktop/DesktopSegmentedTabs';
 
 type Tab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -25,6 +30,7 @@ const getInitials = (name: string) => (name || 'NF').split(' ').map(n => n[0]).j
 export default function NTFDashboard() {
   usePageTitle('Dashboard');
   const { getUserId, user } = useAuth();
+  const { isDesktop } = useAdaptive();
   const { success: showSuccess, error: showError } = useToast();
   const staffId = getUserId();
   const staffName = (user as any)?.staffName || (user as any)?.name || 'NTF Staff';
@@ -158,8 +164,16 @@ export default function NTFDashboard() {
 
   return (
     <div className="space-y-8 pb-10">
+      {isDesktop && (
+        <DesktopPageHeader
+          eyebrow={greeting.replace(',', '')}
+          title="NTF Dashboard"
+          subtitle="Manage visitor approvals and non-teaching faculty clearances"
+        />
+      )}
+
       {/* Header */}
-      <div className="text-left px-1">
+      <div className="text-left px-1 lg:hidden">
         <p className="text-[14px] font-semibold text-slate-400 leading-none">{greeting}</p>
         <h2 className="text-[28px] font-bold text-slate-900 dark:text-white mt-1 leading-tight tracking-tight uppercase">
           {staffName}
@@ -173,6 +187,13 @@ export default function NTFDashboard() {
       </div>
 
       {/* Stats */}
+      {isDesktop ? (
+        <div className="grid grid-cols-3 gap-4">
+          <DesktopStatCard label="Pending" value={stats.pending} icon={Clock} tone="amber" active={activeTab === 'PENDING'} onClick={() => setActiveTab('PENDING')} />
+          <DesktopStatCard label="Approved" value={stats.approved} icon={CheckCircle} tone="emerald" active={activeTab === 'APPROVED'} onClick={() => setActiveTab('APPROVED')} />
+          <DesktopStatCard label="Rejected" value={stats.rejected} icon={XCircle} tone="rose" active={activeTab === 'REJECTED'} onClick={() => setActiveTab('REJECTED')} />
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {statCards.map(stat => (
           <Card key={stat.label} onClick={() => setActiveTab(stat.label as Tab)} className={cn(
@@ -191,8 +212,27 @@ export default function NTFDashboard() {
           </Card>
         ))}
       </div>
+      )}
 
       {/* Search */}
+      {isDesktop ? (
+        <DesktopToolbar
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search visitor requests..."
+        >
+          <DesktopSegmentedTabs
+            value={activeTab}
+            onChange={setActiveTab}
+            options={[
+              { value: 'PENDING', label: 'Pending', count: stats.pending },
+              { value: 'APPROVED', label: 'Approved', count: stats.approved },
+              { value: 'REJECTED', label: 'Rejected', count: stats.rejected },
+            ]}
+          />
+          <Button variant="secondary" size="sm" onClick={fetchData} icon={<RefreshCw className={cn('w-4 h-4', isLoading && 'animate-spin')} />}>Refresh</Button>
+        </DesktopToolbar>
+      ) : (
       <div className="relative">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10"><Search className="w-4 h-4" /></div>
         <input 
@@ -203,8 +243,71 @@ export default function NTFDashboard() {
           className="w-full pl-11 pr-4 h-12 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-bold focus:ring-2 focus:ring-amber-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
         />
       </div>
+      )}
 
       {/* Requests List */}
+      {isDesktop ? (
+        <section className="desktop-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+            <div>
+              <h3 className="text-base font-bold text-slate-950 dark:text-white">Visitor Queue</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Website visitor requests assigned to you</p>
+            </div>
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filtered.length} Requests</span>
+          </div>
+          {filtered.length === 0 ? (
+            <EmptyState
+              title={EMPTY_COPY.noRequestsFound}
+              description={searchQuery ? 'No matches found.' : `No ${activeTab.toLowerCase()} requests.`}
+              icon={<Users className="w-8 h-8" />}
+            />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="desktop-table">
+                <thead>
+                  <tr>
+                    <th>Visitor</th>
+                    <th>Purpose</th>
+                    <th>Phone</th>
+                    <th>Requested</th>
+                    <th>Status</th>
+                    <th className="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(req => {
+                    const id = req.requestId || req.id;
+                    const name = req.requesterName || req.name || 'Visitor';
+                    const isProcessing = processing === id;
+                    return (
+                      <tr key={id} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
+                        <td>
+                          <p className="font-bold text-slate-950 dark:text-white">{name}</p>
+                          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{req.email || req.visitorEmail || 'Website visitor'}</p>
+                        </td>
+                        <td className="max-w-[360px] truncate">{req.purpose || 'Campus Visit'}</td>
+                        <td>{req.visitorPhone || 'No Phone'}</td>
+                        <td>{relativeTime(req.createdAt)}</td>
+                        <td><Badge status={req.status} size="sm" /></td>
+                        <td className="text-right">
+                          {req.status === 'PENDING' ? (
+                            <div className="flex justify-end gap-2">
+                              <Button variant="success" size="sm" onClick={() => handleApprove(req)} disabled={isProcessing}>Approve</Button>
+                              <Button variant="secondary" size="sm" onClick={() => handleReject(req)} disabled={isProcessing}>Reject</Button>
+                            </div>
+                          ) : (
+                            <span className="text-xs font-bold text-slate-400">Reviewed</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      ) : (
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
@@ -263,6 +366,7 @@ export default function NTFDashboard() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

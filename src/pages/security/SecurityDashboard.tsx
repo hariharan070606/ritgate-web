@@ -12,10 +12,14 @@ import { cn } from '../../utils/cn';
 import { useNavigate } from 'react-router-dom';
 import { transitions } from '../../design-system/animations';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { useAdaptive } from '../../utils/useAdaptive';
+import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
+import DesktopStatCard from '../../components/desktop/DesktopStatCard';
 
 export default function SecurityDashboard() {
   usePageTitle('Dashboard');
   const { user } = useAuth();
+  const { isDesktop } = useAdaptive();
   const navigate = useNavigate();
   const [stats, setStats] = useState({ active: 0, exited: 0, total: 0 });
   const [recentScans, setRecentScans] = useState<any[]>([]);
@@ -91,8 +95,17 @@ export default function SecurityDashboard() {
 
   return (
     <div className="space-y-8">
+      {isDesktop && (
+        <DesktopPageHeader
+          eyebrow="ON DUTY"
+          title="Security Dashboard"
+          subtitle={`Live gate operations for ${gate}`}
+          action={<Button icon={<Camera className="w-4 h-4" />} onClick={() => navigate('/scanner')}>Launch Scanner</Button>}
+        />
+      )}
+
       {/* 1. Greeting & User Info */}
-      <div className="text-left">
+      <div className="text-left lg:hidden">
         <p className="text-[14px] font-semibold text-slate-400 leading-none">{greeting}</p>
         <h2 className="text-[28px] font-bold text-slate-900 dark:text-white mt-1 leading-tight tracking-tight uppercase">
           {secName}
@@ -113,7 +126,7 @@ export default function SecurityDashboard() {
       <motion.div 
         whileTap={transitions.feedback.tap}
         onClick={() => navigate('/scanner')}
-        className="group relative cursor-pointer overflow-hidden rounded-[32px] shadow-2xl shadow-blue-200 dark:shadow-none"
+        className="group relative cursor-pointer overflow-hidden rounded-[32px] shadow-2xl shadow-blue-200 dark:shadow-none lg:hidden"
       >
         <div className="absolute inset-0 bg-[var(--color-primary)]" />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay" />
@@ -138,11 +151,19 @@ export default function SecurityDashboard() {
       {/* 3. Operational Metrics */}
       <div className="space-y-3 text-left">
         <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-widest px-1">Live Statistics</h3>
+        {isDesktop ? (
+          <div className="grid grid-cols-3 gap-4">
+            <DesktopStatCard label="Active" value={stats.active} icon={Users} tone="blue" />
+            <DesktopStatCard label="Entries" value={stats.total} icon={Activity} tone="emerald" />
+            <DesktopStatCard label="Exits" value={stats.exited} icon={LogOut} tone="amber" />
+          </div>
+        ) : (
         <div className="grid grid-cols-3 gap-3">
           <KPICard title="Active" value={stats.active} icon={<Users className="w-5 h-5" />} color="blue" />
           <KPICard title="Entries" value={stats.total} icon={<Activity className="w-5 h-5" />} color="green" />
           <KPICard title="Exits" value={stats.exited} icon={<LogOut className="w-5 h-5" />} color="amber" />
         </div>
+        )}
       </div>
 
       {/* 4. Recent Activity */}
@@ -160,6 +181,43 @@ export default function SecurityDashboard() {
           </button>
         </div>
 
+        {isDesktop && recentScans.length > 0 ? (
+          <section className="desktop-card overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="desktop-table">
+                <thead>
+                  <tr>
+                    <th>Person</th>
+                    <th>Type</th>
+                    <th>Scan</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentScans.slice(0, 10).map((scan, i) => (
+                    <tr key={scan.id || i} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
+                      <td>
+                        <p className="font-bold text-slate-950 dark:text-white">{scan.personName || 'UNKNOWN'}</p>
+                        <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{gate}</p>
+                      </td>
+                      <td>{scan.personType || 'Person'}</td>
+                      <td>{scan.scanType || 'Scan'}</td>
+                      <td>{scan.scanTime || 'NOW'}</td>
+                      <td>
+                        <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
+                          scan.accessGranted ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300'
+                        )}>
+                          {scan.accessGranted ? 'Granted' : 'Denied'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ) : (
         <div className="space-y-3">
           {recentScans.length === 0 ? (
             <EmptyState title="Quiet Zone" description="No scan activity recorded today." icon={<Activity className="w-12 h-12 text-slate-200" />} />
@@ -204,6 +262,7 @@ export default function SecurityDashboard() {
             </AnimatePresence>
           )}
         </div>
+        )}
       </div>
     </div>
   );

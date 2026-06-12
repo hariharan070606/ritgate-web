@@ -27,6 +27,11 @@ import { formatDateTime, relativeTime } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { EMPTY_COPY } from '../../config/nativeCopy';
+import { useAdaptive } from '../../utils/useAdaptive';
+import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
+import DesktopStatCard from '../../components/desktop/DesktopStatCard';
+import DesktopToolbar from '../../components/desktop/DesktopToolbar';
+import DesktopSegmentedTabs from '../../components/desktop/DesktopSegmentedTabs';
 
 type TabType = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -38,6 +43,7 @@ interface AdminDashboardProps {
 export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps = {}) {
   usePageTitle('Dashboard');
   const { getUserId, user } = useAuth();
+  const { isDesktop } = useAdaptive();
   const { error: showError } = useToast();
   const adminId = getUserId();
 
@@ -126,8 +132,17 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
 
   return (
     <div className="space-y-8 pb-10">
+      {isDesktop && (
+        <DesktopPageHeader
+          eyebrow={greeting.replace(',', '')}
+          title="Admin Dashboard"
+          subtitle="Monitor website visitor requests and administrative clearances"
+          action={<Button icon={<Plus className="w-4 h-4" />} onClick={() => onNavigate?.('new-pass')}>New Pass</Button>}
+        />
+      )}
+
       {/* 1. Greeting & User Info */}
-      <div className="text-left px-1">
+      <div className="text-left px-1 lg:hidden">
         <p className="text-[14px] font-semibold text-slate-400 leading-none">{greeting}</p>
         <h2 className="text-[28px] font-bold text-slate-900 dark:text-white mt-1 leading-tight tracking-tight uppercase">
           {adminName}
@@ -141,6 +156,13 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
       </div>
 
       {/* 2. Stats Cards */}
+      {isDesktop ? (
+        <div className="grid grid-cols-3 gap-4">
+          <DesktopStatCard label="Pending" value={stats.pending} icon={Clock} tone="amber" active={activeTab === 'PENDING'} onClick={() => setActiveTab('PENDING')} />
+          <DesktopStatCard label="Approved" value={stats.approved} icon={CheckCircle} tone="emerald" active={activeTab === 'APPROVED'} onClick={() => setActiveTab('APPROVED')} />
+          <DesktopStatCard label="Rejected" value={stats.rejected} icon={XCircle} tone="rose" active={activeTab === 'REJECTED'} onClick={() => setActiveTab('REJECTED')} />
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/30 p-6">
           <div className="flex items-center justify-between">
@@ -178,8 +200,26 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
           </div>
         </Card>
       </div>
+      )}
 
       {/* 3. Search & Filter */}
+      {isDesktop ? (
+        <DesktopToolbar
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search visitor requests..."
+        >
+          <DesktopSegmentedTabs
+            value={activeTab}
+            onChange={setActiveTab}
+            options={[
+              { value: 'PENDING', label: 'Pending', count: stats.pending },
+              { value: 'APPROVED', label: 'Approved', count: stats.approved },
+              { value: 'REJECTED', label: 'Rejected', count: stats.rejected },
+            ]}
+          />
+        </DesktopToolbar>
+      ) : (
       <div className="space-y-4">
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10">
@@ -211,8 +251,55 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
           ))}
         </div>
       </div>
+      )}
 
       {/* 4. Requests List */}
+      {isDesktop ? (
+        <section className="desktop-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+            <div>
+              <h3 className="text-base font-bold text-slate-950 dark:text-white">Visitor Requests</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{activeTab.toLowerCase()} requests registered through the website</p>
+            </div>
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filtered.length} Requests</span>
+          </div>
+          {filtered.length === 0 ? (
+            <EmptyState
+              title={EMPTY_COPY.noRequestsFound}
+              description={searchQuery ? 'No requests matching your search.' : `No ${activeTab.toLowerCase()} visitor requests.`}
+              icon={<FileText className="w-8 h-8" />}
+            />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="desktop-table">
+                <thead>
+                  <tr>
+                    <th>Visitor</th>
+                    <th>Purpose</th>
+                    <th>Requested</th>
+                    <th>Status</th>
+                    <th className="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((req, i) => (
+                    <tr key={req.requestId || req.id || i} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
+                      <td>
+                        <p className="font-bold text-slate-950 dark:text-white">{req.requesterName || req.name || 'Visitor'}</p>
+                        <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{req.visitorPhone || req.email || 'Website visitor'}</p>
+                      </td>
+                      <td className="max-w-[360px] truncate">{req.purpose || 'Campus Visit'}</td>
+                      <td>{relativeTime(req.createdAt)}</td>
+                      <td><Badge status={req.status} size="sm" /></td>
+                      <td className="text-right"><Button size="sm" variant="secondary">View</Button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      ) : (
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
@@ -267,6 +354,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
