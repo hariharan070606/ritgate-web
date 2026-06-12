@@ -170,7 +170,7 @@ export default function AppLayout() {
         <main className={cn(
           'flex-1 overflow-y-auto',
           isDesktop
-            ? 'px-7 xl:px-10 py-8 xl:py-9'
+            ? 'px-7 xl:px-10 py-7 xl:py-8'
             : 'px-4 py-6', // tablet
         )}>
           <div className="desktop-page">

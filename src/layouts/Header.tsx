@@ -42,14 +42,14 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
   const isDashboard = location.pathname === '/dashboard';
 
   return (
-    <header className="sticky top-0 z-30 h-[68px] bg-white/82 dark:bg-slate-950/86 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800 flex items-center shrink-0 overflow-visible shadow-[0_1px_0_rgba(15,23,42,0.04)]">
+    <header className="sticky top-0 z-30 h-[68px] lg:h-[60px] bg-white/82 dark:bg-[#050b16]/90 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/80 flex items-center shrink-0 overflow-visible shadow-[0_1px_0_rgba(15,23,42,0.04)]">
       <div className="flex items-center justify-between w-full px-7 xl:px-10 gap-4">
 
         {/* ── Left: Menu toggle + page title ──────────────── */}
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={onMenuClick}
-            className="w-10 h-10 rounded-2xl flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0"
+            className="w-10 h-10 lg:w-9 lg:h-9 rounded-2xl flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0"
             aria-label="Toggle sidebar"
           >
             <Menu className="w-4 h-4" />
@@ -65,7 +65,7 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
             </button>
           )}
 
-          <h1 className="text-[18px] font-bold text-slate-950 dark:text-white leading-none truncate tracking-tight">
+          <h1 className="text-[18px] font-bold text-slate-950 dark:text-white leading-none truncate tracking-tight lg:hidden">
             {title}
           </h1>
         </div>

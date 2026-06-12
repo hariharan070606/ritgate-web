@@ -50,7 +50,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
     <motion.aside
       animate={{ width: collapsed ? 72 : 272 }}
       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed left-0 top-0 h-screen z-40 flex flex-col bg-white/96 dark:bg-slate-950/96 backdrop-blur-xl border-r border-slate-200/70 dark:border-slate-800 overflow-hidden shadow-[8px_0_30px_rgba(15,23,42,0.035)]"
+      className="fixed left-0 top-0 h-screen z-40 flex flex-col bg-white/96 dark:bg-[#050b16]/96 backdrop-blur-xl border-r border-slate-200/70 dark:border-slate-800/80 overflow-hidden shadow-[8px_0_30px_rgba(15,23,42,0.035)]"
     >
       {/* ── Brand ─────────────────────────────────────────── */}
       <div className={cn(
@@ -141,8 +141,8 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 'group flex items-center gap-3 rounded-2xl min-h-[44px] transition-all duration-150 relative select-none',
                 collapsed ? 'justify-center px-0 py-2' : 'px-3 py-2',
                 isActive
-                  ? 'bg-blue-50 dark:bg-indigo-950/50 text-[var(--color-primary)] dark:text-blue-400'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white',
+                  ? 'bg-blue-50 dark:bg-blue-500/10 text-[var(--color-primary)] dark:text-blue-300'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white',
               )}
             >
               {/* Active left bar */}
