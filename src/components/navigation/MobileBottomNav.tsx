@@ -28,10 +28,10 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
         className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800"
         style={{
           paddingBottom: 'env(safe-area-inset-bottom)',
-          boxShadow: '0 -1px 0 0 rgba(0,0,0,0.06), 0 -4px 16px rgba(0,0,0,0.04)',
+          boxShadow: '0 -2px 10px rgba(15,23,42,0.05)',
         }}
       >
-        <div className="flex items-stretch h-[64px]">
+        <div className="flex items-stretch h-[68px] px-2 py-2">
           {items.map((item) => {
             const Icon = item.icon;
             const isNewPass = item.path === '/new-pass';
@@ -45,8 +45,8 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                 key={item.path}
                 onClick={() => handleNavClick(item.path)}
                 className={cn(
-                  'flex flex-col items-center justify-center flex-1 gap-1 relative',
-                  'active:opacity-70 transition-opacity duration-100',
+                  'flex flex-col items-center justify-center flex-1 gap-1 relative rounded-2xl',
+                  'active:opacity-70 transition-all duration-150',
                   isActive
                     ? 'text-[var(--color-primary)] dark:text-blue-400'
                     : 'text-slate-400 dark:text-slate-500',
@@ -55,8 +55,8 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                 <div className="relative">
                   <Icon className={cn(
                     'transition-transform duration-150',
-                    isNewPass ? 'w-6 h-6' : 'w-[22px] h-[22px]',
-                    isActive && !isNewPass && 'scale-110',
+                    isNewPass ? 'w-7 h-7' : 'w-[22px] h-[22px]',
+                    isActive && !isNewPass && 'scale-105',
                   )} />
 
                   {isNotif && unreadCount > 0 && (
@@ -67,7 +67,7 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                 </div>
 
                 <span className={cn(
-                  'text-[10px] font-bold uppercase tracking-wide leading-none',
+                  'text-[11px] font-semibold leading-none',
                   isActive
                     ? 'text-[var(--color-primary)] dark:text-blue-400'
                     : 'text-slate-400 dark:text-slate-500',
@@ -78,7 +78,7 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                 {isActive && !isNewPass && (
                   <motion.span
                     layoutId="bottomNavDot"
-                    className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[var(--color-primary)] dark:bg-blue-400"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-7 h-[3px] rounded-full bg-[var(--color-primary)] dark:bg-blue-400"
                     transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   />
                 )}

@@ -135,7 +135,7 @@ export default function AdminMyRequests({ onBack }: AdminMyRequestsProps = {}) {
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center py-16 gap-3">
             <FileText className="w-12 h-12 text-slate-200" />
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">No personal requests found</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">No requests found</p>
           </div>
         ) : (
           <AnimatePresence mode="popLayout">

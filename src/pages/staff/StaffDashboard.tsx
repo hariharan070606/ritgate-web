@@ -35,6 +35,7 @@ import SinglePassDetailsModal from '../../components/common/SinglePassDetailsMod
 import { cn } from '../../utils/cn';
 import type { Staff } from '../../types';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
+import { EMPTY_COPY } from '../../config/nativeCopy';
 
 type ActiveTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -307,7 +308,7 @@ export default function StaffDashboard() {
                            </div>
                         </div>
                         <p className="text-[12px] font-bold text-slate-400 uppercase tracking-tight">
-                          {isVisitor ? `Visitor • ${request.visitorPhone || ''}` : `${request.regNo || 'N/A'} • ${request.department || 'Dept'}`}
+                          {isVisitor ? `Visitor - ${request.visitorPhone || ''}` : `${request.regNo || 'N/A'} - ${request.department || 'Dept'}`}
                         </p>
                       </div>
                       <span className="text-[11px] font-bold text-slate-300 whitespace-nowrap">
@@ -356,9 +357,9 @@ export default function StaffDashboard() {
               <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mb-5">
                 <CheckCircle2 className="w-10 h-10 text-slate-200 dark:text-slate-800" />
               </div>
-              <h5 className="text-[17px] font-black text-slate-900 dark:text-white mb-1.5">No {activeTab.toLowerCase()} requests</h5>
+              <h5 className="text-[17px] font-black text-slate-900 dark:text-white mb-1.5">{EMPTY_COPY.noRequestsFound}</h5>
               <p className="text-[13px] font-medium text-slate-400 max-w-[200px] leading-relaxed italic">
-                Any requests needing your attention will appear here.
+                {EMPTY_COPY.requestsWillAppear}
               </p>
             </div>
           )}

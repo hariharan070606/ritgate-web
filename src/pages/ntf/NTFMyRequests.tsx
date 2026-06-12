@@ -14,6 +14,7 @@ import { transitions } from '../../design-system/animations';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 import type { GatePassRequest } from '../../types';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { EMPTY_COPY } from '../../config/nativeCopy';
 
 export default function NTFMyRequests() {
   usePageTitle('My Requests');
@@ -109,7 +110,7 @@ export default function NTFMyRequests() {
           <div>
             <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide leading-none">MY REQUESTS</p>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">{staffName}</h2>
-            <p className="text-xs text-slate-400">NTF • {(user as any)?.department || 'Department'}</p>
+            <p className="text-xs text-slate-400">NTF - {(user as any)?.department || 'Department'}</p>
           </div>
         </div>
         <button onClick={fetchData} className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
@@ -129,8 +130,8 @@ export default function NTFMyRequests() {
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center py-16 gap-3">
             <FileText className="w-12 h-12 text-slate-200" />
-            <p className="text-lg font-semibold text-slate-400">No requests found</p>
-            <p className="text-sm text-slate-400">Your requests will appear here</p>
+            <p className="text-lg font-semibold text-slate-400">{EMPTY_COPY.noRequestsFound}</p>
+            <p className="text-sm text-slate-400">{EMPTY_COPY.requestsWillAppear}</p>
           </div>
         ) : (
           <AnimatePresence mode="popLayout">
@@ -149,7 +150,7 @@ export default function NTFMyRequests() {
                           <span className="text-sm font-bold text-slate-900 dark:text-white truncate">{staffName}</span>
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">Single Pass</span>
                         </div>
-                        <p className="text-xs text-slate-400">NTF • {(user as any)?.department || 'Department'}</p>
+                        <p className="text-xs text-slate-400">NTF - {(user as any)?.department || 'Department'}</p>
                       </div>
                       <span className="text-[10px] text-slate-400 shrink-0">{relativeTime(dateStr)}</span>
                     </div>

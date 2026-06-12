@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useProfile } from '../context/ProfileContext';
 import { ROLE_LABELS } from '../config/api.config';
-import { getMobileNavItems } from '../config/navigation';
+import { getNavItems } from '../config/navigation';
 import RITLogo from '../components/common/RITLogo';
 import ConfirmationModal from '../components/common/ConfirmationModal';
 import { cn } from '../utils/cn';
@@ -25,7 +25,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { profileImage } = useProfile();
   const location = useLocation();
 
-  const navItems = getMobileNavItems(role || 'STUDENT');
+  const navItems = getNavItems(role || 'STUDENT');
 
   const userName = (() => {
     if (!user) return 'User';

@@ -41,7 +41,7 @@ export function getNavItems(role: string): NavItem[] {
         { path: '/new-pass', label: 'New Pass', icon: Plus },
         { path: '/my-requests', label: 'My Requests', icon: ClipboardList },
         { path: '/event-csv', label: 'Event CSV', icon: Upload },
-        { path: '/guest-register', label: 'Guest Pass', icon: UserPlus },
+        { path: '/guest-register', label: 'Pre-register guest', icon: UserPlus },
         { path: '/profile', label: 'Profile', icon: User },
       ];
     case 'NON_TEACHING':
@@ -51,7 +51,7 @@ export function getNavItems(role: string): NavItem[] {
         { path: '/new-pass', label: 'New Pass', icon: Plus },
         { path: '/my-requests', label: 'My Requests', icon: ClipboardList },
         { path: '/exits', label: 'Exits', icon: LogOut },
-        { path: '/guest-register', label: 'Guest Pass', icon: UserPlus },
+        { path: '/guest-register', label: 'Pre-register guest', icon: UserPlus },
         { path: '/profile', label: 'Profile', icon: User },
       ];
     case 'HOD':
@@ -60,7 +60,7 @@ export function getNavItems(role: string): NavItem[] {
         { path: '/new-pass', label: 'New Pass', icon: Plus },
         { path: '/my-requests', label: 'My Requests', icon: ClipboardList },
         { path: '/hod-events', label: 'Events', icon: CalendarDays },
-        { path: '/guest-register', label: 'Guest Pass', icon: UserPlus },
+        { path: '/guest-register', label: 'Pre-register guest', icon: UserPlus },
         { path: '/profile', label: 'Profile', icon: User },
       ];
     case 'HR':
@@ -71,7 +71,7 @@ export function getNavItems(role: string): NavItem[] {
         { path: '/my-requests', label: 'My Requests', icon: ClipboardList },
         { path: '/exits', label: 'Exits', icon: LogOut },
         { path: '/gate-logs', label: 'Gate Logs', icon: BookOpen },
-        { path: '/guest-register', label: 'Guest Pass', icon: UserPlus },
+        { path: '/guest-register', label: 'Pre-register guest', icon: UserPlus },
         { path: '/profile', label: 'Profile', icon: User },
       ];
     case 'SECURITY':
@@ -98,7 +98,7 @@ export function getMobileNavItems(role: string): NavItem[] {
     return [
       { path: '/dashboard', label: 'Home', icon: Home },
       { path: '/new-pass', label: 'New Pass', icon: Plus },
-      { path: '/my-requests', label: 'Requests', icon: Clock },
+      { path: '/my-requests', label: 'My Requests', icon: Clock },
       { path: '/profile', label: 'Profile', icon: User },
     ];
   }
@@ -107,7 +107,7 @@ export function getMobileNavItems(role: string): NavItem[] {
     return [
       { path: '/dashboard', label: 'Home', icon: Home },
       { path: '/new-pass', label: 'New Pass', icon: Plus },
-      { path: '/my-requests', label: 'Requests', icon: Clock },
+      { path: '/my-requests', label: 'My Requests', icon: Clock },
       { path: '/profile', label: 'Profile', icon: User },
     ];
   }
@@ -117,7 +117,7 @@ export function getMobileNavItems(role: string): NavItem[] {
        { path: '/dashboard', label: 'Home', icon: Home },
        { path: '/new-pass', label: 'New Pass', icon: Plus },
        { path: '/hod-events', label: 'Events', icon: CalendarDays },
-       { path: '/my-requests', label: 'Requests', icon: Clock },
+       { path: '/my-requests', label: 'My Requests', icon: Clock },
        { path: '/profile', label: 'Profile', icon: User },
      ];
   }
@@ -126,7 +126,7 @@ export function getMobileNavItems(role: string): NavItem[] {
      return [
        { path: '/dashboard', label: 'Home', icon: Home },
        { path: '/new-pass', label: 'New Pass', icon: Plus },
-       { path: '/my-requests', label: 'Requests', icon: Clock },
+       { path: '/my-requests', label: 'My Requests', icon: Clock },
        { path: '/exits', label: 'Exits', icon: LogOut },
        { path: '/profile', label: 'Profile', icon: User },
      ];
@@ -136,7 +136,7 @@ export function getMobileNavItems(role: string): NavItem[] {
      return [
        { path: '/dashboard', label: 'Home', icon: Home },
        { path: '/new-pass', label: 'New Pass', icon: Plus },
-       { path: '/my-requests', label: 'Requests', icon: Clock },
+       { path: '/my-requests', label: 'My Requests', icon: Clock },
        { path: '/gate-logs', label: 'Gate Logs', icon: BookOpen },
        { path: '/profile', label: 'Profile', icon: User },
      ];

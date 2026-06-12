@@ -14,6 +14,7 @@ import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { nowIST } from '../../utils/dateUtils';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { PASS_COPY } from '../../config/nativeCopy';
 
 /** Returns current hour in IST (UTC+5:30) */
 const getISTHour = () => {
@@ -23,7 +24,7 @@ const getISTHour = () => {
 };
 
 export default function HRNewPass() {
-  usePageTitle('New Pass');
+  usePageTitle(PASS_COPY.newRequest);
   const { getUserId, user } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const { withLock } = useActionLock();
@@ -109,8 +110,8 @@ export default function HRNewPass() {
           <ShieldCheck className="w-3.5 h-3.5" />
           <span className="text-[10px] font-bold tracking-widest uppercase">HR Authorization</span>
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">New Gate Pass</h2>
-        <p className="text-xs text-slate-400 mt-1">Instantly approved — QR code generated immediately</p>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{PASS_COPY.newRequest}</h2>
+        <p className="text-xs text-slate-400 mt-1">Instantly approved - QR code generated immediately</p>
       </div>
 
       {/* Info Banner */}
@@ -131,7 +132,7 @@ export default function HRNewPass() {
             <div>
               <p className="text-xs font-bold text-rose-700 dark:text-rose-400 uppercase tracking-wide">Not Available</p>
               <p className="text-xs text-rose-600 dark:text-rose-400/80 font-medium leading-relaxed mt-0.5">
-                Gate pass generation is disabled after 5:00 PM.
+                {PASS_COPY.unavailableAfterFive}
               </p>
             </div>
           </div>
@@ -147,7 +148,7 @@ export default function HRNewPass() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-slate-900 dark:text-white">{hrName}</p>
-              <p className="text-xs text-slate-400">{hrCode} • {department}</p>
+              <p className="text-xs text-slate-400">{hrCode} - {department}</p>
             </div>
             <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-lg uppercase">Active</span>
           </div>

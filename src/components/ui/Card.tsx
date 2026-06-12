@@ -36,10 +36,10 @@ export default function Card({ children, className, hover = false, glass = false
       onClick={onClick}
       {...interactionProps}
       className={cn(
-        'rounded-[16px] border transition-all duration-200',
+        'native-card transition-all duration-200',
         glass
           ? 'bg-white/10 backdrop-blur-md border-white/20 shadow-lg'
-          : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700/60 shadow-sm',
+          : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-sm',
         (hover || onClick) && 'cursor-pointer hover:shadow-base',
         paddings[padding],
         className,

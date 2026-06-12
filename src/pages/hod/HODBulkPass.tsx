@@ -311,7 +311,7 @@ export default function HODBulkPass({ onBack }: HODBulkPassProps) {
             <Users className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h3 className="text-[18px] font-black leading-none mb-1">Batch Authorization</h3>
+            <h3 className="text-[18px] font-black leading-none mb-1">Bulk Student Pass</h3>
             <p className="text-[13px] font-bold text-blue-100 opacity-90 uppercase tracking-widest">HOD Control</p>
           </div>
         </div>

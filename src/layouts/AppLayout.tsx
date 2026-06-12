@@ -170,13 +170,14 @@ export default function AppLayout() {
         <main className={cn(
           'flex-1 overflow-y-auto',
           isDesktop
-            ? 'px-8 py-8'
+            ? 'px-8 xl:px-10 py-8'
             : 'px-4 py-6', // tablet
         )}>
-          <div className="w-full max-w-[1280px] mx-auto">
+          <div className="w-full max-w-[1440px] mx-auto">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
+                className="native-page-enter"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}

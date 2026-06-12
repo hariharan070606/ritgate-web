@@ -63,7 +63,7 @@ export default function ThemePresetSelector() {
       <div className="px-4 py-2.5 border-t border-slate-50 dark:border-slate-800 flex items-center gap-2">
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: activePrimary }} />
         <span className="text-[12px] font-bold text-slate-500 dark:text-slate-400">
-          {active.name} · {isDark ? 'Dark' : 'Light'}
+          {active.name} - {isDark ? 'Dark' : 'Light'}
         </span>
       </div>
 

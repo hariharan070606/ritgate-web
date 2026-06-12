@@ -21,6 +21,7 @@ import { submitStaffGatePass, createInstantGuestPass } from '../../services/api.
 import type { Staff } from '../../types';
 import { cn } from '../../utils/cn';
 import { getRequestDate } from '../../utils/dateUtils';
+import { PASS_COPY } from '../../config/nativeCopy';
 import GatePassQRModal from '../../components/common/GatePassQRModal';
 import StaffBulkPass from './StaffBulkPass';
 import HRNewPass from '../hr/HRNewPass';
@@ -136,7 +137,7 @@ export default function StaffNewPass() {
            setGuestName(''); setGuestPhone(''); setGuestEmail(''); setGuestPurpose('');
          } else showToastError('Failed', res.message);
        } catch { showToastError('Error', 'System sync failed'); }
-    }, 'Provisioning Guest Pass...');
+    }, 'Registering guest pass...');
   };
 
   return (
@@ -154,7 +155,7 @@ export default function StaffNewPass() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="text-[16px] font-black text-slate-900 dark:text-white uppercase tracking-tight">
-            {stage === 'SELECT' ? 'New Request' : stage === 'SINGLE' ? 'Personal Pass' : stage === 'BULK' ? 'Group Movement' : 'Guest Pass'}
+            {stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle}
           </h1>
           <div className="w-10 h-10" />
         </div>
@@ -171,15 +172,15 @@ export default function StaffNewPass() {
                className="space-y-6"
             >
                <div className="mb-4">
-                  <h2 className="text-[24px] font-black text-slate-900 dark:text-white leading-tight mb-2 tracking-tight">Gate Pass Control</h2>
-                  <p className="text-[14px] font-bold text-slate-400">Select the type of exit authorization required</p>
+                  <h2 className="text-[24px] font-black text-slate-900 dark:text-white leading-tight mb-2 tracking-tight">{PASS_COPY.selectTitle}</h2>
+                  <p className="text-[14px] font-bold text-slate-400">{PASS_COPY.selectSubtitle}</p>
                </div>
 
                <div className="grid gap-4">
                   {[
-                    { id: 'SINGLE', title: 'Personal Pass', sub: 'For your official/private exit', icon: UserPlus, color: 'text-violet-600', bg: 'bg-violet-50', restricted: true },
-                    { id: 'BULK', title: 'Batch Authorization', sub: 'Group exit for department students', icon: Users, color: 'text-amber-600', bg: 'bg-amber-50', restricted: true },
-                    { id: 'GUEST', title: 'Guest Pass', sub: 'Pre-register visitors for entry', icon: FileText, color: 'text-emerald-600', bg: 'bg-emerald-50', restricted: false },
+                    { id: 'SINGLE', title: PASS_COPY.singleTitle, sub: PASS_COPY.singleSubtitle, icon: UserPlus, color: 'text-white', bg: 'bg-gradient-to-br from-[#4facfe] to-[#00f2fe]', restricted: true },
+                    { id: 'BULK', title: PASS_COPY.bulkTitle, sub: PASS_COPY.bulkSubtitle, icon: Users, color: 'text-white', bg: 'bg-gradient-to-br from-[#667eea] to-[#764ba2]', restricted: true },
+                    { id: 'GUEST', title: PASS_COPY.guestTitle, sub: PASS_COPY.guestSubtitle, icon: FileText, color: 'text-white', bg: 'bg-gradient-to-br from-[#0d9488] to-[#14b8a6]', restricted: false },
                   ].filter(item => {
                     // HR, NCI, NTF, and Admin Officer only get Single + Guest — no bulk
                     if (item.id === 'BULK' && ['HR', 'NON_CLASS_INCHARGE', 'NON_TEACHING', 'ADMIN_OFFICER'].includes(role || '')) return false;
@@ -205,7 +206,7 @@ export default function StaffNewPass() {
                        <div className="flex-1">
                           <h3 className={cn("text-[16px] font-black tracking-tight mb-1", isDisabled ? "text-slate-400" : "text-slate-900 dark:text-white")}>{item.title}</h3>
                           <p className="text-[12px] font-bold text-slate-400 italic leading-tight">
-                            {isDisabled ? 'Not available after 5:00 PM' : item.sub}
+                            {isDisabled ? PASS_COPY.unavailableAfterFive : item.sub}
                           </p>
                        </div>
                        {isDisabled ? (
@@ -288,7 +289,7 @@ export default function StaffNewPass() {
                        onClick={submitSingle}
                        className="w-full h-14 bg-violet-600 rounded-2xl text-white font-black text-[15px] uppercase tracking-widest shadow-xl shadow-violet-100 dark:shadow-none transition-all active:scale-[0.98]"
                      >
-                       Send Request
+                       {PASS_COPY.sendRequest}
                      </button>
                    </div>
                 </div>
@@ -366,7 +367,7 @@ export default function StaffNewPass() {
                         onClick={submitGuest}
                         className="w-full h-15 bg-emerald-600 rounded-2xl text-white font-black text-[16px] uppercase tracking-widest shadow-xl shadow-emerald-100 dark:shadow-none transition-all active:scale-[0.98]"
                       >
-                         Generate Guest Pass
+                         {PASS_COPY.generateGuestPass}
                       </button>
                    </div>
                 </div>

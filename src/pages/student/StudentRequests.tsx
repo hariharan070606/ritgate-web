@@ -266,8 +266,7 @@ export default function StudentRequests() {
                 <FileText className="w-10 h-10 text-slate-200 dark:text-slate-800" />
               </div>
               <h5 className="text-[17px] font-black text-slate-900 dark:text-white mb-1.5">
-                {activeTab === 'PENDING' ? 'No Pending Requests' :
-                 activeTab === 'APPROVED' ? 'No Approved Requests' : 'No Rejected Requests'}
+                No requests found
               </h5>
               <p className="text-[13px] font-medium text-slate-400 max-w-[200px] leading-relaxed italic">
                 Any requests needing your attention will appear here.

@@ -276,7 +276,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       </Modal>
 
       {/* Bulk Detail Modal */}
-      <Modal isOpen={showBulkDetail} onClose={() => setShowBulkDetail(false)} title="Bulk Gate Pass Details" size="lg">
+      <Modal isOpen={showBulkDetail} onClose={() => setShowBulkDetail(false)} title="Bulk Student Pass Details" size="lg">
         {selectedRequest && (
           <div className="space-y-5 pt-2">
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl space-y-3">

@@ -280,7 +280,7 @@ export default function StudentHome() {
               <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-3">
                 <FileText className="w-8 h-8 text-slate-200 dark:text-slate-700" />
               </div>
-              <h5 className="text-[15px] font-bold text-slate-900 dark:text-white mb-1">No Recent Requests</h5>
+              <h5 className="text-[15px] font-bold text-slate-900 dark:text-white mb-1">No requests found</h5>
               <p className="text-[12px] font-medium text-slate-400">Your recent gate pass activity will appear here.</p>
             </div>
           )}

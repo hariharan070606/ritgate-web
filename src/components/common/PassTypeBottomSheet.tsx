@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Users, UserPlus, ChevronRight, Ban, X } from 'lucide-react';
+import { User, Users, UserPlus, ChevronRight, Ban } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
+import { PASS_COPY } from '../../config/nativeCopy';
 
 interface PassTypeBottomSheetProps {
   isOpen: boolean;
@@ -71,9 +72,9 @@ export default function PassTypeBottomSheet({
 
             {/* Header */}
             <div className="px-6 pt-2 pb-6">
-              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">Select Pass Type</h2>
+              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">{PASS_COPY.selectTitle}</h2>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                Choose the type of gate pass you want to create
+                {PASS_COPY.selectSubtitle}
               </p>
             </div>
 
@@ -98,9 +99,9 @@ export default function PassTypeBottomSheet({
                   <h3 className={cn(
                     "text-base font-bold mb-0.5",
                     passDisabled ? "text-slate-400" : "text-slate-900 dark:text-white"
-                  )}>Myself (Single Pass)</h3>
+                  )}>{PASS_COPY.singleTitle}</h3>
                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400 leading-snug">
-                    {passDisabled ? 'Not available after 5:00 PM' : 'Create a gate pass for yourself'}
+                    {passDisabled ? PASS_COPY.unavailableAfterFive : PASS_COPY.singleSubtitle}
                   </p>
                 </div>
                 <div className="ml-2">
@@ -133,9 +134,9 @@ export default function PassTypeBottomSheet({
                   <h3 className={cn(
                     "text-base font-bold mb-0.5",
                     passDisabled ? "text-slate-400" : "text-slate-900 dark:text-white"
-                  )}>Bulk Student Pass</h3>
+                  )}>{PASS_COPY.bulkTitle}</h3>
                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400 leading-snug">
-                    {passDisabled ? 'Not available after 5:00 PM' : 'Create a gate pass for multiple students'}
+                    {passDisabled ? PASS_COPY.unavailableAfterFive : PASS_COPY.bulkSubtitle}
                   </p>
                 </div>
                 <div className="ml-2">
@@ -158,9 +159,9 @@ export default function PassTypeBottomSheet({
                   <UserPlus className="w-7 h-7 text-white" />
                 </div>
                 <div className="flex-1 ml-4 text-left">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white mb-0.5">Pre-register guest</h3>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white mb-0.5">{PASS_COPY.guestTitle}</h3>
                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400 leading-snug">
-                    Instant visitor pass — QR & manual code
+                    {PASS_COPY.guestSubtitle}
                   </p>
                 </div>
                 <div className="ml-2">

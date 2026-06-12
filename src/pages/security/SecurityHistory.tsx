@@ -28,6 +28,7 @@ import { formatDateTime, formatTime } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
 import { exportToPdf, exportToCsv } from '../../utils/reportUtils';
 import { transitions } from '../../design-system/animations';
+import { EMPTY_COPY } from '../../config/nativeCopy';
 
 type TabType = 'PERSONS' | 'VEHICLES';
 
@@ -313,7 +314,7 @@ export default function SecurityHistory() {
 
         {(activeTab === 'PERSONS' ? filteredHistory : filteredVehicles).length === 0 ? (
           <EmptyState 
-            title="Archives Empty" 
+            title={EMPTY_COPY.noRecordsFound} 
             description={searchQuery || startDate || endDate ? "No subjects matching audit criteria." : "Access logs will appear here upon activity."} 
             icon={<History className="w-12 h-12 text-slate-200" />} 
           />
@@ -343,7 +344,7 @@ export default function SecurityHistory() {
                              </h4>
                              <div className="flex items-center gap-2 mt-2">
                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest truncate max-w-[150px] opacity-80">{sub}</span>
-                               <span className="text-slate-200">•</span>
+                               <span className="text-slate-200">-</span>
                                <span className="text-[9px] font-bold text-[var(--color-primary)] dark:text-blue-400 bg-blue-50 dark:bg-indigo-950/20 px-2 py-0.5 rounded-full uppercase tracking-widest border border-blue-100/30">
                                  {meta}
                                </span>

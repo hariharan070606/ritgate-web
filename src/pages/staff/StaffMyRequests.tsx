@@ -271,7 +271,7 @@ export default function StaffMyRequests() {
               <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mb-5">
                 <FileText className="w-10 h-10 text-slate-200 dark:text-slate-800" />
               </div>
-              <h5 className="text-[17px] font-black text-slate-900 dark:text-white mb-1.5">No Requests Found</h5>
+              <h5 className="text-[17px] font-black text-slate-900 dark:text-white mb-1.5">No requests found</h5>
               <p className="text-[13px] font-medium text-slate-400 max-w-[200px] leading-relaxed italic">
                 Your past gate pass requests will appear here.
               </p>

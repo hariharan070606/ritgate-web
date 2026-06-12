@@ -20,6 +20,7 @@ import TopRefreshControl from '../../components/common/TopRefreshControl';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import { formatDateTime } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
+import { EMPTY_COPY } from '../../config/nativeCopy';
 
 interface HistoryItem {
   id: string;
@@ -203,7 +204,7 @@ export default function StudentHistory() {
                  <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mb-5">
                     <History className="w-10 h-10 text-slate-200 dark:text-slate-800" />
                  </div>
-                 <h5 className="text-[17px] font-black text-slate-900 dark:text-white mb-1.5">No Records Found</h5>
+                 <h5 className="text-[17px] font-black text-slate-900 dark:text-white mb-1.5">{EMPTY_COPY.noRecordsFound}</h5>
                  <p className="text-[13px] font-medium text-slate-400 max-w-[180px] leading-relaxed italic">
                     Your gate movement history will appear here.
                  </p>

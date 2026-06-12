@@ -14,6 +14,7 @@ import {
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils/cn';
+import { PASS_COPY } from '../../config/nativeCopy';
 import HODNewPassRequest from './HODNewPassRequest';
 import HODBulkPass from './HODBulkPass';
 
@@ -68,7 +69,7 @@ export default function HODNewPass() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="text-[16px] font-black text-slate-900 dark:text-white uppercase tracking-tight">
-            {stage === 'SELECT' ? 'New Request' : stage === 'SINGLE' ? 'Personal Pass' : stage === 'BULK' ? 'Bulk Gate Pass' : 'Guest Pass'}
+            {stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle}
           </h1>
           <div className="w-10" />
         </div>
@@ -85,15 +86,15 @@ export default function HODNewPass() {
                className="space-y-6"
             >
                <div className="mb-8">
-                  <h2 className="text-[24px] font-black text-slate-900 dark:text-white leading-tight">Create Gate Pass</h2>
-                  <p className="text-[14px] font-bold text-slate-400 mt-1">Select authorization type for your department</p>
+                  <h2 className="text-[24px] font-black text-slate-900 dark:text-white leading-tight">{PASS_COPY.selectTitle}</h2>
+                  <p className="text-[14px] font-bold text-slate-400 mt-1">{PASS_COPY.selectSubtitle}</p>
                </div>
 
                <div className="grid gap-4">
                   {[
-                    { id: 'SINGLE', title: 'Personal Pass', sub: 'For your official/personal exit', icon: UserPlus, color: 'text-violet-600', bg: 'bg-violet-50', restricted: true },
-                    { id: 'BULK', title: 'Bulk Gate Pass', sub: 'For students/staff group movement', icon: Users, color: 'text-[var(--color-primary)]', bg: 'bg-blue-50', restricted: true },
-                    { id: 'GUEST', title: 'Guest Pass', sub: 'Pre-register visitors for entry', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50', restricted: false },
+                    { id: 'SINGLE', title: PASS_COPY.singleTitle, sub: PASS_COPY.singleSubtitle, icon: UserPlus, color: 'text-white', bg: 'bg-gradient-to-br from-[#4facfe] to-[#00f2fe]', restricted: true },
+                    { id: 'BULK', title: PASS_COPY.bulkTitle, sub: PASS_COPY.bulkSubtitle, icon: Users, color: 'text-white', bg: 'bg-gradient-to-br from-[#667eea] to-[#764ba2]', restricted: true },
+                    { id: 'GUEST', title: PASS_COPY.guestTitle, sub: PASS_COPY.guestSubtitle, icon: FileText, color: 'text-white', bg: 'bg-gradient-to-br from-[#0d9488] to-[#14b8a6]', restricted: false },
                   ].map((card) => {
                     const Icon = card.icon;
                     const isDisabled = card.restricted && passDisabled;
@@ -120,7 +121,7 @@ export default function HODNewPass() {
                          <div className="flex-1">
                             <h3 className={cn("text-[17px] font-black tracking-tight leading-none mb-1.5", isDisabled ? "text-slate-400" : "text-slate-900 dark:text-white")}>{card.title}</h3>
                             <p className="text-[13px] font-bold text-slate-400">
-                              {isDisabled ? 'Not available after 5:00 PM' : card.sub}
+                              {isDisabled ? PASS_COPY.unavailableAfterFive : card.sub}
                             </p>
                          </div>
                          {isDisabled ? (

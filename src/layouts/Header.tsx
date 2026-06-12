@@ -13,7 +13,7 @@ const pageTitles: Record<string, string> = {
   '/history':         'History',
   '/profile':         'Profile',
   '/notifications':   'Notifications',
-  '/new-pass':        'New Gate Pass',
+  '/new-pass':        'New Request',
   '/my-requests':     'My Requests',
   '/gate-logs':       'Gate Logs',
   '/exits':           'Exit Logs',
@@ -25,10 +25,10 @@ const pageTitles: Record<string, string> = {
   '/visitor-qr':      'Visitor QR',
   '/hod-contacts':    'HOD Directory',
   '/users':           'Unit Directory',
-  '/bulk-pass':       'Bulk Gate Pass',
+  '/bulk-pass':       'Bulk Student Pass',
   '/hod-events':      'Events',
   '/event-csv':       'Event CSV Upload',
-  '/guest-register':  'Guest Registration',
+  '/guest-register':  'Pre-register guest',
   '/new-request':     'New Request',
   '/qr-codes':        'My QR Codes',
   '/participants':    'Participants',
@@ -42,7 +42,7 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
   const isDashboard = location.pathname === '/dashboard';
 
   return (
-    <header className="sticky top-0 z-30 h-[60px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 flex items-center shrink-0 overflow-visible">
+    <header className="sticky top-0 z-30 h-[60px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 flex items-center shrink-0 overflow-visible shadow-[0_1px_0_rgba(15,23,42,0.04)]">
       <div className="flex items-center justify-between w-full px-6 gap-4">
 
         {/* ── Left: Menu toggle + page title ──────────────── */}
@@ -65,7 +65,7 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
             </button>
           )}
 
-          <h1 className="text-[15px] font-semibold text-slate-900 dark:text-white leading-none truncate">
+          <h1 className="text-[15px] font-black text-slate-900 dark:text-white leading-none truncate tracking-tight">
             {title}
           </h1>
         </div>

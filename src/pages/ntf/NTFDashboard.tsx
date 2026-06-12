@@ -16,6 +16,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { relativeTime } from '../../utils/dateUtils';
+import { EMPTY_COPY } from '../../config/nativeCopy';
 
 type Tab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -95,6 +96,38 @@ export default function NTFDashboard() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good Morning,' : hour < 17 ? 'Good Afternoon,' : 'Good Evening,';
+  const statCards = [
+    {
+      label: 'PENDING' as Tab,
+      value: stats.pending,
+      icon: Clock,
+      card: 'ring-amber-500/20 bg-amber-50 dark:bg-amber-950/20',
+      text: 'text-amber-600',
+      valueText: 'text-amber-700 dark:text-amber-500',
+      iconBg: 'bg-amber-100 dark:bg-amber-900/30',
+      iconText: 'text-amber-600',
+    },
+    {
+      label: 'APPROVED' as Tab,
+      value: stats.approved,
+      icon: CheckCircle,
+      card: 'ring-emerald-500/20 bg-emerald-50 dark:bg-emerald-950/20',
+      text: 'text-emerald-600',
+      valueText: 'text-emerald-700 dark:text-emerald-500',
+      iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
+      iconText: 'text-emerald-600',
+    },
+    {
+      label: 'REJECTED' as Tab,
+      value: stats.rejected,
+      icon: XCircle,
+      card: 'ring-rose-500/20 bg-rose-50 dark:bg-rose-950/20',
+      text: 'text-rose-600',
+      valueText: 'text-rose-700 dark:text-rose-500',
+      iconBg: 'bg-rose-100 dark:bg-rose-900/30',
+      iconText: 'text-rose-600',
+    },
+  ];
 
   if (isLoading && requests.length === 0) {
     return (
@@ -141,22 +174,18 @@ export default function NTFDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { label: 'PENDING', value: stats.pending, icon: Clock, color: 'amber' },
-          { label: 'APPROVED', value: stats.approved, icon: CheckCircle, color: 'emerald' },
-          { label: 'REJECTED', value: stats.rejected, icon: XCircle, color: 'rose' }
-        ].map(stat => (
+        {statCards.map(stat => (
           <Card key={stat.label} onClick={() => setActiveTab(stat.label as Tab)} className={cn(
             "p-6 transition-all cursor-pointer",
-            activeTab === stat.label ? `ring-2 ring-${stat.color}-500/20 bg-${stat.color}-50 dark:bg-${stat.color}-950/20` : "bg-white dark:bg-slate-900"
+            activeTab === stat.label ? `ring-2 ${stat.card}` : "bg-white dark:bg-slate-900"
           )}>
             <div className="flex items-center justify-between">
               <div>
-                <p className={cn("text-[10px] font-bold uppercase tracking-widest mb-2", `text-${stat.color}-600`)}>{stat.label}</p>
-                <p className={cn("text-3xl font-black tabular-nums", `text-${stat.color}-700 dark:text-${stat.color}-500`)}>{stat.value}</p>
+                <p className={cn("text-[10px] font-bold uppercase tracking-widest mb-2", stat.text)}>{stat.label}</p>
+                <p className={cn("text-3xl font-black tabular-nums", stat.valueText)}>{stat.value}</p>
               </div>
-              <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", `bg-${stat.color}-100 dark:bg-${stat.color}-900/30`)}>
-                <stat.icon className={cn("w-6 h-6", `text-${stat.color}-600`)} />
+              <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", stat.iconBg)}>
+                <stat.icon className={cn("w-6 h-6", stat.iconText)} />
               </div>
             </div>
           </Card>
@@ -189,7 +218,7 @@ export default function NTFDashboard() {
 
         {filtered.length === 0 ? (
           <EmptyState 
-            title="Empty Queue" 
+            title={EMPTY_COPY.noRequestsFound} 
             description={searchQuery ? "No matches found." : `No ${activeTab.toLowerCase()} requests.`}
             icon={<Users className="w-12 h-12 text-slate-200" />} 
           />
@@ -216,7 +245,7 @@ export default function NTFDashboard() {
                             {req.purpose || 'Campus Visit'}
                           </p>
                           <p className="text-[10px] text-slate-400 mt-2 uppercase tabular-nums">
-                            {relativeTime(req.createdAt)} • {req.visitorPhone || 'No Phone'}
+                            {relativeTime(req.createdAt)} - {req.visitorPhone || 'No Phone'}
                           </p>
                           {req.status === 'PENDING' && (
                             <div className="flex gap-2 mt-4">

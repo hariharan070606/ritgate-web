@@ -21,6 +21,7 @@ import {
 } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { isToday } from '../../utils/dateUtils';
+import { useAdaptive } from '../../utils/useAdaptive';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
 import ThemePresetSelector from '../../components/common/ThemePresetSelector';
 
@@ -34,6 +35,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
   const navigate = useNavigate();
   const { user: authUser, role, getUserId } = useAuth();
   const user = propUser || authUser;
+  const { isDesktop } = useAdaptive();
   const { resetTheme } = useTheme();
   const { profileImage, captureImage, clearProfileImage } = useProfile();
   const { success: showToastSuccess, error: showToastError } = useToast();
@@ -115,9 +117,9 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F8FAFC] dark:bg-slate-950 overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-[#F8FAFC] dark:bg-slate-950 overflow-hidden lg:min-h-0 lg:bg-transparent lg:overflow-visible">
       {/* Header */}
-      <header
+      {!isDesktop && <header
         className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shrink-0"
         style={{ paddingTop: 'env(safe-area-inset-top)' }}
       >
@@ -131,12 +133,12 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
           <h1 className="text-[18px] font-black text-slate-900 dark:text-white uppercase tracking-tight">Profile</h1>
           <div className="w-11" />
         </div>
-      </header>
+      </header>}
 
       <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
-        <div className="px-5 pt-6 pb-32 min-h-[calc(100vh-100px)]">
+        <div className="px-5 pt-6 pb-32 min-h-[calc(100vh-100px)] lg:min-h-0 lg:px-0 lg:pt-0 lg:pb-8 lg:grid lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)] lg:gap-6 lg:items-start">
           {/* 1. Header Section */}
-          <div className="flex flex-col items-center mb-8">
+          <div className="flex flex-col items-center mb-8 lg:sticky lg:top-24 lg:mb-0 lg:bg-white lg:dark:bg-slate-900 lg:border lg:border-slate-100 lg:dark:border-slate-800 lg:rounded-[24px] lg:p-8 lg:shadow-sm">
              <div className="relative mb-4">
                 <div className="w-[100px] h-[100px] rounded-full border-2 border-blue-700 p-1 flex items-center justify-center bg-white dark:bg-slate-900 shadow-xl shadow-blue-100">
                    {profileImage ? (
@@ -165,12 +167,25 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
                   </button>
                 )}
              </div>
-             <h2 className="text-[22px] font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1">{userName}</h2>
-             <p className="text-[13px] font-bold text-slate-400 opacity-80">{role} | DEPT: {department}</p>
+             <h2 className="text-[22px] font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1 text-center">{userName}</h2>
+             <p className="text-[13px] font-bold text-slate-400 opacity-80 text-center">{role} | DEPT: {department}</p>
+             <div className="hidden lg:block w-full mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Account</p>
+                <div className="space-y-3 text-left">
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">ID</p>
+                    <p className="text-[14px] font-black text-slate-900 dark:text-white truncate">{userId || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Department</p>
+                    <p className="text-[14px] font-black text-slate-900 dark:text-white truncate">{department}</p>
+                  </div>
+                </div>
+             </div>
           </div>
 
           {/* 2. Stats Section */}
-          <div className="bg-white dark:bg-slate-900 rounded-[32px] p-6 flex justify-between border border-slate-100 dark:border-slate-800 shadow-sm mb-8">
+          <div className="bg-white dark:bg-slate-900 rounded-[24px] lg:rounded-[20px] p-6 flex justify-between border border-slate-100 dark:border-slate-800 shadow-sm mb-8 lg:mb-6 lg:col-start-2">
              {[
                { label: 'APPROVED', value: stats.approved, color: 'text-emerald-500' },
                { label: 'REJECTED', value: stats.rejected, color: 'text-rose-500' },
@@ -187,7 +202,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
           </div>
 
           {/* 3. Theme Section */}
-          <div className="mb-8">
+          <div className="mb-8 lg:mb-6 lg:col-start-2">
             <div className="flex items-center justify-between mb-3 px-1">
               <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Interface Theme</h3>
               <button onClick={resetTheme} className="text-[10px] font-bold text-slate-400 dark:text-slate-500">Reset</button>
@@ -196,11 +211,11 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
           </div>
 
           {/* 4. Personal Info Section */}
-          <div className="mb-10">
+          <div className="mb-10 lg:mb-0 lg:col-start-2">
              <div className="mb-4 px-2">
                 <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Personal Information</h3>
              </div>
-             <div className="bg-white dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-50 dark:divide-slate-800/50">
+             <div className="bg-white dark:bg-slate-900 rounded-[24px] lg:rounded-[20px] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-50 dark:divide-slate-800/50">
                 {menuItems.map((item) => (
                   <div key={item.label} className="p-5 flex items-center gap-4">
                      <div className={cn("w-11 h-11 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center shrink-0", item.color)}>
@@ -234,7 +249,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
              )}
           </div>
 
-          <div className="mt-12 text-center pb-12">
+          <div className="mt-12 text-center pb-12 lg:hidden">
              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.4em] mb-1">RIT Gate Matrix v2.0</p>
              <p className="text-[9px] font-bold text-slate-200 uppercase tracking-widest italic opacity-50">Secure Infrastructure Node 42</p>
           </div>

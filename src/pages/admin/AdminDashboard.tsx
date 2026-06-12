@@ -26,6 +26,7 @@ import { getVisitorRequestsForStaff } from '../../services/api.service';
 import { formatDateTime, relativeTime } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
+import { EMPTY_COPY } from '../../config/nativeCopy';
 
 type TabType = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -227,7 +228,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
 
         {filtered.length === 0 ? (
           <EmptyState 
-            title="No Requests" 
+            title={EMPTY_COPY.noRequestsFound} 
             description={searchQuery ? "No requests matching your search." : `No ${activeTab.toLowerCase()} visitor requests.`}
             icon={<FileText className="w-12 h-12 text-slate-200" />} 
           />
@@ -250,7 +251,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest truncate">
                               {req.purpose || 'Campus Visit'}
                             </span>
-                            <span className="text-slate-200">•</span>
+                            <span className="text-slate-200">-</span>
                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                               {relativeTime(req.createdAt)}
                             </span>

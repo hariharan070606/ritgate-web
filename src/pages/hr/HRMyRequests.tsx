@@ -112,7 +112,7 @@ export default function HRMyRequests() {
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center py-16 gap-3">
             <FileText className="w-12 h-12 text-slate-200" />
-            <p className="text-lg font-semibold text-slate-400">No requests today</p>
+            <p className="text-lg font-semibold text-slate-400">No requests found</p>
             <p className="text-sm text-slate-400">Today's gate pass requests will appear here</p>
           </div>
         ) : (
