@@ -136,9 +136,9 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
       </header>}
 
       <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
-        <div className="px-5 pt-6 pb-32 min-h-[calc(100vh-100px)] lg:min-h-0 lg:px-0 lg:pt-0 lg:pb-8 lg:grid lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)] lg:gap-7 xl:gap-9 lg:items-start lg:max-w-none lg:mx-0">
+        <div className="px-5 pt-6 pb-32 min-h-[calc(100vh-100px)] lg:min-h-0 lg:px-0 lg:pt-0 lg:pb-8 lg:grid lg:grid-cols-[400px_minmax(0,760px)] xl:grid-cols-[420px_minmax(0,820px)] lg:gap-7 xl:gap-9 lg:items-start lg:justify-start lg:max-w-none lg:mx-0">
           {/* 1. Header Section */}
-          <div className="flex flex-col items-center mb-8 lg:sticky lg:top-24 lg:mb-0 lg:row-span-3 lg:self-start lg:bg-white lg:dark:bg-slate-900 lg:border lg:border-slate-100 lg:dark:border-slate-800 lg:rounded-[22px] lg:p-8 lg:shadow-sm">
+          <div className="flex flex-col items-center mb-8 lg:sticky lg:top-24 lg:mb-0 lg:row-span-3 lg:self-start lg:bg-white lg:dark:bg-slate-900 lg:border lg:border-slate-100 lg:dark:border-slate-800 lg:rounded-[22px] lg:p-8 lg:shadow-sm lg:w-full">
              <div className="relative mb-4">
                 <div className="w-[100px] h-[100px] rounded-full border-2 border-blue-700 p-1 flex items-center justify-center bg-white dark:bg-slate-900 shadow-xl shadow-blue-100">
                    {profileImage ? (
@@ -207,7 +207,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
               <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Interface Theme</h3>
               <button onClick={resetTheme} className="text-[10px] font-bold text-slate-400 dark:text-slate-500">Reset</button>
             </div>
-            <div className="lg:max-w-[720px]">
+            <div className="lg:w-full">
               <ThemePresetSelector />
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
              <div className="mb-4 px-2">
                 <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Personal Information</h3>
              </div>
-             <div className="bg-white dark:bg-slate-900 rounded-[24px] lg:rounded-[22px] lg:max-w-[720px] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-50 dark:divide-slate-800/50">
+             <div className="bg-white dark:bg-slate-900 rounded-[24px] lg:rounded-[22px] lg:w-full border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-50 dark:divide-slate-800/50">
                 {menuItems.map((item) => (
                   <div key={item.label} className="p-5 flex items-center gap-4">
                      <div className={cn("w-11 h-11 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center shrink-0", item.color)}>

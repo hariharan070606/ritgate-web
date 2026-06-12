@@ -368,7 +368,6 @@ export default function StudentHome() {
                 title="No requests found"
                 description="Your recent gate pass activity will appear here."
                 icon={<FileText className="w-8 h-8" />}
-                action={<Button disabled={gatePassDisabled} onClick={() => (window.location.href = '/new-request')}>Request Gate Pass</Button>}
               />
             ) : (
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-10 flex flex-col items-center text-center">

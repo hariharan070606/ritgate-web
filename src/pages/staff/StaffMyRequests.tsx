@@ -346,7 +346,6 @@ export default function StaffMyRequests() {
               icon={<FileText className="w-8 h-8" />}
               title="No requests found"
               description="Your past gate pass requests will appear here."
-              action={isDesktop ? <Button onClick={() => navigate('/new-pass')}>Create New Pass</Button> : undefined}
             />
           )}
         </div>

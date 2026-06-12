@@ -58,14 +58,14 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
           {!isDashboard && (
             <button
               onClick={() => navigate(-1)}
-              className="w-10 h-10 rounded-2xl flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0"
+              className="w-10 h-10 rounded-2xl flex lg:hidden items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0"
               aria-label="Go back"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
           )}
 
-          <h1 className="text-[18px] font-bold text-slate-950 dark:text-white leading-none truncate tracking-tight lg:hidden">
+          <h1 className="desktop-header-title text-[18px] font-bold text-slate-950 dark:text-white leading-none truncate tracking-tight lg:hidden">
             {title}
           </h1>
         </div>

@@ -465,7 +465,6 @@ export default function StaffDashboard() {
               icon={<CheckCircle2 className="w-8 h-8" />}
               title={EMPTY_COPY.noRequestsFound}
               description={EMPTY_COPY.requestsWillAppear}
-              action={isDesktop ? <Button onClick={() => navigate('/new-pass')}>Create New Pass</Button> : undefined}
             />
           )}
         </div>
