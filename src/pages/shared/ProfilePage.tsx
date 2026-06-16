@@ -11,11 +11,13 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { useProfile } from "../../context/ProfileContext";
-import { useToast } from "../../context/ToastContext";
 import {
   getStudentGatePassRequests,
   getStaffOwnRequests,
   getHODMyRequests,
+  getHRAllRequests,
+  getNCIOwnRequests,
+  getNTFOwnRequests,
 } from "../../services/api.service";
 import { cn } from "../../utils/cn";
 import { isToday } from "../../utils/dateUtils";
@@ -39,19 +41,14 @@ export default function ProfilePage({
   const { isDesktop } = useAdaptive();
   const { resetTheme } = useTheme();
   const { profileImage } = useProfile();
-  const { success: showToastSuccess } = useToast();
 
   const [loadingStats, setLoadingStats] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({ approved: 0, rejected: 0, pending: 0 });
-  const [isEditing, setIsEditing] = useState(false);
-  const [editPhone, setEditPhone] = useState(
-    (user as any)?.contactNo || (user as any)?.phone || "",
-  );
-  const [editEmail, setEditEmail] = useState((user as any)?.email || "");
-  const [saving, setSaving] = useState(false);
 
   const userId = getUserId();
+  const email = (user as any)?.email || (user as any)?.mail || "";
+  const phone = (user as any)?.contactNo || (user as any)?.phone || (user as any)?.mobile || "";
   const userName = (() => {
     if (!user) return "User";
     const u = user as any;
@@ -77,6 +74,18 @@ export default function ProfilePage({
     (user as any)?.branch ||
     (user as any)?.gateAssigned ||
     "General";
+  const roleLabel = (() => {
+    switch (role) {
+      case "NON_TEACHING":
+        return "NON TEACHING";
+      case "NON_CLASS_INCHARGE":
+        return "NON CLASS INCHARGE";
+      case "ADMIN_OFFICER":
+        return "ADMIN OFFICER";
+      default:
+        return role || "USER";
+    }
+  })();
 
   const fetchStats = useCallback(async () => {
     if (!userId || !role) return;
@@ -91,6 +100,15 @@ export default function ProfilePage({
         if (res.success) reqs = res.requests;
       } else if (role === "HOD") {
         const res = await getHODMyRequests(userId);
+        if (res.success) reqs = res.requests;
+      } else if (role === "HR") {
+        const res = await getHRAllRequests(userId);
+        if (res.success) reqs = res.requests;
+      } else if (role === "NON_CLASS_INCHARGE") {
+        const res = await getNCIOwnRequests(userId);
+        if (res.success) reqs = res.requests;
+      } else if (role === "NON_TEACHING" || role === "ADMIN_OFFICER") {
+        const res = await getNTFOwnRequests(userId);
         if (res.success) reqs = res.requests;
       }
 
@@ -121,35 +139,19 @@ export default function ProfilePage({
     await fetchStats();
   };
 
-  const handleSaveProfile = async () => {
-    setSaving(true);
-    setTimeout(() => {
-      setSaving(false);
-      setIsEditing(false);
-      showToastSuccess(
-        "Profile Updated",
-        "Your changes have been synced with the registry",
-      );
-    }, 1200);
-  };
-
   const menuItems = [
     { label: "ID", value: userId, icon: CreditCard, color: "text-blue-700" },
     {
       label: "EMAIL",
-      value: editEmail,
+      value: email,
       icon: Mail,
       color: "text-violet-500",
-      editable: true,
-      field: "email",
     },
     {
       label: "PHONE",
-      value: editPhone,
+      value: phone,
       icon: Smartphone,
       color: "text-emerald-500",
-      editable: true,
-      field: "phone",
     },
   ];
 
@@ -192,31 +194,12 @@ export default function ProfilePage({
                   </div>
                 )}
               </div>
-              <button
-                className="absolute bottom-0.5 right-0.5 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md flex items-center justify-center text-slate-500 dark:text-slate-300 hover:text-blue-600 transition-colors"
-                title="Change photo"
-                type="button"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                  <circle cx="12" cy="13" r="4" />
-                </svg>
-              </button>
             </div>
             <h2 className="text-[21px] font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1 text-center">
               {userName}
             </h2>
             <p className="text-[12px] font-bold text-slate-400 opacity-80 text-center">
-              {role} | DEPT: {department}
+              {roleLabel} | DEPT: {department}
             </p>
             <div className="hidden lg:block w-full mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
               <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">
@@ -321,38 +304,13 @@ export default function ProfilePage({
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">
                       {item.label}
                     </p>
-                    {isEditing && item.editable ? (
-                      <input
-                        value={item.field === "email" ? editEmail : editPhone}
-                        onChange={(e) =>
-                          item.field === "email"
-                            ? setEditEmail(e.target.value)
-                            : setEditPhone(e.target.value)
-                        }
-                        className="w-full text-[14px] font-black text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border-none focus:ring-1 focus:ring-blue-500 outline-none"
-                      />
-                    ) : (
-                      <p className="text-[14px] font-black text-slate-900 dark:text-white truncate uppercase tracking-tight italic">
-                        {item.value || "N/A"}
-                      </p>
-                    )}
+                    <p className="text-[14px] font-black text-slate-900 dark:text-white truncate uppercase tracking-tight italic">
+                      {item.value || "N/A"}
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
-            {isEditing && (
-              <button
-                onClick={handleSaveProfile}
-                disabled={saving}
-                className="w-full h-14 bg-[var(--color-primary)] rounded-2xl mt-4 text-white font-black text-[14px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center justify-center gap-2"
-              >
-                {saving ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  "Save Changes"
-                )}
-              </button>
-            )}
           </div>
 
           <div className="mt-12 text-center pb-12 lg:hidden">
