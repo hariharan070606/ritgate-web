@@ -39,7 +39,10 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   return createPortal(
     <div className="fixed inset-0 z-[9980] flex items-center justify-center p-7 bg-black/55 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="absolute inset-0" onClick={confirming ? undefined : onCancel} />
-      <div className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-9 animate-in zoom-in-95 duration-300">
+      <div
+        className="relative bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-9 animate-in zoom-in-95 duration-300"
+        style={{ width: 'min(470px, calc(100vw - 48px))' }}
+      >
         <div className="flex justify-center mb-5">
           <div className="w-22 h-22 rounded-full bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center">
             <div className="w-17 h-17 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
