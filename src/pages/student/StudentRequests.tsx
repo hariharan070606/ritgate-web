@@ -25,11 +25,8 @@ import type { Student } from '../../types';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
-import DesktopToolbar from '../../components/desktop/DesktopToolbar';
 import Button from '../../components/ui/Button';
 import EmptyState from '../../components/ui/EmptyState';
-
-type ActiveTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export default function StudentRequests() {
   usePageTitle('My Requests');
@@ -43,7 +40,6 @@ export default function StudentRequests() {
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<ActiveTab>('PENDING');
   
   const [showQRModal, setShowQRModal] = useState(false);
   const [showSingleModal, setShowSingleModal] = useState(false);
@@ -80,14 +76,6 @@ export default function StudentRequests() {
     loadData();
   };
 
-  const getStats = () => {
-    return {
-      PENDING: requests.filter(r => r.status === 'PENDING_STAFF' || r.status === 'PENDING_HOD').length,
-      APPROVED: requests.filter(r => r.status === 'APPROVED').length,
-      REJECTED: requests.filter(r => r.status === 'REJECTED').length,
-    };
-  };
-
   const handleViewQR = async (request: any) => {
     if (request.status !== 'APPROVED') return;
     setSelectedRequest(request);
@@ -114,12 +102,7 @@ export default function StudentRequests() {
     const matchesSearch = searchQuery === '' ||
       r.purpose?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       r.id?.toString().includes(searchQuery);
-    const matchesTab = isDesktop
-      ? true
-      : activeTab === 'PENDING'
-        ? (r.status === 'PENDING_STAFF' || r.status === 'PENDING_HOD')
-        : r.status === activeTab;
-    return matchesSearch && matchesTab;
+    return matchesSearch;
   });
 
   const getStatusConfig = (status: string) => {
@@ -143,15 +126,8 @@ export default function StudentRequests() {
         />
       )}
 
-      <div className="px-5 pt-4 space-y-4 lg:px-0 lg:pt-0 lg:space-y-5">
+      <div className="px-5 pt-4 space-y-4 lg:hidden">
         {/* Search Bar */}
-        {isDesktop ? (
-          <DesktopToolbar
-            searchValue={searchQuery}
-            onSearchChange={setSearchQuery}
-            searchPlaceholder="Search requests by purpose or ID..."
-          />
-        ) : (
         <div className="relative">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
             <Search className="w-5 h-5" />
@@ -163,34 +139,6 @@ export default function StudentRequests() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full h-12 pl-12 pr-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm outline-none"
           />
-        </div>
-        )}
-
-        {/* Status Tabs */}
-        <div className="flex bg-white dark:bg-slate-900 rounded-[20px] p-2 shadow-sm border border-slate-50 dark:border-slate-800 lg:hidden">
-          {(['PENDING', 'APPROVED', 'REJECTED'] as ActiveTab[]).map((tab) => {
-            const stats = getStats();
-            const isActive = activeTab === tab;
-            const labels: Record<ActiveTab, string> = { PENDING: 'Pending', APPROVED: 'Approved', REJECTED: 'Rejected' };
-            const colors: Record<ActiveTab, string> = { PENDING: 'text-amber-500', APPROVED: 'text-emerald-500', REJECTED: 'text-rose-500' };
-            const borders: Record<ActiveTab, string> = { PENDING: 'border-amber-500', APPROVED: 'border-emerald-500', REJECTED: 'border-rose-500' };
-
-            return (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={cn(
-                  "flex-1 flex flex-col items-center py-2 transition-all border-b-2",
-                  isActive ? borders[tab] : "border-transparent"
-                )}
-              >
-                <span className={cn("text-[9px] font-black uppercase tracking-wide mb-1", isActive ? colors[tab] : "text-slate-400")}>{labels[tab]}</span>
-                <span className={cn("text-[17px] font-black", isActive ? colors[tab] : "text-slate-300")}>
-                  {stats[tab]}
-                </span>
-              </button>
-            );
-          })}
         </div>
       </div>
 
