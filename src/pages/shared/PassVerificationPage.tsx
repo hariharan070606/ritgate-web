@@ -21,7 +21,10 @@ import {
   rejectGatePassByHR,
   rejectGatePassByStaff,
 } from '../../services/api.service';
-import { FileText } from 'lucide-react';
+import { AlertCircle, ArrowLeft, CheckCircle2, FileText } from 'lucide-react';
+import { useAdaptive } from '../../utils/useAdaptive';
+import { cn } from '../../utils/cn';
+import { formatDate } from '../../utils/date';
 
 export default function PassVerificationPage() {
   const { requestId } = useParams();
@@ -29,12 +32,14 @@ export default function PassVerificationPage() {
   const { role, getUserId } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const { withLock } = useActionLock();
+  const { isDesktop } = useAdaptive();
 
   const userId = getUserId();
   const numericRequestId = Number(requestId);
   const [request, setRequest] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
+  const [remark, setRemark] = useState('');
 
   const canReview = useMemo(
     () => ['STAFF', 'HOD', 'HR'].includes(role || ''),
@@ -90,6 +95,25 @@ export default function PassVerificationPage() {
     navigate(-1);
   };
 
+  const getStatus = (item: any) => (item?.hrApproval || item?.status || 'PENDING').toUpperCase();
+
+  const getStatusClasses = (status: string) => {
+    if (status === 'APPROVED') return 'bg-emerald-500 text-white';
+    if (status === 'REJECTED') return 'bg-rose-500 text-white';
+    return 'bg-amber-500 text-white';
+  };
+
+  const getRequesterName = (item: any) =>
+    item?.studentName || item?.staffName || item?.requesterName || item?.regNo || 'Request User';
+
+  const getInitials = (name: string) =>
+    (name || 'RU')
+      .split(' ')
+      .map((part) => part[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
+
   const handleApprove = async (id: number, remark: string) => {
     if (!userId || !role) return;
     setProcessing(true);
@@ -112,6 +136,10 @@ export default function PassVerificationPage() {
 
   const handleReject = async (id: number, remark: string) => {
     if (!userId || !role) return;
+    if (!remark.trim()) {
+      showError('Remark Required', 'Please add review notes before rejecting.');
+      return;
+    }
     setProcessing(true);
     await withLock(async () => {
       const res = role === 'HOD'
@@ -129,6 +157,9 @@ export default function PassVerificationPage() {
     }, 'Rejecting...');
     setProcessing(false);
   };
+
+  const handleDesktopApprove = () => handleApprove(request.id, remark);
+  const handleDesktopReject = () => handleReject(request.id, remark);
 
   if (loading) {
     return (
@@ -151,15 +182,125 @@ export default function PassVerificationPage() {
     );
   }
 
+  if (!isDesktop) {
+    return (
+      <SinglePassDetailsModal
+        isOpen
+        onClose={handleClose}
+        request={request}
+        onApprove={handleApprove}
+        onReject={handleReject}
+        showActions={canReview}
+        processing={processing}
+      />
+    );
+  }
+
+  const status = getStatus(request);
+  const requesterName = getRequesterName(request);
+  const identifier = request.regNo || request.staffCode || userId || 'N/A';
+  const department = request.department || 'N/A';
+
   return (
-    <SinglePassDetailsModal
-      isOpen
-      onClose={handleClose}
-      request={request}
-      onApprove={handleApprove}
-      onReject={handleReject}
-      showActions={canReview}
-      processing={processing}
-    />
+    <div className="mx-auto w-full max-w-[1450px]">
+      <section className="overflow-hidden bg-white shadow-[0_14px_42px_-30px_rgba(15,23,42,0.55)] dark:bg-slate-900">
+        <header className="flex min-h-[54px] items-center gap-4 border-b border-slate-100 bg-white px-5 dark:border-slate-800 dark:bg-slate-900">
+          <button
+            onClick={handleClose}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-950 transition-transform active:scale-95 dark:bg-slate-800 dark:text-white"
+            aria-label="Back"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <h2 className="flex-1 text-[22px] font-black tracking-tight text-slate-950 dark:text-white">
+            Pass Verification
+          </h2>
+          <span className={cn('rounded-xl px-4 py-2 text-[12px] font-black uppercase tracking-widest', getStatusClasses(status))}>
+            {status}
+          </span>
+        </header>
+
+        <div className="bg-[#F8FAFC] px-5 py-6 dark:bg-slate-950">
+          <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
+            <div className="space-y-5">
+              <div className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div className="flex items-center gap-5">
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[26px] bg-amber-500 text-[28px] font-black text-white shadow-lg shadow-amber-100 dark:shadow-none">
+                    {getInitials(requesterName)}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="truncate text-[24px] font-black uppercase tracking-tight text-slate-950 dark:text-white">
+                      {requesterName}
+                    </h3>
+                    <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                      {identifier} - {department}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 md:grid-cols-2">
+                <div className="border-b border-slate-50 p-6 dark:border-slate-800 md:border-b-0 md:border-r">
+                  <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Purpose</p>
+                  <p className="text-lg font-black text-slate-950 dark:text-white">
+                    {request.purpose || 'General'}
+                  </p>
+                </div>
+                <div className="p-6">
+                  <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Date</p>
+                  <p className="text-lg font-black text-slate-950 dark:text-white">
+                    {formatDate(request.visitDate || request.exitDateTime || request.requestDate || request.createdAt)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Reason</p>
+                <p className="text-base font-semibold italic leading-relaxed text-slate-700 dark:text-slate-300">
+                  {request.reason || 'No reason provided.'}
+                </p>
+              </div>
+            </div>
+
+            {canReview && (
+              <aside className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:sticky xl:top-24 xl:self-start">
+                <textarea
+                  value={remark}
+                  onChange={(event) => setRemark(event.target.value)}
+                  placeholder="Add review notes (required for rejection)..."
+                  className="min-h-[92px] w-full resize-none rounded-2xl border border-blue-700 bg-white p-4 text-base font-semibold text-slate-900 outline-none ring-2 ring-blue-700/15 placeholder:text-slate-400 focus:ring-blue-700/25 dark:border-blue-400 dark:bg-slate-950 dark:text-white"
+                  disabled={processing}
+                />
+                <div className="mt-5 grid grid-cols-2 gap-4">
+                  <Button
+                    variant="danger"
+                    size="xl"
+                    fullWidth
+                    icon={<AlertCircle className="h-5 w-5" />}
+                    onClick={handleDesktopReject}
+                    disabled={processing}
+                    className="h-[70px] rounded-[28px] text-[18px] uppercase tracking-[0.18em] shadow-xl shadow-rose-100 dark:shadow-none"
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    variant="success"
+                    size="xl"
+                    fullWidth
+                    icon={<CheckCircle2 className="h-5 w-5" />}
+                    onClick={handleDesktopApprove}
+                    isLoading={processing}
+                    disabled={processing}
+                    className="h-[70px] rounded-[28px] text-[18px] uppercase tracking-[0.18em] shadow-xl shadow-emerald-100 dark:shadow-none"
+                  >
+                    Approve
+                  </Button>
+                </div>
+              </aside>
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
