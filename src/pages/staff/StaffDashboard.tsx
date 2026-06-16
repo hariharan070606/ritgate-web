@@ -355,12 +355,12 @@ export default function StaffDashboard() {
                 <table className="desktop-table">
                   <thead className="bg-slate-50/80 dark:bg-slate-900/60">
                     <tr>
-                      <th className="min-w-[300px]">Requester</th>
-                      <th className="min-w-[160px]">Type</th>
-                      <th className="min-w-[230px]">Purpose</th>
-                      <th className="min-w-[190px]">Date</th>
-                      <th className="min-w-[130px]">Status</th>
-                      <th className="min-w-[230px] text-right">Actions</th>
+                      <th className="w-[300px]">Requester</th>
+                      <th className="w-[160px]">Type</th>
+                      <th className="w-[230px]">Purpose</th>
+                      <th className="w-[190px]">Date</th>
+                      <th className="w-[130px]">Status</th>
+                      <th className="w-[230px] text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -370,7 +370,11 @@ export default function StaffDashboard() {
                       const requesterPhoto = getRequesterPhoto(request);
                       const isPending = isPendingRequest(request);
                       return (
-                        <tr key={request.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/35 transition-colors">
+                        <tr 
+                          key={request.id} 
+                          className="hover:bg-slate-50/70 dark:hover:bg-slate-800/35 transition-colors cursor-pointer"
+                          onClick={() => navigate(`/pass-verification/${request.id}`)}
+                        >
                           <td>
                             <div className="flex items-center gap-3 min-w-0">
                               <div className="w-11 h-11 rounded-2xl overflow-hidden shrink-0 bg-blue-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center">
@@ -411,7 +415,7 @@ export default function StaffDashboard() {
                                     size="sm"
                                     variant="success"
                                     disabled={processing}
-                                    onClick={() => handleApprove(request.id, '')}
+                                    onClick={(e) => { e.stopPropagation(); handleApprove(request.id, ''); }}
                                     className="h-9 rounded-xl px-3 text-[11px] uppercase tracking-widest"
                                   >
                                     Approve
@@ -420,7 +424,7 @@ export default function StaffDashboard() {
                                     size="sm"
                                     variant="danger"
                                     disabled={processing}
-                                    onClick={() => handleInlineReject(request)}
+                                    onClick={(e) => { e.stopPropagation(); handleInlineReject(request); }}
                                     className="h-9 rounded-xl px-3 text-[11px] uppercase tracking-widest"
                                   >
                                     Reject
@@ -430,7 +434,7 @@ export default function StaffDashboard() {
                               <Button
                                 size="sm"
                                 variant="secondary"
-                                onClick={() => { setSelectedRequest(request); setShowDetailModal(true); }}
+                                onClick={(e) => { e.stopPropagation(); navigate(`/pass-verification/${request.id}`); }}
                                 className="h-9 rounded-xl px-3 text-[11px] uppercase tracking-widest"
                               >
                                 Details
