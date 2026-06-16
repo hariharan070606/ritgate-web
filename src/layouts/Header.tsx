@@ -135,6 +135,10 @@ const routeCopy: Record<string, Omit<HeaderCopy, 'label'>> = {
     title: 'Participants',
     subtitle: 'Review participant records and related event access details.',
   },
+  '/pass-verification': {
+    title: 'Pass Verification',
+    subtitle: 'Review request details and authorize gate pass movement.',
+  },
 };
 
 export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
@@ -142,6 +146,10 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
   const { user, role } = useAuth();
 
   const userName = getUserName(user);
+  const staticRoute = routeCopy[location.pathname];
+  const dynamicRoute = location.pathname.startsWith('/pass-verification/')
+    ? routeCopy['/pass-verification']
+    : undefined;
 
   const copy: HeaderCopy = location.pathname === '/dashboard'
     ? {
@@ -150,7 +158,7 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
       subtitle: roleDashboardSubtitle[role || ''] || 'Manage your gate pass workspace with clarity and control.',
     }
     : {
-      ...(routeCopy[location.pathname] || {
+      ...(staticRoute || dynamicRoute || {
         title: 'RIT Gate',
         subtitle: 'Manage gate pass activity from one clean workspace.',
       }),
