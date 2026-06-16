@@ -7,7 +7,8 @@ import {
   Mail,
   Smartphone,
   CreditCard,
-  ArrowLeft
+  ArrowLeft,
+  RotateCw,
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
@@ -136,10 +137,10 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
       </header>}
 
       <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
-        <div className="px-5 pt-6 pb-32 min-h-[calc(100vh-100px)] lg:min-h-0 lg:px-0 lg:pt-0 lg:pb-8 lg:grid lg:grid-cols-[400px_minmax(0,760px)] xl:grid-cols-[420px_minmax(0,820px)] lg:gap-7 xl:gap-9 lg:items-start lg:justify-start lg:max-w-none lg:mx-0">
+        <div className="px-5 pt-6 pb-32 min-h-[calc(100vh-100px)] lg:min-h-0 lg:px-7 lg:pt-7 lg:pb-8 lg:grid lg:grid-cols-[304px_minmax(0,1fr)] xl:grid-cols-[304px_minmax(0,552px)] lg:gap-5 xl:gap-5 lg:items-start lg:justify-start lg:max-w-[940px] xl:max-w-[900px] lg:mx-0">
           {/* 1. Header Section */}
-          <div className="flex flex-col items-center mb-8 lg:sticky lg:top-24 lg:mb-0 lg:row-span-3 lg:self-start lg:bg-white lg:dark:bg-slate-900 lg:border lg:border-slate-100 lg:dark:border-slate-800 lg:rounded-[22px] lg:p-8 lg:shadow-sm lg:w-full">
-             <div className="relative mb-4">
+          <div className="flex flex-col items-center mb-8 lg:sticky lg:top-24 lg:mb-0 lg:row-span-3 lg:self-start lg:bg-white lg:dark:bg-slate-900 lg:border lg:border-slate-100 lg:dark:border-slate-800 lg:rounded-[10px] lg:px-7 lg:py-8 lg:shadow-[0_10px_28px_-20px_rgba(15,23,42,0.35)] lg:w-full lg:min-h-[502px]">
+             <div className="relative mb-5">
                 <div className="w-[100px] h-[100px] rounded-full border-2 border-blue-700 p-1 flex items-center justify-center bg-white dark:bg-slate-900 shadow-xl shadow-blue-100">
                    {profileImage ? (
                       <img src={profileImage} alt={userName} className="w-full h-full rounded-full object-cover" />
@@ -167,8 +168,8 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
                   </button>
                 )}
              </div>
-             <h2 className="text-[22px] font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1 text-center">{userName}</h2>
-             <p className="text-[13px] font-bold text-slate-400 opacity-80 text-center">{role} | DEPT: {department}</p>
+             <h2 className="text-[21px] font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1 text-center">{userName}</h2>
+             <p className="text-[12px] font-bold text-slate-400 opacity-80 text-center">{role} | DEPT: {department}</p>
              <div className="hidden lg:block w-full mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
                 <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Account</p>
                 <div className="space-y-3 text-left">
@@ -185,7 +186,7 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
           </div>
 
           {/* 2. Stats Section */}
-          <div className="bg-white dark:bg-slate-900 rounded-[24px] lg:rounded-[22px] p-6 lg:p-5 flex justify-between border border-slate-100 dark:border-slate-800 shadow-sm mb-8 lg:mb-5 lg:col-start-2">
+          <div className="bg-white dark:bg-slate-900 rounded-[24px] lg:rounded-[10px] p-6 lg:px-8 lg:py-4 flex justify-between border border-slate-100 dark:border-slate-800 shadow-[0_10px_28px_-22px_rgba(15,23,42,0.45)] mb-8 lg:mb-5 lg:col-start-2">
              {[
                { label: 'APPROVED', value: stats.approved, color: 'text-emerald-500' },
                { label: 'REJECTED', value: stats.rejected, color: 'text-rose-500' },
@@ -193,10 +194,10 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
              ].map((stat, i) => (
                <React.Fragment key={stat.label}>
                  <div className="flex flex-col items-center flex-1">
-                    <span className={cn("text-[20px] font-black mb-0.5", stat.color)}>{stat.value}</span>
+                    <span className={cn("text-[22px] font-black mb-0.5", stat.color)}>{stat.value}</span>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mt-1">{stat.label}</span>
                  </div>
-                 {i < 2 && <div className="w-[1px] h-8 bg-slate-100 dark:bg-slate-800 self-center" />}
+                 {i < 2 && <div className="w-[1px] h-10 bg-slate-100 dark:bg-slate-800 self-center" />}
                </React.Fragment>
              ))}
           </div>
@@ -205,7 +206,10 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
           <div className="mb-8 lg:mb-5 lg:col-start-2">
             <div className="flex items-center justify-between mb-3 px-1">
               <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Interface Theme</h3>
-              <button onClick={resetTheme} className="text-[10px] font-bold text-slate-400 dark:text-slate-500">Reset</button>
+              <button onClick={resetTheme} className="inline-flex items-center gap-1.5 text-[10px] font-bold text-blue-700 dark:text-blue-300">
+                Reset
+                <RotateCw className="h-3 w-3" />
+              </button>
             </div>
             <div className="lg:w-full">
               <ThemePresetSelector />
@@ -217,11 +221,11 @@ export default function ProfilePage({ user: propUser, onBack }: ProfilePageProps
              <div className="mb-4 px-2">
                 <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Personal Information</h3>
              </div>
-             <div className="bg-white dark:bg-slate-900 rounded-[24px] lg:rounded-[22px] lg:w-full border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-50 dark:divide-slate-800/50">
+             <div className="bg-white dark:bg-slate-900 rounded-[24px] lg:rounded-[10px] lg:w-full border border-slate-100 dark:border-slate-800 shadow-[0_10px_28px_-22px_rgba(15,23,42,0.45)] overflow-hidden divide-y divide-slate-50 dark:divide-slate-800/50">
                 {menuItems.map((item) => (
-                  <div key={item.label} className="p-5 flex items-center gap-4">
-                     <div className={cn("w-11 h-11 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center shrink-0", item.color)}>
-                        <item.icon className="w-5.5 h-5.5" />
+                  <div key={item.label} className="p-5 lg:px-4 lg:py-3.5 flex items-center gap-4">
+                     <div className={cn("w-11 h-11 lg:w-9 lg:h-9 rounded-2xl lg:rounded-lg bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center shrink-0", item.color)}>
+                        <item.icon className="w-5.5 h-5.5 lg:w-[18px] lg:h-[18px]" />
                      </div>
                      <div className="flex-1 min-w-0">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">{item.label}</p>
