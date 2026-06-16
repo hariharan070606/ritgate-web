@@ -3,7 +3,7 @@ import { Menu } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 interface AppHeaderProps {
-  label: string;
+  label?: string;
   title: string;
   subtitle: string;
   actions?: ReactNode;
@@ -41,9 +41,11 @@ export default function AppHeader({
           )}
 
           <div className="min-w-0">
-            <p className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
-              {label}
-            </p>
+            {label && (
+              <p className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
+                {label}
+              </p>
+            )}
             <p className="sr-only">{subtitle}</p>
             <h1 className="truncate text-[24px] font-black uppercase leading-tight tracking-tight text-slate-950 dark:text-white">
               {title}

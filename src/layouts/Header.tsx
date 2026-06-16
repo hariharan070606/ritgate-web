@@ -10,7 +10,7 @@ interface HeaderProps {
 }
 
 interface HeaderCopy {
-  label: string;
+  label?: string;
   title: string;
   subtitle: string;
 }
@@ -56,7 +56,7 @@ const routeCopy: Record<string, Omit<HeaderCopy, 'label'>> = {
     subtitle: "Track today's active gate pass requests from one clean workspace.",
   },
   '/history': {
-    title: 'Request History',
+    title: 'History',
     subtitle: 'Review your past gate pass requests, approvals, and activity.',
   },
   '/profile': {
@@ -150,7 +150,6 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
       subtitle: roleDashboardSubtitle[role || ''] || 'Manage your gate pass workspace with clarity and control.',
     }
     : {
-      label: 'RIT GATE',
       ...(routeCopy[location.pathname] || {
         title: 'RIT Gate',
         subtitle: 'Manage gate pass activity from one clean workspace.',
