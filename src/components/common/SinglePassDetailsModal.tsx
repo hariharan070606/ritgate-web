@@ -156,7 +156,7 @@ export default function SinglePassDetailsModal({
 
         {/* Scrollable Body */}
         <div className="flex-1 overflow-y-auto">
-          <div className="p-4 space-y-4">
+          <div className="p-4 pt-8 space-y-4">
             {/* Profile Row */}
             <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4">
               <div className={cn(

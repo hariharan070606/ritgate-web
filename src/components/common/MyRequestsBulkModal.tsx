@@ -138,7 +138,7 @@ export default function MyRequestsBulkModal({
               <Button variant="outline" onClick={loadDetails}>Retry</Button>
             </div>
           ) : (
-            <div className="p-4 space-y-4">
+            <div className="p-4 pt-8 space-y-4">
               {/* Profile Row */}
               <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-3">
                 <div className={cn(
