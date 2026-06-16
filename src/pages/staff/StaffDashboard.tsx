@@ -277,7 +277,6 @@ export default function StaffDashboard() {
           eyebrow={getGreeting().replace(',', '')}
           title="Dashboard"
           subtitle="Track and manage your gate pass requests"
-          action={<Button icon={<FileText className="w-4 h-4" />} onClick={() => navigate('/new-pass')}>New Pass</Button>}
         />
       )}
 
