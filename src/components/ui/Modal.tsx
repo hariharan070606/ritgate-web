@@ -92,7 +92,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', s
             )}
 
             {/* Body */}
-            <div className="flex-1 overflow-y-auto scroll-momentum px-5 py-4 pt-6">
+            <div className="flex-1 overflow-y-auto scroll-momentum px-5 py-4 pt-8">
               {children}
             </div>
           </motion.div>

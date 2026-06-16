@@ -75,7 +75,7 @@ export default function RequestDetailsModal({
               </div>
 
               {/* Content */}
-              <div className="p-6 pt-8 space-y-8">
+              <div className="p-6 pt-12 space-y-8">
                 {/* Status Section */}
                 <div className="flex items-center justify-between">
                   <span className="text-base font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-[13px]">Current Status</span>
