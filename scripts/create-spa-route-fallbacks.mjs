@@ -35,6 +35,7 @@ const routes = [
   'profile',
   'notifications',
   'participants',
+  'pass-verification',
 ];
 
 if (!existsSync(source)) {
@@ -46,5 +47,7 @@ for (const route of routes) {
   mkdirSync(routeDir, { recursive: true });
   copyFileSync(source, join(routeDir, 'index.html'));
 }
+
+copyFileSync(source, join(dist, '404.html'));
 
 console.log(`Created SPA route fallbacks for ${routes.length} routes.`);
