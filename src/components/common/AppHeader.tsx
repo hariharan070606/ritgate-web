@@ -25,7 +25,7 @@ export default function AppHeader({
         className,
       )}
     >
-      <div className="mx-auto flex w-full max-w-[1320px] items-center justify-between gap-4 px-6 lg:px-10">
+      <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between gap-4 px-8 lg:px-10">
         <div className="flex min-w-0 items-center gap-4">
           <div className="min-w-0">
             {label && (

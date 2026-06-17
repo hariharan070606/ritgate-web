@@ -77,7 +77,7 @@ export default function HODNewPass() {
         </div>
       </header>
 
-      <main className="desktop-page flex-1 overflow-y-auto px-5 py-6 pb-28 lg:px-0 lg:pt-0">
+      <main className="desktop-page flex-1 px-5 py-6 pb-28 lg:px-0 lg:pt-0 lg:pb-12">
         <DesktopPageHeader
           title={stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle}
           subtitle={stage === 'SELECT' ? PASS_COPY.selectSubtitle : 'Create department gate passes with HOD-level controls.'}
@@ -97,7 +97,7 @@ export default function HODNewPass() {
                   <p className="text-[14px] font-bold text-slate-400 mt-1">{PASS_COPY.selectSubtitle}</p>
                </div>
 
-               <div className="grid gap-4 lg:grid-cols-3 lg:gap-6">
+               <div className="grid gap-6 lg:grid-cols-3 lg:gap-6">
                   {[
                     { id: 'SINGLE', title: PASS_COPY.singleTitle, sub: PASS_COPY.singleSubtitle, icon: UserPlus, accent: 'blue', restricted: true },
                     { id: 'BULK', title: PASS_COPY.bulkTitle, sub: PASS_COPY.bulkSubtitle, icon: Users, accent: 'violet', restricted: true },

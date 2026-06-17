@@ -87,7 +87,7 @@ export default function NCIGateLogs() {
   });
 
   return (
-    <div className="desktop-page space-y-6 pb-10">
+    <div className="desktop-page desktop-page-wide space-y-6 pb-10">
       <DesktopPageHeader
         title="Gate Logs"
         subtitle={`${rangeLabel} - ${loading ? 'Loading...' : `${filtered.length} records`}`}

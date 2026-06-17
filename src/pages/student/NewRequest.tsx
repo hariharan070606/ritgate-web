@@ -117,7 +117,7 @@ export default function NewRequest() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto px-5 pt-6 pb-32 lg:px-0 lg:pt-0 lg:pb-12">
+      <main className="desktop-page flex-1 px-5 pt-6 pb-32 lg:px-0 lg:pt-0 lg:pb-12">
         <div className="max-w-md mx-auto space-y-6 lg:max-w-2xl">
           {isDesktop && (
             <DesktopPageHeader

@@ -100,7 +100,7 @@ export default function NotificationsPage() {
       </header>
 
       <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
-        <div className="desktop-page px-4 pt-4 pb-28 lg:px-0 lg:pt-0">
+        <div className="desktop-page px-4 pt-4 pb-28 lg:px-0 lg:pt-0 lg:pb-12">
           <DesktopPageHeader
             title="Notifications"
             subtitle={notifications.filter(n => !n.isRead).length > 0 ? `${notifications.filter(n => !n.isRead).length} unread updates` : 'All caught up'}

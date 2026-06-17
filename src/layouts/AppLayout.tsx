@@ -20,6 +20,13 @@ export default function AppLayout() {
   const location = useLocation();
   const { pushEnabled, requestPushPermission } = useNotifications();
   const isProfileRoute = location.pathname === '/profile';
+  const isWideRoute = [
+    '/gate-logs',
+    '/exits',
+    '/scan-history',
+    '/active-persons',
+    '/vehicles',
+  ].some((route) => location.pathname === route || location.pathname.startsWith(`${route}/`));
 
   // Auto-collapse sidebar on tablet, expand on desktop
   useEffect(() => {
@@ -170,7 +177,11 @@ export default function AppLayout() {
 
         {/* Page content */}
         <main className="main-area flex-1 min-w-0">
-          <div className={`page-content desktop-page ${isProfileRoute ? 'profile-page-content' : ''}`}>
+          <div
+            className={`page-content desktop-page ${isProfileRoute ? 'profile-page-content' : ''} ${
+              isWideRoute ? 'page-content-wide' : ''
+            }`}
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

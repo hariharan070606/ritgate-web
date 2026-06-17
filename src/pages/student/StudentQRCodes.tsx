@@ -37,13 +37,13 @@ export default function StudentQRCodes() {
         </div>
       </header>
 
-      <main className="desktop-page px-5 pt-6 pb-28 lg:px-0 lg:pt-0">
+      <main className="desktop-page px-5 pt-6 pb-28 lg:px-0 lg:pt-0 lg:pb-12">
         <DesktopPageHeader
           title="My QR Codes"
           subtitle="Use your student ID QR for campus entry and scanner verification."
           eyebrow="Student Identity"
         />
-        <div className="max-w-md mx-auto space-y-6 lg:max-w-none lg:grid lg:grid-cols-[minmax(360px,460px)_1fr] lg:items-start lg:gap-6 lg:space-y-0">
+        <div className="max-w-md mx-auto space-y-6 lg:max-w-none lg:grid lg:grid-cols-[minmax(340px,440px)_1fr] lg:items-start lg:gap-6 lg:space-y-0">
           {/* Main QR Card */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}

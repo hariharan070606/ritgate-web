@@ -66,7 +66,7 @@ export default function SecurityVisitorReg() {
   };
 
   return (
-    <div className="desktop-page max-w-xl mx-auto space-y-8 pb-10 lg:max-w-none">
+    <div className="desktop-page mx-auto space-y-8 pb-10">
       <DesktopPageHeader
         title="Visitor Registration"
         subtitle="Log manual entry for verified guests and route approval to the right official."

@@ -202,7 +202,7 @@ export default function PassVerificationPage() {
   const department = request.department || 'N/A';
 
   return (
-    <div className="mx-auto w-full max-w-none">
+    <div className="mx-auto w-full max-w-[1180px]">
       <section className="desktop-card overflow-hidden">
         <header className="flex min-h-[54px] items-center gap-4 border-b border-slate-100 bg-white px-5 dark:border-slate-800 dark:bg-slate-900">
           <button
@@ -220,7 +220,7 @@ export default function PassVerificationPage() {
           </span>
         </header>
 
-        <div className="bg-transparent px-5 py-6">
+        <div className="bg-transparent px-5 py-6 lg:px-6 lg:py-6">
           <div className="space-y-5">
             <div className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <div className="flex items-center gap-5">
@@ -261,7 +261,7 @@ export default function PassVerificationPage() {
             </div>
 
             {canReview && (
-              <div className="bg-white p-5 shadow-sm dark:bg-slate-900">
+              <div className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <textarea
                   value={remark}
                   onChange={(event) => setRemark(event.target.value)}
