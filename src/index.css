@@ -160,9 +160,10 @@
   .main-area {
     flex: 1;
     min-width: 0;
-    min-height: 100vh;
+    min-height: 0;
     position: relative;
     overflow-x: hidden;
+    overflow-y: auto;
     background: #f6f8fc;
   }
 
@@ -183,15 +184,15 @@
     width: 100%;
     max-width: var(--container-max);
     margin-inline: auto;
-    padding: 32px 40px 48px;
+    padding: 24px 32px 32px;
     background: transparent !important;
   }
 
   .profile-page-content {
-    height: calc(100vh - var(--header-height));
-    min-height: calc(100vh - var(--header-height));
-    padding-block: 22px !important;
-    overflow: hidden;
+    height: auto;
+    min-height: 0;
+    padding: 24px 32px 32px !important;
+    overflow: visible;
   }
 
   .page-content .desktop-page {
@@ -457,40 +458,142 @@
 
   .desktop-page :where(button, a[role="button"], .cursor-pointer) {
     transition-property: transform, box-shadow, border-color, background-color, color, opacity;
-    transition-duration: 220ms;
+    transition-duration: 180ms;
     transition-timing-function: var(--ease);
   }
 
-  .desktop-page :where(button, a[role="button"]):active {
-    transform: scale(0.98);
+  /* Hover: Lift with enhanced shadow (elevation increase) */
+  .desktop-page :where(button, a[role="button"]):hover {
+    transform: translateY(-1px);
   }
 
+  /* Active: Press down with reduced shadow (elevation decrease) */
+  .desktop-page :where(button, a[role="button"]):active {
+    transform: translateY(1px);
+  }
+
+  /* Primary Buttons (Blue) - Reduced height from h-12 to h-10 equivalent */
   .desktop-page :where(button[class*="h-10"][class*="bg-blue-"], button[class*="h-11"][class*="bg-blue-"], button[class*="h-12"][class*="bg-blue-"], button[class*="h-14"][class*="bg-blue-"], button[class*="bg-[var(--color-primary)]"], a[class*="h-10"][class*="bg-blue-"], a[class*="h-11"][class*="bg-blue-"], a[class*="h-12"][class*="bg-blue-"]) {
     background: var(--gradient-primary) !important;
     color: #fff !important;
-    box-shadow: 0 14px 30px -18px rgba(37, 99, 235, 0.72) !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.24), 0 1px 2px rgba(15, 23, 42, 0.08) !important;
     border-color: rgba(96, 165, 250, 0.35) !important;
+    min-height: 40px !important;
+    height: auto !important;
   }
 
+  .desktop-page :where(button[class*="h-10"][class*="bg-blue-"], button[class*="h-11"][class*="bg-blue-"], button[class*="h-12"][class*="bg-blue-"], button[class*="h-14"][class*="bg-blue-"], button[class*="bg-[var(--color-primary)]"], a[class*="h-10"][class*="bg-blue-"], a[class*="h-11"][class*="bg-blue-"], a[class*="h-12"][class*="bg-blue-"]):hover {
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.32), 0 2px 6px rgba(15, 23, 42, 0.12) !important;
+  }
+
+  .desktop-page :where(button[class*="h-10"][class*="bg-blue-"], button[class*="h-11"][class*="bg-blue-"], button[class*="h-12"][class*="bg-blue-"], button[class*="h-14"][class*="bg-blue-"], button[class*="bg-[var(--color-primary)]"], a[class*="h-10"][class*="bg-blue-"], a[class*="h-11"][class*="bg-blue-"], a[class*="h-12"][class*="bg-blue-"]):active {
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.18), 0 0 1px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  /* Success Buttons (Green) - Reduced height */
   .desktop-page :where(button[class*="h-10"][class*="bg-emerald-"], button[class*="h-11"][class*="bg-emerald-"], button[class*="h-12"][class*="bg-emerald-"], button[class*="h-14"][class*="bg-emerald-"], a[class*="h-10"][class*="bg-emerald-"], a[class*="h-11"][class*="bg-emerald-"], a[class*="h-12"][class*="bg-emerald-"]) {
     background: var(--gradient-success) !important;
     color: #fff !important;
-    box-shadow: 0 14px 30px -18px rgba(16, 185, 129, 0.72) !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.24), 0 1px 2px rgba(15, 23, 42, 0.08) !important;
     border-color: rgba(16, 185, 129, 0.35) !important;
+    min-height: 40px !important;
+    height: auto !important;
   }
 
+  .desktop-page :where(button[class*="h-10"][class*="bg-emerald-"], button[class*="h-11"][class*="bg-emerald-"], button[class*="h-12"][class*="bg-emerald-"], button[class*="h-14"][class*="bg-emerald-"], a[class*="h-10"][class*="bg-emerald-"], a[class*="h-11"][class*="bg-emerald-"], a[class*="h-12"][class*="bg-emerald-"]):hover {
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.32), 0 2px 6px rgba(15, 23, 42, 0.12) !important;
+  }
+
+  .desktop-page :where(button[class*="h-10"][class*="bg-emerald-"], button[class*="h-11"][class*="bg-emerald-"], button[class*="h-12"][class*="bg-emerald-"], button[class*="h-14"][class*="bg-emerald-"], a[class*="h-10"][class*="bg-emerald-"], a[class*="h-11"][class*="bg-emerald-"], a[class*="h-12"][class*="bg-emerald-"]):active {
+    box-shadow: 0 1px 2px rgba(16, 185, 129, 0.18), 0 0 1px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  /* Danger Buttons (Red) - Reduced height */
   .desktop-page :where(button[class*="h-10"][class*="bg-rose-"], button[class*="h-11"][class*="bg-rose-"], button[class*="h-12"][class*="bg-rose-"], button[class*="h-14"][class*="bg-rose-"], a[class*="h-10"][class*="bg-rose-"], a[class*="h-11"][class*="bg-rose-"], a[class*="h-12"][class*="bg-rose-"]) {
     background: var(--gradient-danger) !important;
     color: #fff !important;
-    box-shadow: 0 14px 30px -18px rgba(244, 63, 94, 0.76) !important;
+    box-shadow: 0 2px 8px rgba(244, 63, 94, 0.24), 0 1px 2px rgba(15, 23, 42, 0.08) !important;
     border-color: rgba(244, 63, 94, 0.35) !important;
+    min-height: 40px !important;
+    height: auto !important;
   }
 
+  .desktop-page :where(button[class*="h-10"][class*="bg-rose-"], button[class*="h-11"][class*="bg-rose-"], button[class*="h-12"][class*="bg-rose-"], button[class*="h-14"][class*="bg-rose-"], a[class*="h-10"][class*="bg-rose-"], a[class*="h-11"][class*="bg-rose-"], a[class*="h-12"][class*="bg-rose-"]):hover {
+    box-shadow: 0 8px 24px rgba(244, 63, 94, 0.32), 0 2px 6px rgba(15, 23, 42, 0.12) !important;
+  }
+
+  .desktop-page :where(button[class*="h-10"][class*="bg-rose-"], button[class*="h-11"][class*="bg-rose-"], button[class*="h-12"][class*="bg-rose-"], button[class*="h-14"][class*="bg-rose-"], a[class*="h-10"][class*="bg-rose-"], a[class*="h-11"][class*="bg-rose-"], a[class*="h-12"][class*="bg-rose-"]):active {
+    box-shadow: 0 1px 2px rgba(244, 63, 94, 0.18), 0 0 1px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  /* Secondary/Ghost Buttons (White/Slate) */
   .desktop-page :where(button[class*="bg-slate-50"], button[class*="bg-white"], button[class*="bg-slate-100"]) {
     background: rgba(255, 255, 255, 0.72) !important;
     border-color: rgba(148, 163, 184, 0.25) !important;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+  }
+
+  .desktop-page :where(button[class*="bg-slate-50"], button[class*="bg-white"], button[class*="bg-slate-100"]):hover {
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1), 0 2px 4px rgba(15, 23, 42, 0.06) !important;
+    border-color: rgba(148, 163, 184, 0.35) !important;
+  }
+
+  .desktop-page :where(button[class*="bg-slate-50"], button[class*="bg-white"], button[class*="bg-slate-100"]):active {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  /* Dark Mode Button Shadows */
+  .dark .desktop-page :where(button[class*="bg-blue-"], a[class*="bg-blue-"]) {
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.28), 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-blue-"], a[class*="bg-blue-"]):hover {
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.36), 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-blue-"], a[class*="bg-blue-"]):active {
+    box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2), 0 0 1px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-emerald-"], a[class*="bg-emerald-"]) {
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.28), 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-emerald-"], a[class*="bg-emerald-"]):hover {
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.36), 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-emerald-"], a[class*="bg-emerald-"]):active {
+    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.2), 0 0 1px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-rose-"], a[class*="bg-rose-"]) {
+    box-shadow: 0 2px 8px rgba(244, 63, 94, 0.28), 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-rose-"], a[class*="bg-rose-"]):hover {
+    box-shadow: 0 8px 24px rgba(244, 63, 94, 0.36), 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-rose-"], a[class*="bg-rose-"]):active {
+    box-shadow: 0 1px 3px rgba(244, 63, 94, 0.2), 0 0 1px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-slate-"], button[class*="bg-white"]) {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(71, 85, 105, 0.5) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-slate-"], button[class*="bg-white"]):hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(71, 85, 105, 0.7) !important;
+  }
+
+  .dark .desktop-page :where(button[class*="bg-slate-"], button[class*="bg-white"]):active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35) !important;
   }
 
   .desktop-page :where(span[class*="bg-amber-"], div[class*="bg-amber-"]):where(.rounded-md, .rounded-lg, .rounded-xl, .rounded-full, .rounded-\[8px\]) {
@@ -527,12 +630,12 @@
 
   .profile-page-content .native-page-enter,
   .profile-page-content .native-page-enter > div:first-child {
-    height: 100%;
+    height: auto;
   }
 
   .profile-page-content .desktop-page {
     max-width: none;
-    height: 100%;
+    height: auto;
   }
 }
 
@@ -552,7 +655,11 @@
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .page-content {
-    padding: 24px;
+    padding: 20px 24px 28px;
+  }
+  
+  .profile-page-content {
+    padding: 20px 24px 28px !important;
   }
 }
 
