@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { cn } from '../../utils/cn';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
-import { getMobileNavItems } from '../../config/navigation';
+import { getNavItems } from '../../config/navigation';
 
 interface MobileBottomNavProps {
   activeTab?: string;
@@ -16,7 +16,7 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
   const { role } = useAuth();
   const { unreadCount } = useNotifications();
 
-  const items = getMobileNavItems(role || 'STUDENT');
+  const items = getNavItems(role || 'STUDENT');
 
   const handleNavClick = (path: string) => {
     navigate(path);
@@ -34,10 +34,10 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
         <div className="flex items-stretch h-[68px] px-2 py-2">
           {items.map((item) => {
             const Icon = item.icon;
-            const isNewPass = item.path === '/new-pass';
+            const isNewPass = item.path === '/new-pass' || item.path === '/new-request';
             const isActive =
               pathname === item.path ||
-              (isNewPass && pathname.startsWith('/new-pass'));
+              (item.path !== '/dashboard' && pathname.startsWith(item.path));
             const isNotif = item.path === '/notifications';
 
             return (

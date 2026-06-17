@@ -4,11 +4,9 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { ROLE_LABELS } from '../config/api.config';
+import { getNavItems } from '../config/navigation';
 import RITLogo from '../components/common/RITLogo';
 import { cn } from '../utils/cn';
-import {
-  Home, History, User, Plus, ClipboardList, BookOpen, ScanLine, Users, Car
-} from 'lucide-react';
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -26,7 +24,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       (u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : '') || 'User';
   })();
 
-  const navItems = getDrawerNav(role || 'STUDENT');
+  const navItems = getNavItems(role || 'STUDENT');
 
   return (
     <AnimatePresence>
@@ -123,57 +121,4 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       )}
     </AnimatePresence>
   );
-}
-
-function getDrawerNav(role: string) {
-  switch (role) {
-    case 'STUDENT':
-      return [
-        { path: '/dashboard', label: 'Dashboard', icon: Home },
-        { path: '/requests', label: 'My Requests', icon: ClipboardList },
-        { path: '/history', label: 'History', icon: History },
-        { path: '/profile', label: 'Profile', icon: User },
-      ];
-    case 'STAFF':
-    case 'NON_TEACHING':
-    case 'NON_CLASS_INCHARGE':
-      return [
-        { path: '/dashboard', label: 'Dashboard', icon: Home },
-        { path: '/new-pass', label: 'New Pass', icon: Plus },
-        { path: '/my-requests', label: 'My Requests', icon: ClipboardList },
-        { path: '/profile', label: 'Profile', icon: User },
-      ];
-    case 'HOD':
-      return [
-        { path: '/dashboard', label: 'Dashboard', icon: Home },
-        { path: '/new-pass', label: 'New Pass', icon: Plus },
-        { path: '/my-requests', label: 'My Requests', icon: ClipboardList },
-        { path: '/profile', label: 'Profile', icon: User },
-      ];
-    case 'HR':
-      return [
-        { path: '/dashboard', label: 'Dashboard', icon: Home },
-        { path: '/my-requests', label: 'My Requests', icon: ClipboardList },
-        { path: '/gate-logs', label: 'Gate Logs', icon: BookOpen },
-        { path: '/profile', label: 'Profile', icon: User },
-      ];
-    case 'SECURITY':
-      return [
-        { path: '/dashboard', label: 'Dashboard', icon: Home },
-        { path: '/scanner', label: 'Scanner', icon: ScanLine },
-        { path: '/active-persons', label: 'Active', icon: Users },
-        { path: '/vehicles', label: 'Vehicles', icon: Car },
-        { path: '/scan-history', label: 'History', icon: History },
-        { path: '/visitor-register', label: 'Visitors', icon: Plus },
-        { path: '/profile', label: 'Profile', icon: User },
-      ];
-    case 'ADMIN_OFFICER':
-      return [
-        { path: '/dashboard', label: 'Dashboard', icon: Home },
-        { path: '/gate-logs', label: 'Gate Logs', icon: BookOpen },
-        { path: '/profile', label: 'Profile', icon: User },
-      ];
-    default:
-      return [{ path: '/dashboard', label: 'Dashboard', icon: Home }];
-  }
 }
