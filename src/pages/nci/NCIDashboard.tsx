@@ -128,7 +128,6 @@ export default function NCIDashboard() {
           eyebrow={new Date().getHours() < 12 ? 'GOOD MORNING' : new Date().getHours() < 17 ? 'GOOD AFTERNOON' : 'GOOD EVENING'}
           title="Dashboard"
           subtitle="Monitor visitor pre-registration and campus entry requests"
-          action={<Button variant="secondary" size="sm" onClick={fetchData} icon={<RefreshCw className={cn('w-4 h-4', isLoading && 'animate-spin')} />}>Refresh</Button>}
         />
       )}
 
