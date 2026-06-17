@@ -167,9 +167,9 @@ export default function AppLayout() {
           )}
         </AnimatePresence>
 
-        {/* Page content - generous, responsive padding across tablet to desktop */}
-        <main className="flex-1 overflow-y-auto px-6 py-6 lg:px-8 lg:py-7 xl:px-10 xl:py-8 2xl:px-12">
-          <div className="desktop-page">
+        {/* Page content */}
+        <main className="main-area flex-1 min-w-0">
+          <div className="page-content desktop-page">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

@@ -202,8 +202,8 @@ export default function PassVerificationPage() {
   const department = request.department || 'N/A';
 
   return (
-    <div className="mx-auto w-full max-w-[1450px]">
-      <section className="overflow-hidden bg-white shadow-[0_14px_42px_-30px_rgba(15,23,42,0.55)] dark:bg-slate-900">
+    <div className="mx-auto w-full max-w-none">
+      <section className="desktop-card overflow-hidden">
         <header className="flex min-h-[54px] items-center gap-4 border-b border-slate-100 bg-white px-5 dark:border-slate-800 dark:bg-slate-900">
           <button
             onClick={handleClose}
@@ -220,7 +220,7 @@ export default function PassVerificationPage() {
           </span>
         </header>
 
-        <div className="bg-[#F8FAFC] px-5 py-6 dark:bg-slate-950">
+        <div className="bg-[#F8FAFC]/70 px-5 py-6 dark:bg-slate-950/70">
           <div className="space-y-5">
             <div className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <div className="flex items-center gap-5">
