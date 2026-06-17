@@ -179,7 +179,7 @@ export default function ProfilePage({
 
       <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
         <div className="px-5 pt-6 pb-32 min-h-[calc(100vh-100px)] lg:mx-auto lg:grid lg:h-full lg:min-h-0 lg:w-full lg:max-w-[1180px] lg:grid-cols-[330px_minmax(0,1fr)] lg:grid-rows-[74px_auto_auto] lg:items-start lg:gap-x-6 lg:gap-y-3 lg:overflow-hidden lg:px-0 lg:pt-0 lg:pb-0 xl:max-w-[1280px] xl:grid-cols-[350px_minmax(0,1fr)] xl:gap-x-7">
-          <div className="flex flex-col items-center mb-8 lg:mb-0 lg:row-span-3 lg:self-stretch lg:bg-white/78 lg:dark:bg-slate-900/80 lg:border lg:border-white/60 lg:dark:border-slate-800/80 lg:rounded-[18px] lg:px-7 lg:py-6 lg:shadow-[0_24px_60px_-38px_rgba(15,23,42,0.62)] lg:backdrop-blur-2xl lg:w-full lg:overflow-hidden">
+          <div className="flex flex-col items-center mb-8 lg:mb-0 lg:row-span-3 lg:h-[500px] xl:h-[520px] lg:self-start lg:bg-white/78 lg:dark:bg-slate-900/80 lg:border lg:border-white/60 lg:dark:border-slate-800/80 lg:rounded-[18px] lg:px-7 lg:py-6 lg:shadow-[0_24px_60px_-38px_rgba(15,23,42,0.62)] lg:backdrop-blur-2xl lg:w-full lg:overflow-hidden">
             <div className="relative mb-4">
               <div className="w-[110px] h-[110px] rounded-full border-2 border-blue-700 p-1 flex items-center justify-center bg-white dark:bg-slate-900 shadow-xl shadow-blue-100 lg:h-[104px] lg:w-[104px] lg:border-[3px]">
                 {profileImage ? (
