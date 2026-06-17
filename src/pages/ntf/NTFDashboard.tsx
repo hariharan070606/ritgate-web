@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, AlertCircle, FileText, Users, RefreshCw, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Search, AlertCircle, Users, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
 import Modal from '../../components/ui/Modal';
 import Button from '../../components/ui/Button';
@@ -21,6 +21,7 @@ import { useAdaptive } from '../../utils/useAdaptive';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import DesktopStatCard from '../../components/desktop/DesktopStatCard';
 import DesktopToolbar from '../../components/desktop/DesktopToolbar';
+import TopMenuBar from '../../components/common/TopMenuBar';
 
 type Tab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -101,39 +102,6 @@ export default function NTFDashboard() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good Morning,' : hour < 17 ? 'Good Afternoon,' : 'Good Evening,';
-  const statCards = [
-    {
-      label: 'PENDING' as Tab,
-      value: stats.pending,
-      icon: Clock,
-      card: 'ring-amber-500/20 bg-amber-50 dark:bg-amber-950/20',
-      text: 'text-amber-600',
-      valueText: 'text-amber-700 dark:text-amber-500',
-      iconBg: 'bg-amber-100 dark:bg-amber-900/30',
-      iconText: 'text-amber-600',
-    },
-    {
-      label: 'APPROVED' as Tab,
-      value: stats.approved,
-      icon: CheckCircle,
-      card: 'ring-emerald-500/20 bg-emerald-50 dark:bg-emerald-950/20',
-      text: 'text-emerald-600',
-      valueText: 'text-emerald-700 dark:text-emerald-500',
-      iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
-      iconText: 'text-emerald-600',
-    },
-    {
-      label: 'REJECTED' as Tab,
-      value: stats.rejected,
-      icon: XCircle,
-      card: 'ring-rose-500/20 bg-rose-50 dark:bg-rose-950/20',
-      text: 'text-rose-600',
-      valueText: 'text-rose-700 dark:text-rose-500',
-      iconBg: 'bg-rose-100 dark:bg-rose-900/30',
-      iconText: 'text-rose-600',
-    },
-  ];
-
   if (isLoading && requests.length === 0) {
     return (
       <div className="space-y-8 animate-pulse text-left">
@@ -162,7 +130,15 @@ export default function NTFDashboard() {
   }
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen lg:bg-transparent lg:min-h-0">
+      {!isDesktop && (
+        <TopMenuBar
+          greeting={greeting.toUpperCase()}
+          title={staffName.toUpperCase()}
+        />
+      )}
+
+      <div className="px-5 pt-4 space-y-4 pb-28 lg:px-0 lg:pt-0 lg:pb-0 lg:space-y-8">
       {isDesktop && (
         <DesktopPageHeader
           eyebrow={greeting.replace(',', '')}
@@ -171,19 +147,25 @@ export default function NTFDashboard() {
         />
       )}
 
-      {/* Header */}
-      <div className="text-left px-1 lg:hidden">
-        <p className="text-[14px] font-semibold text-slate-400 leading-none">{greeting}</p>
-        <h2 className="text-[28px] font-bold text-slate-900 dark:text-white mt-1 leading-tight tracking-tight uppercase">
-          {staffName}
-        </h2>
-        <div className="flex items-center gap-3 mt-2">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-3 py-1 rounded-full uppercase tracking-widest border border-amber-100 dark:border-amber-900/30">
-            <Users className="w-3 h-3" />
-            NON-TEACHING FACULTY
-          </div>
+      {/* Search */}
+      {isDesktop ? (
+        <DesktopToolbar
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search visitor requests..."
+        />
+      ) : (
+        <div className="relative">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10"><Search className="w-5 h-5" /></div>
+          <input
+            type="text"
+            placeholder="Search requests..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full h-12 pl-12 pr-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm outline-none"
+          />
         </div>
-      </div>
+      )}
 
       {/* Stats */}
       {isDesktop ? (
@@ -193,46 +175,32 @@ export default function NTFDashboard() {
           <DesktopStatCard label="Rejected" value={stats.rejected} icon={XCircle} tone="rose" active={activeTab === 'REJECTED'} onClick={() => setActiveTab('REJECTED')} />
         </div>
       ) : (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {statCards.map(stat => (
-          <Card key={stat.label} onClick={() => setActiveTab(stat.label as Tab)} className={cn(
-            "p-6 transition-all cursor-pointer",
-            activeTab === stat.label ? `ring-2 ${stat.card}` : "bg-white dark:bg-slate-900"
-          )}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={cn("text-[10px] font-bold uppercase tracking-widest mb-2", stat.text)}>{stat.label}</p>
-                <p className={cn("text-3xl font-black tabular-nums", stat.valueText)}>{stat.value}</p>
-              </div>
-              <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", stat.iconBg)}>
-                <stat.icon className={cn("w-6 h-6", stat.iconText)} />
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
-      )}
+        <div className="flex bg-white dark:bg-slate-900 rounded-[24px] p-2 shadow-sm border border-slate-50 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500/10 transition-all lg:hidden">
+          {(['PENDING', 'APPROVED', 'REJECTED'] as Tab[]).map((tab) => {
+            const isActive = activeTab === tab;
+            const colors = { PENDING: 'text-amber-500', APPROVED: 'text-emerald-500', REJECTED: 'text-rose-500' };
+            const borders = { PENDING: 'border-amber-500', APPROVED: 'border-emerald-500', REJECTED: 'border-rose-500' };
+            const values = { PENDING: stats.pending, APPROVED: stats.approved, REJECTED: stats.rejected };
 
-      {/* Search */}
-      {isDesktop ? (
-        <DesktopToolbar
-          searchValue={searchQuery}
-          onSearchChange={setSearchQuery}
-          searchPlaceholder="Search visitor requests..."
-        >
-          <Button variant="secondary" size="sm" onClick={fetchData} icon={<RefreshCw className={cn('w-4 h-4', isLoading && 'animate-spin')} />}>Refresh</Button>
-        </DesktopToolbar>
-      ) : (
-      <div className="relative">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10"><Search className="w-4 h-4" /></div>
-        <input 
-          type="text" 
-          placeholder="SEARCH VISITOR REQUESTS..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value.toUpperCase())}
-          className="w-full pl-11 pr-4 h-12 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-bold focus:ring-2 focus:ring-amber-500/10 placeholder:text-slate-300 uppercase tracking-widest transition-all outline-none"
-        />
-      </div>
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={cn(
+                  'flex-1 flex flex-col items-center py-2 transition-all border-b-2',
+                  isActive ? borders[tab] : 'border-transparent',
+                )}
+              >
+                <span className={cn('text-[10px] font-black uppercase tracking-widest mb-1', isActive ? colors[tab] : 'text-slate-400')}>
+                  {tab}
+                </span>
+                <span className={cn('text-[18px] font-black', isActive ? 'text-slate-900 dark:text-white' : 'text-slate-300')}>
+                  {values[tab]}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       )}
 
       {/* Requests List */}
@@ -299,22 +267,14 @@ export default function NTFDashboard() {
         </section>
       ) : (
       <div className="space-y-4">
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <FileText className="w-3.5 h-3.5 text-slate-400" />
-            <h3 className="text-[12px] font-bold text-slate-400 uppercase tracking-widest leading-none">Visitor Queue</h3>
-          </div>
-          <button onClick={fetchData} className="text-[10px] font-bold text-amber-600 uppercase tracking-widest hover:underline flex items-center gap-1">
-            <RefreshCw className={cn("w-3 h-3", isLoading && "animate-spin")} /> Refresh
-          </button>
-        </div>
-
         {filtered.length === 0 ? (
-          <EmptyState 
-            title={EMPTY_COPY.noRequestsFound} 
-            description={searchQuery ? "No matches found." : `No ${activeTab.toLowerCase()} requests.`}
-            icon={<Users className="w-12 h-12 text-slate-200" />} 
-          />
+          <div className="flex min-h-[42vh] items-center justify-center">
+            <EmptyState
+              title={searchQuery ? EMPTY_COPY.noRequestsFound : `No ${activeTab.toLowerCase()} visitor requests`}
+              description={searchQuery ? "No matches found." : ''}
+              icon={<Users className="w-12 h-12 text-slate-200" />}
+            />
+          </div>
         ) : (
           <div className="space-y-3">
             <AnimatePresence mode="popLayout">
@@ -357,6 +317,7 @@ export default function NTFDashboard() {
         )}
       </div>
       )}
+      </div>
     </div>
   );
 }
