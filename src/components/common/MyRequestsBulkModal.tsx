@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Users, UserCircle, QrCode, X, Search, Maximize2, Loader2, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowLeft, Users, UserCircle, QrCode, X, Search, Maximize2, Loader2, AlertCircle, CheckCircle2, XCircle, FileText } from 'lucide-react';
 import { apiService } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { formatDateShort } from '../../utils/date';
+import { isPdfAttachment } from '../../utils/attachmentUtils';
 import Badge from '../ui/Badge';
 import GatePassQRModal from './GatePassQRModal';
 import Button from '../ui/Button';
@@ -39,6 +40,7 @@ export default function MyRequestsBulkModal({
   const [showQR, setShowQR] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
   const [showFullscreen, setShowFullscreen] = useState(false);
+  const isPdf = isPdfAttachment(details?.attachmentUri);
   const [participants, setParticipants] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -210,12 +212,21 @@ export default function MyRequestsBulkModal({
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Preview</p>
                   <div 
                     className="relative w-40 h-24 bg-slate-900 rounded-xl overflow-hidden cursor-pointer group"
-                    onClick={() => setShowFullscreen(true)}
+                    onClick={() => isPdf ? window.open(details.attachmentUri, '_blank') : setShowFullscreen(true)}
                   >
-                    <img src={details.attachmentUri} alt="Pass Attachment" className="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                       <Maximize2 className="w-5 h-5 text-white" />
-                    </div>
+                    {isPdf ? (
+                      <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-800">
+                        <FileText className="h-8 w-8 text-white" />
+                        <span className="text-[10px] font-bold uppercase tracking-tighter text-white">Open PDF</span>
+                      </div>
+                    ) : (
+                      <>
+                        <img src={details.attachmentUri} alt="Pass Attachment" className="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                           <Maximize2 className="w-5 h-5 text-white" />
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
@@ -375,7 +386,7 @@ export default function MyRequestsBulkModal({
 
         {/* Fullscreen Preview */}
         <AnimatePresence>
-          {showFullscreen && (
+          {showFullscreen && !isPdf && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

@@ -24,6 +24,7 @@ import { getHODDepartmentStudents, getHODDepartmentStaff, submitHODBulkPass } fr
 import { cn } from '../../utils/cn';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import { nowIST, nowISTPlus } from '../../utils/dateUtils';
+import AttachmentUpload from '../../components/common/AttachmentUpload';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -95,6 +96,8 @@ export default function HODBulkPass({ onBack }: HODBulkPassProps) {
   // ── Form ──────────────────────────────────────────────────────────────────
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
+  const [attachmentUri, setAttachmentUri] = useState('');
+  const [attachmentName, setAttachmentName] = useState<string | undefined>();
   // ── Load data ─────────────────────────────────────────────────────────────
   useEffect(() => { loadData(); }, []);
 
@@ -274,6 +277,7 @@ export default function HODBulkPass({ onBack }: HODBulkPassProps) {
           staff: Array.from(selectedStaffIds),
           includeStaff,
           receiverId: includeStaff ? undefined : (receiverId || undefined),
+          attachmentUri: attachmentUri || undefined,
         });
         if (res.success) {
           showToastSuccess('Batch Sent', `Authorization for ${totalSelected} members submitted`);
@@ -664,6 +668,15 @@ export default function HODBulkPass({ onBack }: HODBulkPassProps) {
               placeholder="Provide context for the group's exit authorization..."
               className="w-full min-h-[100px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 text-[15px] font-bold text-slate-900 dark:text-white shadow-sm outline-none focus:ring-2 focus:ring-blue-500/10 resize-none" />
           </div>
+
+          <AttachmentUpload
+            value={attachmentUri}
+            fileName={attachmentName}
+            onChange={(value, name) => {
+              setAttachmentUri(value);
+              setAttachmentName(name);
+            }}
+          />
 
 
         </div>

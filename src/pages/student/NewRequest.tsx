@@ -18,6 +18,7 @@ import { submitStudentGatePass } from '../../services/api.service';
 import ConfirmationModal from '../../components/common/ConfirmationModal';
 import SuccessModal from '../../components/common/SuccessModal';
 import ErrorModal from '../../components/common/ErrorModal';
+import AttachmentUpload from '../../components/common/AttachmentUpload';
 import { cn } from '../../utils/cn';
 import { getRequestDate } from '../../utils/dateUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
@@ -49,6 +50,8 @@ export default function NewRequest() {
 
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
+  const [attachmentUri, setAttachmentUri] = useState('');
+  const [attachmentName, setAttachmentName] = useState<string | undefined>();
 
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -71,7 +74,8 @@ export default function NewRequest() {
           regNo: user?.regNo || '',
           purpose: purpose.trim(),
           reason: reason.trim(),
-          requestDate: getRequestDate()
+          requestDate: getRequestDate(),
+          attachmentUri: attachmentUri || undefined,
         });
 
         if (response.success) {
@@ -88,7 +92,7 @@ export default function NewRequest() {
   };
 
   const handleGoBack = () => {
-    if (purpose || reason) {
+    if (purpose || reason || attachmentUri) {
       if (window.confirm('Discard changes and go back?')) {
         navigate(-1);
       }
@@ -182,6 +186,15 @@ export default function NewRequest() {
               </div>
               {errors.reason && <p className="text-[11px] font-bold text-rose-500 px-1 mt-1">{errors.reason}</p>}
             </div>
+
+            <AttachmentUpload
+              value={attachmentUri}
+              fileName={attachmentName}
+              onChange={(value, name) => {
+                setAttachmentUri(value);
+                setAttachmentName(name);
+              }}
+            />
           </div>
 
           {/* Desktop submit — inline (mobile uses the fixed bottom bar) */}

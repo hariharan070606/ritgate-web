@@ -17,6 +17,7 @@ import {
   QrCode
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
+import { isPdfAttachment } from '../../utils/attachmentUtils';
 import { formatDate } from '../../utils/date';
 import Button from '../ui/Button';
 import ConfirmationModal from './ConfirmationModal';
@@ -122,7 +123,7 @@ export default function SinglePassDetailsModal({
   const isApproved = status === 'APPROVED';
   const isRejected = status === 'REJECTED';
   const attachmentUri = request.attachmentUri || request.fileUrl;
-  const isPdf = attachmentUri?.toLowerCase().endsWith('.pdf');
+  const isPdf = isPdfAttachment(attachmentUri);
 
   const getInitials = (name: string) =>
     (name || 'ST').split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);

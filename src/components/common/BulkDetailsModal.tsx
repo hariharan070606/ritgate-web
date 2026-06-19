@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { apiService } from '../../services/api.service';
 import { cn } from '../../utils/cn';
+import { isPdfAttachment } from '../../utils/attachmentUtils';
 import { formatDateShort } from '../../utils/date';
 import Button from '../ui/Button';
 import ConfirmationModal from './ConfirmationModal';
@@ -78,7 +79,7 @@ export default function BulkDetailsModal({
   const isRejected = status === 'REJECTED';
   
   const attachmentUri = details?.attachmentUri || details?.fileUrl;
-  const isPdf = attachmentUri?.toLowerCase().endsWith('.pdf');
+  const isPdf = isPdfAttachment(attachmentUri);
 
   if (!isOpen) return null;
 

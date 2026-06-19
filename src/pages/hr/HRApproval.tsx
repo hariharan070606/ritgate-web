@@ -9,13 +9,15 @@ import {
   X, 
   ShieldCheck,
   AlertCircle,
-  Loader2
+  Loader2,
+  FileText
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { apiService } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { formatDateTime } from '../../utils/dateUtils';
+import { isPdfAttachment } from '../../utils/attachmentUtils';
 import Badge from '../../components/ui/Badge';
 
 interface HRApprovalProps {
@@ -32,6 +34,7 @@ export default function HRApproval({ request, onBack, onSuccess }: HRApprovalPro
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const isPdf = isPdfAttachment(request?.attachmentUri);
 
   if (!request) return null;
 
@@ -136,16 +139,25 @@ export default function HRApproval({ request, onBack, onSuccess }: HRApprovalPro
                 </p>
                 <div 
                   className="relative rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 cursor-pointer group"
-                  onClick={() => setIsFullScreen(true)}
+                  onClick={() => isPdf ? window.open(request.attachmentUri, '_blank') : setIsFullScreen(true)}
                 >
-                  <img 
-                    src={request.attachmentUri} 
-                    alt="Document Preview" 
-                    className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <Maximize2 className="w-8 h-8 text-white" />
-                  </div>
+                  {isPdf ? (
+                    <div className="flex h-48 flex-col items-center justify-center gap-3 bg-slate-900 text-white">
+                      <FileText className="h-10 w-10" />
+                      <span className="text-xs font-black uppercase tracking-widest">Open PDF</span>
+                    </div>
+                  ) : (
+                    <>
+                      <img 
+                        src={request.attachmentUri} 
+                        alt="Document Preview" 
+                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <Maximize2 className="w-8 h-8 text-white" />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -213,7 +225,7 @@ export default function HRApproval({ request, onBack, onSuccess }: HRApprovalPro
 
       {/* Image Preview Modal */}
       <AnimatePresence>
-        {isFullScreen && (
+        {isFullScreen && !isPdf && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[300] bg-black/95 flex items-center justify-center p-6"

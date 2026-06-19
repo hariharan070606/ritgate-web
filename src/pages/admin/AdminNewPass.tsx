@@ -14,6 +14,7 @@ import { transitions } from '../../design-system/animations';
 import { nowIST } from '../../utils/dateUtils';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { PASS_COPY } from '../../config/nativeCopy';
+import AttachmentUpload from '../../components/common/AttachmentUpload';
 
 /** Returns current hour in IST (UTC+5:30) */
 const getISTHour = () => {
@@ -38,6 +39,8 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
   
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
+  const [attachmentUri, setAttachmentUri] = useState('');
+  const [attachmentName, setAttachmentName] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   
@@ -64,6 +67,7 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
           purpose: purpose.trim(),
           reason: reason.trim(),
           requestDate: nowIST(),
+          attachmentUri: attachmentUri || undefined,
         });
         if (!submitRes.success) {
           showError('Failed', submitRes.message || 'Submission failed.');
@@ -91,6 +95,8 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
           showSuccess('Success', 'Gate pass instantly generated!');
           setPurpose('');
           setReason('');
+          setAttachmentUri('');
+          setAttachmentName(undefined);
         } else {
           showError('QR Error', 'Pass approved but QR generation failed.');
         }
@@ -172,6 +178,15 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
             className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white transition-all focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300 outline-none resize-none"
           />
         </div>
+
+        <AttachmentUpload
+          value={attachmentUri}
+          fileName={attachmentName}
+          onChange={(value, name) => {
+            setAttachmentUri(value);
+            setAttachmentName(name);
+          }}
+        />
       </motion.div>
 
       {/* Submit */}

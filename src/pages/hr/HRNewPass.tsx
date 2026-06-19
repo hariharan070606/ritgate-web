@@ -15,6 +15,7 @@ import { transitions } from '../../design-system/animations';
 import { nowIST } from '../../utils/dateUtils';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { PASS_COPY } from '../../config/nativeCopy';
+import AttachmentUpload from '../../components/common/AttachmentUpload';
 
 /** Returns current hour in IST (UTC+5:30) */
 const getISTHour = () => {
@@ -37,6 +38,8 @@ export default function HRNewPass() {
 
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
+  const [attachmentUri, setAttachmentUri] = useState('');
+  const [attachmentName, setAttachmentName] = useState<string | undefined>();
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -62,6 +65,7 @@ export default function HRNewPass() {
           purpose: purpose.trim(),
           reason: reason.trim(),
           requestDate: nowIST(),
+          attachmentUri: attachmentUri || undefined,
         });
         if (!submitRes.success) {
           showError('Submission Failed', submitRes.message || 'Failed to submit gate pass.');
@@ -94,6 +98,8 @@ export default function HRNewPass() {
         showSuccess('Gate Pass Generated', 'Your gate pass has been instantly approved.');
         setPurpose('');
         setReason('');
+        setAttachmentUri('');
+        setAttachmentName(undefined);
       } catch (e: any) {
         showError('Error', e?.message || 'An error occurred.');
       } finally {
@@ -172,6 +178,15 @@ export default function HRNewPass() {
             className="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white resize-none outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300"
           />
         </div>
+
+        <AttachmentUpload
+          value={attachmentUri}
+          fileName={attachmentName}
+          onChange={(value, name) => {
+            setAttachmentUri(value);
+            setAttachmentName(name);
+          }}
+        />
       </motion.div>
 
       {/* Submit */}

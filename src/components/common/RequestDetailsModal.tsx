@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Maximize2, User as UserIcon, QrCode as QrIcon } from 'lucide-react';
+import { X, Maximize2, User as UserIcon, QrCode as QrIcon, FileText } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import RequestTimeline from './RequestTimeline';
 import { formatDate } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
 import Badge from '../ui/Badge';
+import { isPdfAttachment } from '../../utils/attachmentUtils';
 
 interface RequestDetailsModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ export default function RequestDetailsModal({
   manualCode,
 }: RequestDetailsModalProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const isPdf = isPdfAttachment(request?.attachmentUri);
 
   if (!request) return null;
 
@@ -124,16 +126,25 @@ export default function RequestDetailsModal({
                     <h3 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight mb-4">Attachment</h3>
                     <div 
                       className="relative bg-slate-50 dark:bg-slate-800 rounded-2xl p-3 border border-slate-100 dark:border-slate-800 overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
-                      onClick={() => setIsFullScreen(true)}
+                      onClick={() => isPdf ? window.open(request.attachmentUri, '_blank') : setIsFullScreen(true)}
                     >
-                      <img 
-                        src={request.attachmentUri} 
-                        alt="Attachment" 
-                        className="w-full h-48 object-cover rounded-xl"
-                      />
-                      <div className="absolute bottom-6 right-6 bg-white/90 dark:bg-slate-900/90 p-2 rounded-xl shadow-lg">
-                        <Maximize2 className="w-5 h-5 text-slate-600 dark:text-white" />
-                      </div>
+                      {isPdf ? (
+                        <div className="flex h-48 flex-col items-center justify-center gap-3 rounded-xl bg-slate-900 text-white">
+                          <FileText className="h-10 w-10" />
+                          <span className="text-xs font-black uppercase tracking-widest">Open PDF</span>
+                        </div>
+                      ) : (
+                        <>
+                          <img 
+                            src={request.attachmentUri} 
+                            alt="Attachment" 
+                            className="w-full h-48 object-cover rounded-xl"
+                          />
+                          <div className="absolute bottom-6 right-6 bg-white/90 dark:bg-slate-900/90 p-2 rounded-xl shadow-lg">
+                            <Maximize2 className="w-5 h-5 text-slate-600 dark:text-white" />
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
@@ -187,7 +198,7 @@ export default function RequestDetailsModal({
 
       {/* Full Screen Image Modal */}
       <AnimatePresence>
-        {isFullScreen && (
+        {isFullScreen && !isPdf && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

@@ -7,6 +7,7 @@ import { useToast } from '../../context/ToastContext';
 import { useActionLock } from '../../context/ActionLockContext';
 import { submitHODGatePass } from '../../services/api.service';
 import { cn } from '../../utils/cn';
+import AttachmentUpload from '../../components/common/AttachmentUpload';
 
 interface HODNewPassRequestProps {
   user: any;
@@ -21,6 +22,8 @@ export default function HODNewPassRequest({ user, onBack }: HODNewPassRequestPro
 
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
+  const [attachmentUri, setAttachmentUri] = useState('');
+  const [attachmentName, setAttachmentName] = useState<string | undefined>();
 
   const hodName = (user as any)?.hodName || (user as any)?.name || 'HOD Member';
   const initials = hodName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
@@ -33,11 +36,12 @@ export default function HODNewPassRequest({ user, onBack }: HODNewPassRequestPro
          const res = await submitHODGatePass(
             hodCode,
             purpose.trim(),
-            reason.trim()
+            reason.trim(),
+            attachmentUri || undefined
          );
          if (res.success) {
            showToastSuccess('Request Dispatched', 'Your authorization pass has been submitted for HR review.');
-           setPurpose(''); setReason('');
+           setPurpose(''); setReason(''); setAttachmentUri(''); setAttachmentName(undefined);
            onBack();
          } else showToastError('Failed', res.message);
        } catch { showToastError('Error', 'An internal error occurred'); }
@@ -72,6 +76,15 @@ export default function HODNewPassRequest({ user, onBack }: HODNewPassRequestPro
             className="w-full min-h-[120px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 text-[15px] font-bold text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-violet-500/10 shadow-sm resize-none"
           />
         </div>
+
+        <AttachmentUpload
+          value={attachmentUri}
+          fileName={attachmentName}
+          onChange={(value, name) => {
+            setAttachmentUri(value);
+            setAttachmentName(name);
+          }}
+        />
 
 
 

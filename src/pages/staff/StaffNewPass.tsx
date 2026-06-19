@@ -24,6 +24,7 @@ import HRNewPass from '../hr/HRNewPass';
 import AdminNewPass from '../admin/AdminNewPass';
 import GuestPreRequest from '../shared/GuestPreRequest';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
+import AttachmentUpload from '../../components/common/AttachmentUpload';
 
 /** Returns current hour in IST (UTC+5:30) */
 const getISTHour = () => {
@@ -60,6 +61,8 @@ export default function StaffNewPass() {
 
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
+  const [attachmentUri, setAttachmentUri] = useState('');
+  const [attachmentName, setAttachmentName] = useState<string | undefined>();
 
   const staffName = (user as any)?.staffName || (user as any)?.name || 'Staff Member';
   const initials = staffName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
@@ -77,12 +80,13 @@ export default function StaffNewPass() {
             staffCode,
             purpose: purpose.trim(),
             reason: reason.trim(),
-            requestDate: getRequestDate()
+            requestDate: getRequestDate(),
+            attachmentUri: attachmentUri || undefined,
           });
           if (res.success) {
             showToastSuccess('Request Sent', 'Your gate pass authorization has been submitted');
             navigate('/new-pass');
-            setPurpose(''); setReason('');
+            setPurpose(''); setReason(''); setAttachmentUri(''); setAttachmentName(undefined);
           } else showToastError('Failed', res.message);
         } catch { showToastError('Error', 'An internal error occurred'); }
      }, 'Dispatching authorization...');
@@ -246,6 +250,15 @@ export default function StaffNewPass() {
                        className="w-full h-28 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 text-[15px] font-bold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm outline-none resize-none"
                      />
                    </div>
+
+                   <AttachmentUpload
+                     value={attachmentUri}
+                     fileName={attachmentName}
+                     onChange={(value, name) => {
+                       setAttachmentUri(value);
+                       setAttachmentName(name);
+                     }}
+                   />
 
                    <div className="pt-2 pb-10">
                      <button 

@@ -22,6 +22,7 @@ import { getStudentsByStaffDepartment, createBulkGatePass } from '../../services
 import { cn } from '../../utils/cn';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import { nowIST, nowISTPlus } from '../../utils/dateUtils';
+import AttachmentUpload from '../../components/common/AttachmentUpload';
 
 interface Student {
   id: number;
@@ -44,6 +45,8 @@ export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
 
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
+  const [attachmentUri, setAttachmentUri] = useState('');
+  const [attachmentName, setAttachmentName] = useState<string | undefined>();
   const [includeStaff, setIncludeStaff] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [students, setStudents] = useState<Student[]>([]);
@@ -145,6 +148,7 @@ export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
           students: Array.from(selectedStudents),
           includeStaff,
           receiverId: includeStaff ? undefined : (receiverId || undefined),
+          attachmentUri: attachmentUri || undefined,
         });
         if (res.success) {
           showToastSuccess('Success', `Bulk authorization sent for ${selectedStudents.size} students`);
@@ -311,6 +315,15 @@ export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
                   className="w-full h-24 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 text-[14px] font-bold text-slate-900 dark:text-white outline-none resize-none"
                />
             </div>
+
+            <AttachmentUpload
+              value={attachmentUri}
+              fileName={attachmentName}
+              onChange={(value, name) => {
+                setAttachmentUri(value);
+                setAttachmentName(name);
+              }}
+            />
 
 
          </div>
