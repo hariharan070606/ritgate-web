@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (session?.user && session?.role) {
       // Reject sessions older than TTL immediately on load
       const age = session.loginAt ? Date.now() - session.loginAt : 0;
-      if (age > SESSION_TTL_MS) {
+      if (age > SESSION_TTL_MS || !session.token?.trim()) {
         storage.clearAll();
       } else {
         setUser(session.user);
@@ -113,6 +113,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const verifyOTPRequest = useCallback(async (userId: string, otp: string, r: UserRole) => {
     const result = await verifyOTP(userId, otp, r);
     if (result.success && result.user) {
+      if (!result.token?.trim()) {
+        return {
+          success: false,
+          message: 'Login succeeded, but the server did not return an auth token. Please redeploy the backend auth fix.',
+        };
+      }
       login(result.user, r, result.token);
     }
     return result;

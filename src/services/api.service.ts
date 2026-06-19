@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance, type AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import axios, { type AxiosInstance, type AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import { API_CONFIG } from '../config/api.config';
 import { storage } from '../utils/storage';
 import { timeHeaders } from '../utils/dateUtils';
@@ -40,7 +40,11 @@ export function setLogoutHandler(fn: () => void) {
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status ?? 0;
+    const requestUrl = error.config?.url || '';
+    const isAuthRequest = requestUrl.includes('/auth/');
+
+    if ((status === 401 || status === 403) && !isAuthRequest) {
       storage.clearAll();
       logoutHandler?.();
     }
@@ -48,7 +52,6 @@ api.interceptors.response.use(
     // Retry on 5xx / network errors (timeouts, cold-start 502/503). 4xx are
     // client errors (auth, not-found) and fail fast — no point retrying them.
     const config = error.config as (InternalAxiosRequestConfig & { _retryCount?: number }) | undefined;
-    const status = error.response?.status ?? 0;
     const isRetryable = status >= 500 || !error.response;
 
     if (config && isRetryable && (config._retryCount ?? 0) < API_CONFIG.RETRY_ATTEMPTS) {
@@ -84,27 +87,46 @@ function normalizeUser(user: Record<string, unknown>): Record<string, unknown> {
   return n;
 }
 
-function extractAuthToken(data: Record<string, any>): string | undefined {
-  const candidates = [
-    data.token,
-    data.jwt,
-    data.accessToken,
-    data.authToken,
-    data.bearerToken,
-    data.jwtToken,
-    data.data?.token,
-    data.data?.jwt,
-    data.data?.accessToken,
-    data.session?.token,
-    data.auth?.token,
-    data.student?.token,
-    data.staff?.token,
-    data.hod?.token,
-    data.hr?.token,
-    data.security?.token,
-  ];
+function normalizeToken(token: unknown): string | undefined {
+  if (typeof token !== 'string') return undefined;
+  const trimmed = token.trim();
+  if (!trimmed) return undefined;
+  return trimmed.replace(/^Bearer\s+/i, '');
+}
 
-  return candidates.find((token) => typeof token === 'string' && token.trim().length > 0);
+function findTokenDeep(value: unknown): string | undefined {
+  if (!value || typeof value !== 'object') return undefined;
+
+  for (const [key, nestedValue] of Object.entries(value as Record<string, unknown>)) {
+    const normalizedKey = key.toLowerCase().replace(/[_-]/g, '');
+    if (
+      normalizedKey === 'token' ||
+      normalizedKey === 'jwt' ||
+      normalizedKey === 'accesstoken' ||
+      normalizedKey === 'authtoken' ||
+      normalizedKey === 'bearertoken' ||
+      normalizedKey === 'jwttoken' ||
+      normalizedKey === 'idtoken'
+    ) {
+      const token = normalizeToken(nestedValue);
+      if (token) return token;
+    }
+
+    const nestedToken = findTokenDeep(nestedValue);
+    if (nestedToken) return nestedToken;
+  }
+
+  return undefined;
+}
+
+function extractAuthToken(data: Record<string, any>, headers?: AxiosResponse['headers']): string | undefined {
+  const headerToken =
+    normalizeToken((headers as any)?.authorization) ||
+    normalizeToken((headers as any)?.Authorization) ||
+    normalizeToken((headers as any)?.get?.('authorization')) ||
+    normalizeToken((headers as any)?.get?.('Authorization'));
+
+  return headerToken || findTokenDeep(data);
 }
 
 function extractError(error: unknown): string {
@@ -154,25 +176,31 @@ export async function sendOTP(userId: string, role: UserRole): Promise<OTPRespon
 export async function verifyOTP(userId: string, otp: string, role: UserRole): Promise<LoginResponse> {
   try {
     let data: Record<string, any>;
+    let response: AxiosResponse;
     switch (role) {
       case 'STUDENT':
-        data = (await api.post('/auth/student/verify-otp', { regNo: userId, otp })).data;
-        return { success: data.success, message: data.message, user: normalizeUser(data.student) as any, role: 'STUDENT', token: extractAuthToken(data) };
+        response = await api.post('/auth/student/verify-otp', { regNo: userId, otp });
+        data = response.data;
+        return { success: data.success, message: data.message, user: normalizeUser(data.student) as any, role: 'STUDENT', token: extractAuthToken(data, response.headers) };
       case 'STAFF':
       case 'NON_TEACHING':
       case 'NON_CLASS_INCHARGE':
       case 'ADMIN_OFFICER':
-        data = (await api.post('/auth/staff/verify-otp', { staffCode: userId, otp })).data;
-        return { success: data.success, message: data.message, user: normalizeUser(data.staff) as any, role, token: extractAuthToken(data) };
+        response = await api.post('/auth/staff/verify-otp', { staffCode: userId, otp });
+        data = response.data;
+        return { success: data.success, message: data.message, user: normalizeUser(data.staff) as any, role, token: extractAuthToken(data, response.headers) };
       case 'HOD':
-        data = (await api.post('/auth/hod/verify-otp', { hodCode: userId, otp })).data;
-        return { success: data.success, message: data.message, user: normalizeUser(data.hod) as any, role: 'HOD', token: extractAuthToken(data) };
+        response = await api.post('/auth/hod/verify-otp', { hodCode: userId, otp });
+        data = response.data;
+        return { success: data.success, message: data.message, user: normalizeUser(data.hod) as any, role: 'HOD', token: extractAuthToken(data, response.headers) };
       case 'HR':
-        data = (await api.post('/auth/hr/verify-otp', { hrCode: userId, otp })).data;
-        return { success: data.success, message: data.message, user: normalizeUser(data.hr) as any, role: 'HR', token: extractAuthToken(data) };
+        response = await api.post('/auth/hr/verify-otp', { hrCode: userId, otp });
+        data = response.data;
+        return { success: data.success, message: data.message, user: normalizeUser(data.hr) as any, role: 'HR', token: extractAuthToken(data, response.headers) };
       case 'SECURITY':
-        data = (await api.post('/auth/verify-otp', { securityId: userId, otp })).data;
-        return { success: data.success, message: data.message, user: normalizeUser(data.security) as any, role: 'SECURITY', token: extractAuthToken(data) };
+        response = await api.post('/auth/verify-otp', { securityId: userId, otp });
+        data = response.data;
+        return { success: data.success, message: data.message, user: normalizeUser(data.security) as any, role: 'SECURITY', token: extractAuthToken(data, response.headers) };
       default:
         return { success: false, message: 'Unknown role' };
     }
