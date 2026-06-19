@@ -98,7 +98,7 @@ export default function ProfilePage({
   ];
 
   return (
-    <div className="flex flex-col min-h-screen overflow-hidden lg:min-h-0 bg-transparent">
+    <div className="flex flex-col min-h-screen lg:min-h-full bg-transparent">
       {!isDesktop && (
         <header
           className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shrink-0 md:hidden"
