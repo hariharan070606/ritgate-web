@@ -275,10 +275,10 @@
   }
 
   .desktop-stat-card {
-    padding: 24px;
+    padding: 20px 22px;
     position: relative;
     overflow: hidden;
-    min-height: 168px;
+    min-height: 124px;
     transition: transform 200ms var(--ease), box-shadow 200ms var(--ease), border-color 200ms var(--ease);
   }
 
@@ -659,7 +659,7 @@
   }
 
   .desktop-stat-card {
-    padding: 24px 26px;
+    padding: 20px 24px;
   }
 
   .desktop-table th { padding: 15px 22px; }
