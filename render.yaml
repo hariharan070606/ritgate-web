@@ -26,7 +26,9 @@ services:
         value: same-origin
       - path: /*
         name: Content-Security-Policy
-        value: "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https://rit-gate.onrender.com; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://rit-gate.onrender.com; worker-src 'self' blob:; media-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
+        # script-src uses the sha256 of the inline theme script in index.html
+        # (no 'unsafe-inline'). If that script changes, regenerate the hash.
+        value: "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https://rit-gate.onrender.com; script-src 'self' 'sha256-eHnM6VZPChiGQd+vc81GgYBd8+D/8mMAUtIaIPTAMb0=' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://rit-gate.onrender.com; worker-src 'self' blob:; media-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
     routes:
       - type: rewrite
         source: /*
