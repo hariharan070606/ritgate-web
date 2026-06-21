@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Share2, Copy, CheckCircle } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -39,7 +40,7 @@ export default function GatePassQRModal({
     }
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm pt-safe">
@@ -137,6 +138,7 @@ export default function GatePassQRModal({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Maximize2, User as UserIcon, FileText } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -40,7 +41,7 @@ export default function RequestDetailsModal({
     }
   };
 
-  return (
+  return createPortal(
     <>
       <AnimatePresence>
         {isOpen && (
@@ -217,7 +218,8 @@ export default function RequestDetailsModal({
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </>,
+    document.body,
   );
 }
 
