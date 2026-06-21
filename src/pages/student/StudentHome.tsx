@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ShieldCheck,
   QrCode,
   AlertCircle,
   FileText,
@@ -41,6 +40,58 @@ const isStudentPassDisabled = () => {
   const { hours } = getISTTime();
   return hours >= 15;
 };
+
+function GatePassIllustration({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 180 180"
+      role="img"
+      aria-label="Gate pass verification"
+      className={className}
+    >
+      <defs>
+        <linearGradient id="gate-pass-card" x1="28" y1="24" x2="146" y2="150" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFFFFF" />
+          <stop offset="1" stopColor="#DBEAFE" />
+        </linearGradient>
+        <linearGradient id="gate-pass-blue" x1="58" y1="20" x2="125" y2="112" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#60A5FA" />
+          <stop offset="1" stopColor="#1D4ED8" />
+        </linearGradient>
+        <linearGradient id="gate-pass-shield" x1="95" y1="84" x2="156" y2="156" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#38BDF8" />
+          <stop offset="0.55" stopColor="#2563EB" />
+          <stop offset="1" stopColor="#1D4ED8" />
+        </linearGradient>
+        <filter id="gate-pass-soft-shadow" x="-20%" y="-20%" width="140%" height="150%">
+          <feDropShadow dx="0" dy="12" stdDeviation="10" floodColor="#2563EB" floodOpacity="0.22" />
+        </filter>
+      </defs>
+
+      <rect x="18" y="18" width="144" height="144" rx="34" fill="#EFF6FF" stroke="#FFFFFF" strokeWidth="6" />
+      <rect x="25" y="25" width="130" height="130" rx="28" fill="none" stroke="#BFDBFE" strokeWidth="2" opacity="0.8" />
+      <g filter="url(#gate-pass-soft-shadow)">
+        <rect x="50" y="48" width="82" height="92" rx="14" fill="url(#gate-pass-card)" stroke="#FFFFFF" strokeWidth="4" />
+        <rect x="75" y="34" width="30" height="34" rx="6" fill="url(#gate-pass-blue)" />
+        <rect x="70" y="63" width="40" height="10" rx="5" fill="#93C5FD" opacity="0.75" />
+        <circle cx="74" cy="88" r="22" fill="url(#gate-pass-blue)" opacity="0.9" />
+        <circle cx="74" cy="80" r="8" fill="#FFFFFF" />
+        <path d="M60 104c3-11 25-11 28 0 1 4-2 7-6 7H66c-4 0-7-3-6-7Z" fill="#FFFFFF" />
+        <rect x="98" y="78" width="26" height="6" rx="3" fill="#94A3B8" opacity="0.42" />
+        <rect x="98" y="92" width="32" height="6" rx="3" fill="#94A3B8" opacity="0.42" />
+        <rect x="62" y="116" width="48" height="6" rx="3" fill="#94A3B8" opacity="0.36" />
+        <rect x="62" y="130" width="36" height="6" rx="3" fill="#94A3B8" opacity="0.3" />
+        <path
+          d="M118 86c11 8 23 12 36 12v30c0 20-14 34-36 42-22-8-36-22-36-42V98c13 0 25-4 36-12Z"
+          fill="url(#gate-pass-shield)"
+          stroke="#67E8F9"
+          strokeWidth="4"
+        />
+        <path d="m101 126 11 11 24-27" fill="none" stroke="#FFFFFF" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    </svg>
+  );
+}
 
 export default function StudentHome() {
   usePageTitle('Dashboard');
@@ -178,14 +229,7 @@ export default function StudentHome() {
               <div className="desktop-card overflow-hidden text-left">
                 <div className="flex min-h-[136px] flex-col justify-between gap-5 p-5 xl:flex-row xl:items-center xl:p-6">
                   <div className="flex min-w-0 items-start gap-5">
-                    <div className={cn(
-                      'flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border',
-                      gatePassDisabled
-                        ? 'border-slate-200 bg-slate-100 text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400'
-                        : 'border-blue-100 bg-blue-50 text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/35 dark:text-blue-300',
-                    )}>
-                      <ShieldCheck className="h-6 w-6" />
-                    </div>
+                    <GatePassIllustration className={cn('h-14 w-14 shrink-0', gatePassDisabled && 'opacity-50 grayscale')} />
                     <div className="min-w-0">
                       <div className={cn(
                         'mb-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold',
@@ -344,13 +388,15 @@ export default function StudentHome() {
               "h-40 flex items-center justify-center relative overflow-hidden lg:h-56",
               gatePassDisabled ? "bg-slate-400" : "bg-[var(--color-primary)]"
             )}>
-              <ShieldCheck className="w-24 h-24 text-white/20 absolute" />
               <motion.div
                 animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
                 transition={{ duration: 3, repeat: Infinity }}
                 className="w-40 h-40 bg-white/10 rounded-full blur-3xl absolute"
               />
-              <ShieldCheck className="w-10 h-10 text-white relative z-10" />
+              <GatePassIllustration className={cn(
+                "relative z-10 h-32 w-32 drop-shadow-[0_18px_28px_rgba(15,23,42,0.18)]",
+                gatePassDisabled && "grayscale opacity-75",
+              )} />
             </div>
             
             <div className="bg-white dark:bg-slate-900 px-5 py-4 flex items-center justify-between lg:p-8">
