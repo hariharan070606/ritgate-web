@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   FileText, 
   Calendar, 
@@ -17,7 +18,7 @@ import PageHeader from '../../components/common/PageHeader';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import GatePassQRModal from '../../components/common/GatePassQRModal';
-import RequestDetailsModal from '../../components/common/RequestDetailsModal';
+import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import MyRequestsBulkModal from '../../components/common/MyRequestsBulkModal';
 import { cn } from '../../utils/cn';
 import type { Student } from '../../types';
@@ -30,6 +31,8 @@ import EmptyState from '../../components/ui/EmptyState';
 export default function StudentRequests() {
   usePageTitle('My Requests');
   const { user: rawUser, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { isDesktop } = useAdaptive();
   const user = rawUser as Student;
   const { refreshCount } = useRefresh();
@@ -40,7 +43,7 @@ export default function StudentRequests() {
   const [loading, setLoading] = useState(true);
   
   const [showQRModal, setShowQRModal] = useState(false);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showSingleModal, setShowSingleModal] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [qrData, setQrData] = useState<{ code: string; manual: string | undefined; expires: string | undefined } | null>(null);
@@ -48,6 +51,17 @@ export default function StudentRequests() {
   useEffect(() => {
     loadData();
   }, [refreshCount]);
+
+  useEffect(() => {
+    const requestId = new URLSearchParams(location.search).get('requestId');
+    if (!requestId || showSingleModal || requests.length === 0) return;
+
+    const request = requests.find((item) => String(item.id) === requestId);
+    if (request && request.passType !== 'BULK') {
+      setSelectedRequest(request);
+      setShowSingleModal(true);
+    }
+  }, [location.search, requests, showSingleModal]);
 
   const loadData = async () => {
     if (!user?.regNo) return;
@@ -93,6 +107,24 @@ export default function StudentRequests() {
     } catch {
       showError('Error', 'Network error');
       setShowQRModal(false);
+    }
+  };
+
+  const openRequestDetails = (request: any) => {
+    setSelectedRequest(request);
+    if (request.passType === 'BULK') {
+      setShowBulkModal(true);
+      return;
+    }
+
+    setShowSingleModal(true);
+    navigate(`/requests?requestId=${request.id}`, { replace: false });
+  };
+
+  const closeRequestDetails = () => {
+    setShowSingleModal(false);
+    if (new URLSearchParams(location.search).has('requestId')) {
+      navigate('/requests', { replace: true });
     }
   };
 
@@ -150,11 +182,7 @@ export default function StudentRequests() {
                         <tr
                           key={request.id}
                           className="cursor-pointer hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35"
-                          onClick={() => {
-                            setSelectedRequest(request);
-                            if (isBulk) setShowBulkModal(true);
-                            else setShowDetailsModal(true);
-                          }}
+                          onClick={() => openRequestDetails(request)}
                         >
                           <td>
                             <p className="font-bold text-slate-950 dark:text-white">{request.purpose || request.reason || 'Gate Pass Request'}</p>
@@ -167,7 +195,7 @@ export default function StudentRequests() {
                             {request.status === 'APPROVED' && !isBulk ? (
                               <Button className="mx-auto" size="sm" onClick={(e) => { e.stopPropagation(); handleViewQR(request); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
                             ) : (
-                              <Button className="mx-auto" size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailsModal(true); }}>View</Button>
+                              <Button className="mx-auto" size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); openRequestDetails(request); }}>View</Button>
                             )}
                           </td>
                         </tr>
@@ -186,11 +214,7 @@ export default function StudentRequests() {
                   <motion.div 
                     key={request.id}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      setSelectedRequest(request);
-                      if (isBulk) setShowBulkModal(true);
-                      else setShowDetailsModal(true);
-                    }}
+                    onClick={() => openRequestDetails(request)}
                     className="bg-white dark:bg-slate-900 rounded-[28px] p-5 border border-slate-100 dark:border-slate-800 shadow-sm active:bg-slate-50 transition-colors"
                   >
                     {/* Card Top Row */}
@@ -300,12 +324,11 @@ export default function StudentRequests() {
           />
         )}
 
-        {selectedRequest && showDetailsModal && (
-          <RequestDetailsModal 
-            isOpen={showDetailsModal}
-            onClose={() => setShowDetailsModal(false)}
+        {selectedRequest && showSingleModal && (
+          <SinglePassDetailsModal 
+            isOpen={showSingleModal}
+            onClose={closeRequestDetails}
             request={selectedRequest}
-            student={user}
           />
         )}
 
