@@ -24,7 +24,7 @@ export default function PageHeader({ title, onBack, right }: PageHeaderProps) {
           <ArrowLeft className="w-5 h-5" />
         </button>
 
-        <h1 className="absolute left-16 right-16 text-center text-[18px] font-black text-slate-900 dark:text-white tracking-tight leading-none truncate uppercase">
+        <h1 className="absolute left-16 right-16 text-center text-[20px] font-black text-slate-900 dark:text-white tracking-tight leading-none truncate uppercase">
           {title}
         </h1>
 

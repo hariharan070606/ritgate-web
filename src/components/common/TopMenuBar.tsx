@@ -72,7 +72,7 @@ export default function TopMenuBar({
             <span className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500 tracking-widest leading-none mb-1 truncate">
               {greeting}
             </span>
-            <h2 className="text-[17px] font-black text-slate-900 dark:text-white truncate tracking-tight leading-none">
+            <h2 className="text-[19px] font-black text-slate-900 dark:text-white truncate tracking-tight leading-none">
               {title}
             </h2>
           </div>

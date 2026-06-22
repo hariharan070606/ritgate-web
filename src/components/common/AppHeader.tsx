@@ -49,7 +49,7 @@ export default function AppHeader({
               </p>
             )}
             <p className="sr-only">{subtitle}</p>
-            <h1 className="truncate text-[26px] font-black uppercase leading-tight tracking-[-0.01em] text-slate-950 dark:text-white">
+            <h1 className="truncate text-[28px] font-black uppercase leading-tight tracking-[-0.01em] text-slate-950 dark:text-white">
               {title}
             </h1>
           </div>
