@@ -33,10 +33,10 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       {/* ── Brand ─────────────────────────────────────────── */}
       <div className={cn(
         'relative flex items-center border-b border-slate-200/70 dark:border-white/[0.07] shrink-0',
-        collapsed ? 'h-[82px] justify-center px-0' : 'h-[82px] gap-3.5 px-6 pr-16',
+        collapsed ? 'h-[82px] justify-center px-0' : 'h-[82px] gap-3 px-6 pr-16',
       )}>
         <div className="shrink-0">
-          <RITLogo size={collapsed ? 40 : 54} />
+          <RITLogo size={collapsed ? 36 : 44} />
         </div>
         <AnimatePresence>
           {!collapsed && (
