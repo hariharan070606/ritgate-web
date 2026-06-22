@@ -198,6 +198,21 @@ export default function PassVerificationPage() {
 
   const showReviewActions = canReview && !isDecided(request);
 
+  // Decided requests (approved/rejected/used/exited) — and viewers who cannot
+  // review — open the read-only "Request Details" modal on EVERY viewport,
+  // including desktop/tablet.
+  if (!showReviewActions) {
+    return (
+      <SinglePassDetailsModal
+        isOpen
+        onClose={handleClose}
+        request={request}
+        showActions={false}
+      />
+    );
+  }
+
+  // Pending request + reviewer on phone → the same modal with approve/reject.
   if (!isDesktop) {
     return (
       <SinglePassDetailsModal
@@ -212,6 +227,7 @@ export default function PassVerificationPage() {
     );
   }
 
+  // Pending request + reviewer on desktop → the dedicated approval page.
   const status = getStatus(request);
   const requesterName = getRequesterName(request);
   const identifier = request.regNo || request.staffCode || userId || 'N/A';
