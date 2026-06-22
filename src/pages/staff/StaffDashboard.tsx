@@ -437,7 +437,7 @@ export default function StaffDashboard() {
                               <Button
                                 size="sm"
                                 variant="secondary"
-                                onClick={(e) => { e.stopPropagation(); navigate(`/pass-verification/${request.id}`); }}
+                                onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setShowDetailModal(true); }}
                                 className="h-9 rounded-xl px-3 text-[11px] uppercase tracking-widest"
                               >
                                 Details
