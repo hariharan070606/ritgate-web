@@ -21,7 +21,7 @@ import {
   rejectGatePassByHR,
   rejectGatePassByStaff,
 } from '../../services/api.service';
-import { AlertCircle, ArrowLeft, CheckCircle2, FileText } from 'lucide-react';
+import { AlertCircle, CheckCircle2, FileText } from 'lucide-react';
 import { useAdaptive } from '../../utils/useAdaptive';
 import { cn } from '../../utils/cn';
 import { formatDate } from '../../utils/date';
@@ -95,7 +95,21 @@ export default function PassVerificationPage() {
     navigate(-1);
   };
 
-  const getStatus = (item: any) => (item?.hrApproval || item?.status || 'PENDING').toUpperCase();
+  // Use the request's real status (not the per-stage hrApproval flag, which
+  // wrongly showed PENDING for already-approved requests).
+  const getStatus = (item: any) => {
+    const raw = (item?.status || 'PENDING').toUpperCase();
+    if (raw.startsWith('PENDING')) return 'PENDING';
+    if (raw === 'APPROVED_BY_STAFF' || raw === 'APPROVED_BY_HOD') return 'IN REVIEW';
+    return raw;
+  };
+
+  // A decided request (approved/rejected/used/exited) is read-only — no review
+  // actions, so clicking "Details" on it opens an info view, not the approval UI.
+  const isDecided = (item: any) => {
+    const raw = (item?.status || '').toUpperCase();
+    return raw === 'APPROVED' || raw === 'REJECTED' || raw === 'USED' || raw === 'EXITED';
+  };
 
   const getStatusClasses = (status: string) => {
     if (status === 'APPROVED') return 'bg-emerald-500 text-white';
@@ -182,6 +196,8 @@ export default function PassVerificationPage() {
     );
   }
 
+  const showReviewActions = canReview && !isDecided(request);
+
   if (!isDesktop) {
     return (
       <SinglePassDetailsModal
@@ -190,7 +206,7 @@ export default function PassVerificationPage() {
         request={request}
         onApprove={handleApprove}
         onReject={handleReject}
-        showActions={canReview}
+        showActions={showReviewActions}
         processing={processing}
       />
     );
@@ -204,22 +220,6 @@ export default function PassVerificationPage() {
   return (
     <div className="mx-auto w-full max-w-[1180px]">
       <section className="desktop-card overflow-hidden">
-        <header className="flex min-h-[54px] items-center gap-4 border-b border-slate-100 bg-white px-5 dark:border-slate-800 dark:bg-slate-900">
-          <button
-            onClick={handleClose}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-950 transition-transform active:scale-95 dark:bg-slate-800 dark:text-white"
-            aria-label="Back"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <h2 className="flex-1 text-[22px] font-black tracking-tight text-slate-950 dark:text-white">
-            Pass Verification
-          </h2>
-          <span className={cn('rounded-xl px-4 py-2 text-[12px] font-black uppercase tracking-widest', getStatusClasses(status))}>
-            {status}
-          </span>
-        </header>
-
         <div className="bg-transparent px-5 py-6 lg:px-6 lg:py-6">
           <div className="space-y-5">
             <div className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -227,7 +227,7 @@ export default function PassVerificationPage() {
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[26px] bg-amber-500 text-[28px] font-black text-white shadow-lg shadow-amber-100 dark:shadow-none">
                   {getInitials(requesterName)}
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <h3 className="truncate text-[24px] font-black uppercase tracking-tight text-slate-950 dark:text-white">
                     {requesterName}
                   </h3>
@@ -235,6 +235,9 @@ export default function PassVerificationPage() {
                     {identifier} - {department}
                   </p>
                 </div>
+                <span className={cn('shrink-0 rounded-xl px-4 py-2 text-[12px] font-black uppercase tracking-widest', getStatusClasses(status))}>
+                  {status}
+                </span>
               </div>
             </div>
 
@@ -260,7 +263,7 @@ export default function PassVerificationPage() {
               </p>
             </div>
 
-            {canReview && (
+            {showReviewActions && (
               <div className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <textarea
                   value={remark}
