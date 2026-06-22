@@ -209,7 +209,7 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
                     {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : (
                        <>
                           <ShieldCheck className="w-6 h-6" />
-                          Authorise Clearance
+                          Register & Generate Pass
                        </>
                     )}
                  </button>
