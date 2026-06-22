@@ -167,7 +167,7 @@ export default function HODEvents() {
 
   const handleRemove = async () => {
     if (!selectedEvent || !removeTarget) return;
-    setRemoveTarget(null);
+    
     try {
       const res = await removeCoordinator(selectedEvent.id, removeTarget);
       if (res?.success) {
@@ -178,6 +178,8 @@ export default function HODEvents() {
       }
     } catch (err) {
       toastError('Error', 'An unexpected error occurred while removing the coordinator.');
+    } finally {
+      setRemoveTarget(null);
     }
   };
 
