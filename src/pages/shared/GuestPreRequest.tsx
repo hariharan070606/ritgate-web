@@ -204,7 +204,7 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
                  <button 
                     onClick={handleSubmit}
                     disabled={isSubmitting || loadingCreator}
-                    className="w-full h-15 bg-blue-600 rounded-2xl text-white font-black text-[15px] uppercase tracking-widest shadow-xl shadow-blue-100 dark:shadow-none active:scale-[0.98] transition-all flex items-center justify-center gap-2 sm:ml-auto sm:max-w-[18rem] lg:bg-blue-600 lg:shadow-[0_18px_35px_rgba(37,99,235,0.28)] lg:hover:-translate-y-0.5 lg:hover:bg-blue-700 disabled:opacity-60 disabled:saturate-50"
+                    className="w-full h-15 bg-emerald-600 rounded-2xl text-white font-black text-[15px] uppercase tracking-widest shadow-xl shadow-emerald-100 dark:shadow-none active:scale-[0.98] transition-all flex items-center justify-center gap-2 sm:ml-auto sm:max-w-[18rem] lg:bg-gradient-to-r lg:from-emerald-500 lg:to-blue-600 lg:shadow-[0_18px_35px_rgba(16,185,129,0.28)] lg:hover:-translate-y-0.5 disabled:opacity-60 disabled:saturate-50"
                  >
                     {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : (
                        <>
