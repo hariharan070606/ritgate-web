@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 interface AppHeaderProps {
@@ -8,6 +9,8 @@ interface AppHeaderProps {
   actions?: ReactNode;
   onMenuClick: () => void;
   sidebarCollapsed: boolean;
+  showBack?: boolean;
+  onBack?: () => void;
   className?: string;
 }
 
@@ -16,6 +19,8 @@ export default function AppHeader({
   title,
   subtitle,
   actions,
+  showBack = false,
+  onBack,
   className,
 }: AppHeaderProps) {
   return (
@@ -27,6 +32,16 @@ export default function AppHeader({
     >
       <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between gap-4 px-8 lg:px-10">
         <div className="flex min-w-0 items-center gap-4">
+          {showBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/70 bg-white/80 text-slate-700 shadow-[0_14px_34px_-28px_rgba(15,23,42,0.75)] backdrop-blur-xl transition-all hover:-translate-x-0.5 hover:bg-white active:scale-95 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:shadow-none dark:hover:bg-white/[0.1]"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+          )}
           <div className="min-w-0">
             {label && (
               <p className="text-[12px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500">

@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { CalendarDays } from 'lucide-react';
 import AppHeader from '../components/common/AppHeader';
 import NotificationBell from '../components/common/NotificationBell';
@@ -143,6 +143,7 @@ const routeCopy: Record<string, Omit<HeaderCopy, 'label'>> = {
 
 export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, role } = useAuth();
 
   const userName = getUserName(user);
@@ -170,6 +171,15 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
     month: 'short',
   });
 
+  const showBack = location.pathname !== '/dashboard';
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate('/dashboard', { replace: true });
+  };
+
   return (
     <AppHeader
       label={copy.label}
@@ -177,6 +187,8 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
       subtitle={copy.subtitle}
       onMenuClick={onMenuClick}
       sidebarCollapsed={sidebarCollapsed}
+      showBack={showBack}
+      onBack={handleBack}
       actions={(
         <>
           <div className="hidden items-center gap-2 rounded-2xl border border-white/60 bg-white/70 px-4 py-2.5 text-sm font-bold text-slate-600 shadow-[0_14px_34px_-28px_rgba(15,23,42,0.75)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-200 dark:shadow-none lg:flex">
