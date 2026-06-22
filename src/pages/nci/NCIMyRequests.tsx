@@ -83,7 +83,7 @@ export default function NCIMyRequests() {
   });
 
   if (isLoading) {
-    return <div className="space-y-4 px-5 pt-4"><SkeletonList count={5} /></div>;
+    return <div className="min-h-screen flex items-center justify-center"><SkeletonList count={5} /></div>;
   }
 
   return (

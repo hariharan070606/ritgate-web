@@ -102,10 +102,7 @@ export default function NCIDashboard() {
 
   if (isLoading && visitorRequests.length === 0) {
     return (
-      <div className="space-y-4 animate-pulse">
-        <div className="flex items-center gap-3"><Skeleton className="w-12 h-12 rounded-full" /><div className="space-y-2"><Skeleton className="h-3 w-20" /><Skeleton className="h-5 w-40" /></div></div>
-        <Skeleton className="h-11 w-full rounded-xl" />
-        <Skeleton className="h-16 w-full rounded-xl" />
+      <div className="min-h-screen flex items-center justify-center">
         <SkeletonList count={4} />
       </div>
     );

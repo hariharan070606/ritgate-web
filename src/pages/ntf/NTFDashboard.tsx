@@ -104,11 +104,7 @@ export default function NTFDashboard() {
   const greeting = hour < 12 ? 'Good Morning,' : hour < 17 ? 'Good Afternoon,' : 'Good Evening,';
   if (isLoading && requests.length === 0) {
     return (
-      <div className="space-y-8 animate-pulse text-left">
-        <div className="space-y-2"><Skeleton className="h-4 w-24" /><Skeleton className="h-10 w-64" /></div>
-        <div className="grid grid-cols-3 gap-4">
-          <Skeleton className="h-24 rounded-2xl" /><Skeleton className="h-24 rounded-2xl" /><Skeleton className="h-24 rounded-2xl" />
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
         <SkeletonList count={5} />
       </div>
     );
