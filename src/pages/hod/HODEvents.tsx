@@ -371,8 +371,8 @@ export default function HODEvents() {
                           {(isAssigned || isSel) && <CheckCheck className="w-2.5 h-2.5 text-white" />}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-black text-slate-900 dark:text-white truncate">{s.staffName || s.name || code}</p>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase">{code} · {s.department || ''}</p>
+                          <p className={cn('text-[13px] font-black truncate', isSel ? 'text-white' : 'text-slate-900 dark:text-white')}>{s.staffName || s.name || code}</p>
+                          <p className={cn('text-[10px] font-bold uppercase', isSel ? 'text-white/70' : 'text-slate-400')}>{code} · {s.department || ''}</p>
                         </div>
                         {isAssigned && (
                           <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full uppercase">Assigned</span>
