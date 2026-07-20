@@ -486,10 +486,8 @@ export default function SinglePassDetailsModal({
             confirmText="Approve"
             onConfirm={async () => {
               setShowApproveConfirm(false);
-              setProcessing(true);
-              if (onApprove) await onApprove(request.id, remark);
-              setProcessing(false);
               onClose();
+              if (onApprove) await onApprove(request.id, remark);
             }}
             onCancel={() => setShowApproveConfirm(false)}
           />
@@ -502,10 +500,8 @@ export default function SinglePassDetailsModal({
             confirmColor="bg-rose-500 hover:bg-rose-600"
             onConfirm={async () => {
               setShowRejectConfirm(false);
-              setProcessing(true);
-              if (onReject) await onReject(request.id, remark);
-              setProcessing(false);
               onClose();
+              if (onReject) await onReject(request.id, remark);
             }}
             onCancel={() => setShowRejectConfirm(false)}
           />

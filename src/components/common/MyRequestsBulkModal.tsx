@@ -477,9 +477,8 @@ export default function MyRequestsBulkModal({
           confirmText="Approve"
           onConfirm={async () => {
             setShowApproveConfirm(false);
-            setProcessing(true);
+            onClose();
             if (onApprove) await onApprove(requestId, remark);
-            setProcessing(false);
           }}
           onCancel={() => setShowApproveConfirm(false)}
         />
@@ -493,9 +492,8 @@ export default function MyRequestsBulkModal({
           confirmColor="bg-rose-500 hover:bg-rose-600"
           onConfirm={async () => {
             setShowRejectConfirm(false);
-            setProcessing(true);
+            onClose();
             if (onReject) await onReject(requestId, remark);
-            setProcessing(false);
           }}
           onCancel={() => setShowRejectConfirm(false)}
         />

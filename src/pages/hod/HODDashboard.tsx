@@ -137,54 +137,54 @@ export default function HODDashboard() {
   const handleApprove = async (id: number, remark: string = '') => {
     const req = requests.find(r => r.id === id) || selectedRequest;
     if (!req) return;
-    setProcessing(true);
-    try {
-      const numericId = typeof req.id === 'string' && req.id.startsWith('VISITOR-')
-        ? parseInt(req.id.replace('VISITOR-', ''), 10)
-        : req.id;
-      const res = req.passType === 'VISITOR'
-        ? await approveVisitorByHOD(numericId, hodCode)
-        : await approveGatePassByHOD(hodCode, numericId, remark);
-      
-      if (res.success) {
-        showToastSuccess('Authorized', 'Request has been approved');
-        setShowDetailModal(false); setShowBulkModal(false);
-        loadData();
-      } else {
-        showToastError('Failed', res.message);
+    setShowDetailModal(false);
+    setShowBulkModal(false);
+    await withLock(async () => {
+      try {
+        const numericId = typeof req.id === 'string' && req.id.startsWith('VISITOR-')
+          ? parseInt(req.id.replace('VISITOR-', ''), 10)
+          : req.id;
+        const res = req.passType === 'VISITOR'
+          ? await approveVisitorByHOD(numericId, hodCode)
+          : await approveGatePassByHOD(hodCode, numericId, remark);
+        
+        if (res.success) {
+          showToastSuccess('Authorized', 'Request has been approved');
+          loadData();
+        } else {
+          showToastError('Failed', res.message);
+        }
+      } catch {
+        showToastError('Error', 'An internal error occurred');
       }
-    } catch {
-      showToastError('Error', 'An internal error occurred');
-    } finally {
-      setProcessing(false);
-    }
+    }, 'Authorizing...');
   };
 
   const handleReject = async (id: number, remark: string) => {
     const req = requests.find(r => r.id === id) || selectedRequest;
     if (!req) return;
     if (!remark.trim()) return showToastError('Required', 'Please provide a reason for rejection');
-    setProcessing(true);
-    try {
-      const numericId = typeof req.id === 'string' && req.id.startsWith('VISITOR-')
-        ? parseInt(req.id.replace('VISITOR-', ''), 10)
-        : req.id;
-      const res = req.passType === 'VISITOR'
-        ? await rejectVisitorByHOD(numericId, remark)
-        : await rejectGatePassByHOD(hodCode, numericId, remark);
-      
-      if (res.success) {
-        showToastSuccess('Rejected', 'Request has been rejected');
-        setShowDetailModal(false); setShowBulkModal(false);
-        loadData();
-      } else {
-        showToastError('Failed', res.message);
+    setShowDetailModal(false);
+    setShowBulkModal(false);
+    await withLock(async () => {
+      try {
+        const numericId = typeof req.id === 'string' && req.id.startsWith('VISITOR-')
+          ? parseInt(req.id.replace('VISITOR-', ''), 10)
+          : req.id;
+        const res = req.passType === 'VISITOR'
+          ? await rejectVisitorByHOD(numericId, remark)
+          : await rejectGatePassByHOD(hodCode, numericId, remark);
+        
+        if (res.success) {
+          showToastSuccess('Rejected', 'Request has been rejected');
+          loadData();
+        } else {
+          showToastError('Failed', res.message);
+        }
+      } catch {
+        showToastError('Error', 'An internal error occurred');
       }
-    } catch {
-      showToastError('Error', 'An internal error occurred');
-    } finally {
-      setProcessing(false);
-    }
+    }, 'Authorizing...');
   };
 
   const hodName = (user as any)?.hodName || (user as any)?.name || 'HOD Member';

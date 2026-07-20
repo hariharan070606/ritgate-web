@@ -61,7 +61,6 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
   const [rejectReason, setRejectReason] = useState('');
   const [showReject, setShowReject] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const actionInFlight = useRef(false);
 
   const fetchRequests = useCallback(async () => {
     setIsLoading(true);
@@ -78,17 +77,22 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
           id: `VISITOR-${v.id}`,
           passType: 'VISITOR',
           requestType: 'VISITOR',
-          studentName: v.visitorName || v.name,
-          reason: v.purpose,
+          status: v.status || 'PENDING',
         }));
-        const combined = [...gpList, ...vList];
-        setRequests(combined.filter((r: any) => isToday(r.requestDate || r.createdAt || r.exitDateTime || '')));
-      } else setHasError(true);
-    } catch { setHasError(true); }
-    finally { setIsLoading(false); }
+        setRequests([...vList, ...gpList]);
+      } else {
+        setHasError(true);
+      }
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
   }, [hrCode]);
 
-  useEffect(() => { fetchRequests(); }, [fetchRequests]);
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
 
   const stats = {
     pending: requests.filter(r => r.hrApproval === 'PENDING_HR' || r.status === 'PENDING_HR' || (r.passType === 'VISITOR' && r.status === 'PENDING')).length,
@@ -97,11 +101,9 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
   };
 
   const filtered = requests.filter(r => {
-    const matchSearch = searchQuery === '' ||
-      (r.purpose || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (r.reason || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (r.hodCode || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      String(r.id || '').includes(searchQuery);
+    const name = r.requestedByStaffName || r.studentName || r.visitorName || r.regNo || '';
+    const matchSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        (r.purpose || '').toLowerCase().includes(searchQuery.toLowerCase());
     const s = r.passType === 'VISITOR' ? r.status : (r.hrApproval || r.status);
     let matchTab = false;
     if (activeTab === 'PENDING') matchTab = s === 'PENDING_HR' || s === 'PENDING';
@@ -116,42 +118,39 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       : req.id;
 
   const handleApprove = async (req: any) => {
-    if (actionInFlight.current) return;
-    actionInFlight.current = true;
-    setProcessing(true);
-    try {
-      const numericId = toNumericId(req);
-      const res = req.passType === 'VISITOR'
-        ? await approveVisitorByHR(numericId, hrCode)
-        : await approveGatePassByHR(hrCode, numericId);
-      if (res.success) { showSuccess('Approved', 'Request approved successfully.'); setShowDetail(false); setShowBulkDetail(false); fetchRequests(); }
-      else showError('Failed', res.message);
-    } catch {
-      showError('Error', 'An internal error occurred');
-    } finally {
-      setProcessing(false);
-      actionInFlight.current = false;
-    }
+    setShowDetail(false);
+    setShowBulkDetail(false);
+    await withLock(async () => {
+      try {
+        const numericId = toNumericId(req);
+        const res = req.passType === 'VISITOR'
+          ? await approveVisitorByHR(numericId, hrCode)
+          : await approveGatePassByHR(hrCode, numericId);
+        if (res.success) { showSuccess('Approved', 'Request approved successfully.'); fetchRequests(); }
+        else showError('Failed', res.message);
+      } catch {
+        showError('Error', 'An internal error occurred');
+      }
+    }, 'Authorizing...');
   };
 
   const handleReject = async (req: any) => {
     if (!rejectReason.trim()) { showError('Required', 'Please provide a reason'); return; }
-    if (actionInFlight.current) return;
-    actionInFlight.current = true;
-    setProcessing(true);
-    try {
-      const numericId = toNumericId(req);
-      const res = req.passType === 'VISITOR'
-        ? await rejectVisitorByHR(numericId, rejectReason.trim())
-        : await rejectGatePassByHR(hrCode, numericId, rejectReason.trim());
-      if (res.success) { showSuccess('Rejected', 'Request has been rejected.'); setShowReject(false); setShowDetail(false); setShowBulkDetail(false); setRejectReason(''); fetchRequests(); }
-      else showError('Failed', res.message);
-    } catch {
-      showError('Error', 'An internal error occurred');
-    } finally {
-      setProcessing(false);
-      actionInFlight.current = false;
-    }
+    setShowReject(false);
+    setShowDetail(false);
+    setShowBulkDetail(false);
+    await withLock(async () => {
+      try {
+        const numericId = toNumericId(req);
+        const res = req.passType === 'VISITOR'
+          ? await rejectVisitorByHR(numericId, rejectReason.trim())
+          : await rejectGatePassByHR(hrCode, numericId, rejectReason.trim());
+        if (res.success) { showSuccess('Rejected', 'Request has been rejected.'); setRejectReason(''); fetchRequests(); }
+        else showError('Failed', res.message);
+      } catch {
+        showError('Error', 'An internal error occurred');
+      }
+    }, 'Authorizing...');
   };
 
   const getInitials = (name: string) => (name || 'NA').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
