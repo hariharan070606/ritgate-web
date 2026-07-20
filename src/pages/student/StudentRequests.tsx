@@ -189,7 +189,15 @@ export default function StudentRequests() {
                           <td><span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase', config.bg, config.color)}>{config.text}</span></td>
                           <td className="text-center">
                             {request.status === 'APPROVED' && !isBulk ? (
-                              <Button className="mx-auto" size="sm" onClick={(e) => { e.stopPropagation(); handleViewQR(request); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
+                              <Button
+                                size="sm"
+                                variant="primary"
+                                onClick={(e) => { e.stopPropagation(); handleViewQR(request); }}
+                                icon={<QrCode className="w-4 h-4" />}
+                                className="mx-auto bg-slate-900 hover:bg-black text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 border border-slate-900 dark:border-white font-extrabold shadow-sm"
+                              >
+                                View QR
+                              </Button>
                             ) : (
                               <Button className="mx-auto" size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); openRequestDetails(request); }}>View</Button>
                             )}
@@ -271,10 +279,10 @@ export default function StudentRequests() {
                             e.stopPropagation();
                             handleViewQR(request);
                           }}
-                          className="flex items-center gap-2 px-4.5 py-2.5 bg-[var(--color-primary)] rounded-xl text-white shadow-lg shadow-blue-100 dark:shadow-none active:scale-95 transition-transform"
+                          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 border border-slate-900 dark:border-white text-[11px] font-black uppercase tracking-widest shadow-md transition-all active:scale-95"
                         >
-                          <QrCode className="w-4 h-4 text-white" />
-                          <span className="text-[11px] font-black uppercase tracking-widest">View QR</span>
+                          <QrCode className="w-4 h-4" />
+                          <span>View QR</span>
                         </button>
                       )}
                     </div>
