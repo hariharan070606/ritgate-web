@@ -132,7 +132,7 @@ export default function PassVerificationPage() {
   const handleApprove = async (id: number, remark: string) => {
     if (!userId || !role) return;
     setProcessing(true);
-    await withLock(async () => {
+    try {
       const res = role === 'HOD'
         ? await approveGatePassByHOD(userId, id, remark)
         : role === 'HR'
@@ -145,8 +145,11 @@ export default function PassVerificationPage() {
       } else {
         showError('Failed', res.message || 'Unable to approve request');
       }
-    }, 'Authorizing...');
-    setProcessing(false);
+    } catch {
+      showError('Error', 'An internal error occurred');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleReject = async (id: number, remark: string) => {
@@ -156,7 +159,7 @@ export default function PassVerificationPage() {
       return;
     }
     setProcessing(true);
-    await withLock(async () => {
+    try {
       const res = role === 'HOD'
         ? await rejectGatePassByHOD(userId, id, remark)
         : role === 'HR'
@@ -169,8 +172,11 @@ export default function PassVerificationPage() {
       } else {
         showError('Failed', res.message || 'Unable to reject request');
       }
-    }, 'Rejecting...');
-    setProcessing(false);
+    } catch {
+      showError('Error', 'An internal error occurred');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleDesktopApprove = () => handleApprove(request.id, remark);

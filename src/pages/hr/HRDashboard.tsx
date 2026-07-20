@@ -119,16 +119,19 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
     if (actionInFlight.current) return;
     actionInFlight.current = true;
     setProcessing(true);
-    await withLock(async () => {
+    try {
       const numericId = toNumericId(req);
       const res = req.passType === 'VISITOR'
         ? await approveVisitorByHR(numericId, hrCode)
         : await approveGatePassByHR(hrCode, numericId);
       if (res.success) { showSuccess('Approved', 'Request approved successfully.'); setShowDetail(false); setShowBulkDetail(false); fetchRequests(); }
       else showError('Failed', res.message);
-    }, 'Approving request...');
-    setProcessing(false);
-    actionInFlight.current = false;
+    } catch {
+      showError('Error', 'An internal error occurred');
+    } finally {
+      setProcessing(false);
+      actionInFlight.current = false;
+    }
   };
 
   const handleReject = async (req: any) => {
@@ -136,16 +139,19 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
     if (actionInFlight.current) return;
     actionInFlight.current = true;
     setProcessing(true);
-    await withLock(async () => {
+    try {
       const numericId = toNumericId(req);
       const res = req.passType === 'VISITOR'
         ? await rejectVisitorByHR(numericId, rejectReason.trim())
         : await rejectGatePassByHR(hrCode, numericId, rejectReason.trim());
       if (res.success) { showSuccess('Rejected', 'Request has been rejected.'); setShowReject(false); setShowDetail(false); setShowBulkDetail(false); setRejectReason(''); fetchRequests(); }
       else showError('Failed', res.message);
-    }, 'Rejecting request...');
-    setProcessing(false);
-    actionInFlight.current = false;
+    } catch {
+      showError('Error', 'An internal error occurred');
+    } finally {
+      setProcessing(false);
+      actionInFlight.current = false;
+    }
   };
 
   const getInitials = (name: string) => (name || 'NA').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);

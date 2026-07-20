@@ -164,46 +164,48 @@ export default function StaffDashboard() {
     const req = requests.find(r => r.id === id) || selectedRequest;
     if (!req) return;
     setProcessing(true);
-    await withLock(async () => {
-       try {
-         const res = req.requestType === 'VISITOR'
-            ? await approveVisitorRequest(req.requestId || req.originalId, staffCode)
-            : await approveGatePassByStaff(staffCode, id, remark);
-         
-         if (res.success) {
-           showToastSuccess('Approved', 'Request authorized successfully');
-           setShowDetailModal(false);
-           setShowBulkModal(false);
-           loadData();
-         } else showToastError('Failed', res.message);
-       } catch (e) {
-         showToastError('Error', 'An internal error occurred');
-       }
-    }, 'Authorizing...');
-    setProcessing(false);
+    try {
+      const res = req.requestType === 'VISITOR'
+        ? await approveVisitorRequest(req.requestId || req.originalId, staffCode)
+        : await approveGatePassByStaff(staffCode, id, remark);
+      
+      if (res.success) {
+        showToastSuccess('Approved', 'Request authorized successfully');
+        setShowDetailModal(false);
+        setShowBulkModal(false);
+        loadData();
+      } else {
+        showToastError('Failed', res.message);
+      }
+    } catch (e) {
+      showToastError('Error', 'An internal error occurred');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleReject = async (id: number, remark: string) => {
     const req = requests.find(r => r.id === id) || selectedRequest;
     if (!req) return;
     setProcessing(true);
-    await withLock(async () => {
-       try {
-         const res = req.requestType === 'VISITOR'
-            ? await rejectVisitorRequest(req.requestId || req.originalId, remark)
-            : await rejectGatePassByStaff(staffCode, id, remark);
-         
-         if (res.success) {
-           showToastSuccess('Rejected', 'Request has been rejected');
-           setShowDetailModal(false);
-           setShowBulkModal(false);
-           loadData();
-         } else showToastError('Failed', res.message);
-       } catch (e) {
-         showToastError('Error', 'An internal error occurred');
-       }
-    }, 'Rejecting...');
-    setProcessing(false);
+    try {
+      const res = req.requestType === 'VISITOR'
+        ? await rejectVisitorRequest(req.requestId || req.originalId, remark)
+        : await rejectGatePassByStaff(staffCode, id, remark);
+      
+      if (res.success) {
+        showToastSuccess('Rejected', 'Request has been rejected');
+        setShowDetailModal(false);
+        setShowBulkModal(false);
+        loadData();
+      } else {
+        showToastError('Failed', res.message);
+      }
+    } catch (e) {
+      showToastError('Error', 'An internal error occurred');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleViewQR = async (request: any) => {
