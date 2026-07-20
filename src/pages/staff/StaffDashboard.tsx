@@ -417,36 +417,14 @@ export default function StaffDashboard() {
                             </span>
                           </td>
                           <td className="text-center">
-                            <div className="flex justify-center gap-2">
-                              {isPending && (
-                                <>
-                                  <Button
-                                    size="sm"
-                                    variant="success"
-                                    disabled={processing}
-                                    onClick={(e) => { e.stopPropagation(); handleApprove(request.id, ''); }}
-                                    className="h-9 rounded-xl px-3 text-[11px] uppercase tracking-widest"
-                                  >
-                                    Approve
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="danger"
-                                    disabled={processing}
-                                    onClick={(e) => { e.stopPropagation(); openReview(request); }}
-                                    className="h-9 rounded-xl px-3 text-[11px] uppercase tracking-widest"
-                                  >
-                                    Reject
-                                  </Button>
-                                </>
-                              )}
+                            <div className="flex justify-center">
                               <Button
                                 size="sm"
-                                variant="secondary"
+                                variant="primary"
                                 onClick={(e) => { e.stopPropagation(); openReview(request); }}
-                                className="h-9 rounded-xl px-3 text-[11px] uppercase tracking-widest"
+                                className="h-9 rounded-xl px-4 text-[11px] font-extrabold uppercase tracking-widest"
                               >
-                                Details
+                                View
                               </Button>
                             </div>
                           </td>
@@ -522,33 +500,24 @@ export default function StaffDashboard() {
                       )}
                     </div>
 
-                    {/* Badge */}
-                    <div className={cn(
-                      "inline-flex items-center px-4 py-1.5 rounded-full",
-                      request.staffApproval === 'APPROVED' ? "bg-emerald-500" :
-                      request.staffApproval === 'REJECTED' ? "bg-rose-500" : "bg-amber-500"
-                    )}>
-                      <span className="text-[10px] font-black text-white uppercase tracking-widest">{request.staffApproval}</span>
-                    </div>
-
-                    {isPending && (
-                      <div className="grid grid-cols-2 gap-2 mt-4">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleApprove(request.id, ''); }}
-                          disabled={processing}
-                          className="h-11 rounded-2xl bg-emerald-600 text-white text-[11px] font-black uppercase tracking-widest disabled:opacity-50"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); openReview(request); }}
-                          disabled={processing}
-                          className="h-11 rounded-2xl bg-rose-600 text-white text-[11px] font-black uppercase tracking-widest disabled:opacity-50"
-                        >
-                          Reject
-                        </button>
+                    {/* Badge & Action */}
+                    <div className="flex items-center justify-between mt-4">
+                      <div className={cn(
+                        "inline-flex items-center px-4 py-1.5 rounded-full",
+                        request.staffApproval === 'APPROVED' ? "bg-emerald-500" :
+                        request.staffApproval === 'REJECTED' ? "bg-rose-500" : "bg-amber-500"
+                      )}>
+                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{request.staffApproval}</span>
                       </div>
-                    )}
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        onClick={(e) => { e.stopPropagation(); openReview(request); }}
+                        className="h-9 rounded-xl px-4 text-[11px] font-extrabold uppercase tracking-widest"
+                      >
+                        View
+                      </Button>
+                    </div>
                   </motion.div>
                 );
               })}

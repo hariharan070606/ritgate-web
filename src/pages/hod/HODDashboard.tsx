@@ -322,14 +322,8 @@ export default function HODDashboard() {
                             </span>
                           </td>
                           <td className="text-center py-5">
-                            <div className="flex items-center justify-center gap-2">
-                              {isPending && (
-                                <>
-                                  <Button size="sm" variant="success" onClick={() => handleApprove(request.id)}>Approve</Button>
-                                  <Button size="sm" variant="danger" onClick={() => { setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>Reject</Button>
-                                </>
-                              )}
-                              <Button size="sm" variant="secondary" onClick={() => { setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
+                            <div className="flex items-center justify-center">
+                              <Button size="sm" variant="primary" onClick={() => { setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
                             </div>
                           </td>
                         </tr>
@@ -422,22 +416,7 @@ export default function HODDashboard() {
                          </span>
                       </div>
                       
-                      {isPending && (
-                        <div className="flex gap-2">
-                           <button 
-                             onClick={(e) => { e.stopPropagation(); handleApprove(request.id); }}
-                             className="px-3.5 py-2 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-xl text-emerald-600 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest active:scale-95 transition-transform"
-                           >
-                             Approve
-                           </button>
-                           <button
-                             onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}
-                             className="px-3.5 py-2 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 rounded-xl text-rose-600 dark:text-rose-400 font-black text-[10px] uppercase tracking-widest active:scale-95 transition-transform"
-                           >
-                             Reject
-                           </button>
-                        </div>
-                      )}
+                      <Button size="sm" variant="primary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
                     </div>
                   </motion.div>
                 );

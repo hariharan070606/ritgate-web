@@ -288,9 +288,8 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
                           </span>
                         </td>
                         <td className="text-center">
-                          <div className="flex justify-center gap-2">
-                            {isPending && <Button size="sm" variant="success" onClick={() => handleApprove(req)} disabled={processing}>Approve</Button>}
-                            <Button size="sm" variant="secondary" onClick={() => { setSelectedRequest(req); isBulk ? setShowBulkDetail(true) : setShowDetail(true); }}>View</Button>
+                          <div className="flex justify-center">
+                            <Button size="sm" variant="primary" onClick={() => { setSelectedRequest(req); isBulk ? setShowBulkDetail(true) : setShowDetail(true); }}>View</Button>
                           </div>
                         </td>
                       </tr>
@@ -366,12 +365,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
                         </span>
                       </div>
                       {isBulk && <span className="text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-500 flex items-center gap-1"><Users className="w-3 h-3" />Bulk Gatepass</span>}
-                      {isPending && (
-                        <div className="flex gap-2">
-                          <button onClick={e => { e.stopPropagation(); setSelectedRequest(req); handleApprove(req); }} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-xl text-[11px] font-bold border border-emerald-100">Approve</button>
-                          <button onClick={e => { e.stopPropagation(); setSelectedRequest(req); setShowReject(true); }} className="px-3 py-1.5 bg-rose-50 text-rose-700 rounded-xl text-[11px] font-bold border border-rose-100">Reject</button>
-                        </div>
-                      )}
+                      <Button size="sm" variant="primary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); isBulk ? setShowBulkDetail(true) : setShowDetail(true); }}>View</Button>
                     </div>
                   </div>
                 </motion.div>
