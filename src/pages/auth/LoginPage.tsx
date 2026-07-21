@@ -9,6 +9,8 @@ import {
   Loader2,
   Zap,
   X,
+  RefreshCw,
+  CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { detectRole } from '../../services/api.service';
@@ -40,6 +42,8 @@ export default function LoginPage() {
   const [resolvedRole, setResolvedRole] = useState<UserRole | null>(null);
   const [errorModal, setErrorModal] = useState<string | null>(null);
   const [focused, setFocused] = useState(false);
+  const [resendingModal, setResendingModal] = useState(false);
+  const [modalNotice, setModalNotice] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -53,7 +57,7 @@ export default function LoginPage() {
     }
   }, []);
 
-const handleSendOTP = async (id?: string) => {
+  const handleSendOTP = async (id?: string) => {
     const uid = (id ?? userId).trim();
     if (!uid) return;
     setLoading(true);
@@ -74,6 +78,25 @@ const handleSendOTP = async (id?: string) => {
     } finally {
       setLoading(false);
       setLoadMsg('');
+    }
+  };
+
+  const handleResendInModal = async () => {
+    const uid = userId.trim();
+    if (!uid || !resolvedRole || resendingModal) return;
+    setResendingModal(true);
+    try {
+      const res = await sendOTPRequest(uid, resolvedRole);
+      if (res.success) {
+        setModalNotice('Code resent successfully!');
+        setTimeout(() => setModalNotice(null), 3500);
+      } else {
+        setErrorModal(res.message || 'Could not resend code.');
+      }
+    } catch {
+      setErrorModal('Could not resend code.');
+    } finally {
+      setResendingModal(false);
     }
   };
 
@@ -259,20 +282,46 @@ const handleSendOTP = async (id?: string) => {
                 </button>
               </div>
               <h3 style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif", fontSize: 24, fontWeight: 800, color: '#000000', marginBottom: 8 }}>OTP Sent</h3>
-              <p style={{ fontSize: 14, color: '#64748B', lineHeight: 1.6, marginBottom: 24 }}>
+              <p style={{ fontSize: 14, color: '#64748B', lineHeight: 1.6, marginBottom: 16 }}>
                 A 6-digit code has been sent to <strong style={{ color: '#0F172A' }}>{maskedEmail || 'your email'}</strong>
               </p>
-              <motion.button
-                onClick={goToOTP}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  width: '100%', height: 56, background: 'linear-gradient(120deg, #0F172A, #334155)', borderRadius: 20,
-                  border: 'none', cursor: 'pointer', color: '#FFFFFF',
-                  fontSize: 15, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase',
-                }}
-              >
-                Enter Code
-              </motion.button>
+
+              {modalNotice && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: '#16A34A', marginBottom: 16 }}>
+                  <CheckCircle2 size={16} />
+                  <span>{modalNotice}</span>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button
+                  type="button"
+                  onClick={handleResendInModal}
+                  disabled={resendingModal}
+                  style={{
+                    flex: 1, height: 52, background: '#F1F5F9', border: '1.5px solid #E2E8F0',
+                    borderRadius: 16, cursor: resendingModal ? 'not-allowed' : 'pointer',
+                    color: '#0F172A', fontSize: 13, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                    opacity: resendingModal ? 0.7 : 1, transition: 'all 0.2s ease',
+                  }}
+                >
+                  <RefreshCw size={14} style={resendingModal ? { animation: 'spin 1s linear infinite' } : {}} />
+                  {resendingModal ? 'Sending...' : 'Resend Code'}
+                </button>
+
+                <motion.button
+                  onClick={goToOTP}
+                  whileTap={{ scale: 0.97 }}
+                  style={{
+                    flex: 1.2, height: 52, background: 'linear-gradient(120deg, #0F172A, #334155)', borderRadius: 16,
+                    border: 'none', cursor: 'pointer', color: '#FFFFFF',
+                    fontSize: 13, fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase',
+                  }}
+                >
+                  Enter Code
+                </motion.button>
+              </div>
             </motion.div>
           </motion.div>
         )}

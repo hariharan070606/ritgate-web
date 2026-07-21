@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimationControls, type Variants } from 'framer-motion';
-import { ArrowLeft, Loader2, RefreshCw, Mail, X } from 'lucide-react';
+import { ArrowLeft, Loader2, RefreshCw, Mail, X, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { OTP_CONFIG } from '../../config/api.config';
 import type { UserRole } from '../../types';
@@ -27,6 +27,7 @@ export default function OTPVerifyPage() {
   const [resendTimer, setResendTimer] = useState(OTP_CONFIG.RESEND_DELAY_SECONDS);
   const [isResending, setIsResending] = useState(false);
   const [errorModal, setErrorModal] = useState<string | null>(null);
+  const [successToast, setSuccessToast] = useState<string | null>(null);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const shakeControls = useAnimationControls();
 
@@ -99,25 +100,26 @@ export default function OTPVerifyPage() {
   };
 
   const handleResend = async () => {
-    if (resendTimer > 0 || isResending) return;
+    if (isResending) return;
     setIsResending(true);
     try {
       const res = await sendOTPRequest(userId, role);
       if (res.success) {
         setResendTimer(OTP_CONFIG.RESEND_DELAY_SECONDS);
         setOtpDigits(Array(OTP_CONFIG.LENGTH).fill(''));
+        setSuccessToast('New verification code sent successfully!');
+        setTimeout(() => setSuccessToast(null), 4000);
         setTimeout(() => otpRefs.current[0]?.focus(), 100);
       } else {
-        setErrorModal(res.message || 'Could not resend OTP.');
+        setErrorModal(res.message || 'Could not resend code.');
       }
     } catch {
-      setErrorModal('Could not resend code.');
+      setErrorModal('Could not resend verification code.');
     } finally {
       setIsResending(false);
     }
   };
 
-  const formatTimer = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
   const activeIndex = otpDigits.findIndex(d => d === '');
   const complete = otpDigits.join('').length === OTP_CONFIG.LENGTH;
   const verifyDisabled = !complete || isLoading;
@@ -132,13 +134,33 @@ export default function OTPVerifyPage() {
         onBack={() => navigate('/login')}
       >
         <motion.div variants={container} initial="hidden" animate="show">
+          {/* Success Toast Banner */}
+          <AnimatePresence>
+            {successToast && (
+              <motion.div
+                initial={{ opacity: 0, y: -10, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10 }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '10px 16px', background: '#F0FDF4', border: '1px solid #BBF7D0',
+                  borderRadius: 14, color: '#166534', fontSize: 13, fontWeight: 700,
+                  marginBottom: 16, boxShadow: '0 4px 12px rgba(22,101,52,0.08)'
+                }}
+              >
+                <CheckCircle2 size={18} color="#16A34A" />
+                <span>{successToast}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Header row */}
           <motion.div variants={item} className="text-center mb-6">
             <h2 style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif", fontSize: 24, fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.3px', lineHeight: 1.2 }}>
               Verify Identity
             </h2>
             <p style={{ fontSize: 13, color: '#64748B', margin: '4px 0 0 0' }}>
-              Enter the one-time password sent to your email.
+              Enter the 6-digit verification code sent to your email.
             </p>
           </motion.div>
 
@@ -201,34 +223,47 @@ export default function OTPVerifyPage() {
             </motion.div>
           )}
 
-          {/* Resend / Change ID row */}
-          <motion.div variants={item} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, padding: '0 4px' }}>
-            {resendTimer > 0 ? (
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#64748B' }}>
-                Resend code in <strong style={{ color: '#0F172A', fontWeight: 800 }}>{formatTimer(resendTimer)}</strong>
-              </span>
-            ) : (
+          {/* Prominent Always-Visible Resend Code Bar */}
+          <motion.div
+            variants={item}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '12px 16px', background: '#F8FAFC', border: '1.5px solid #E2E8F0',
+              borderRadius: 16, marginBottom: 24, gap: 12, flexWrap: 'wrap'
+            }}
+          >
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>
+              Didn't receive code?
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <button
+                type="button"
                 onClick={handleResend}
                 disabled={isResending}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
-                  fontSize: 13, fontWeight: 800, color: '#0F172A',
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  textDecoration: 'underline', textUnderlineOffset: 4, opacity: isResending ? 0.5 : 1,
-                  padding: 0,
+                  fontSize: 13, fontWeight: 800, color: '#2563EB',
+                  background: '#EFF6FF', border: '1px solid #BFDBFE',
+                  borderRadius: 10, padding: '7px 14px', cursor: 'pointer',
+                  opacity: isResending ? 0.7 : 1, transition: 'all 0.2s ease',
                 }}
               >
                 <RefreshCw size={14} style={isResending ? { animation: 'spin 1s linear infinite' } : {}} />
-                {isResending ? 'Sending...' : 'Resend OTP'}
+                {isResending ? 'Sending...' : resendTimer > 0 ? `Resend Code (${resendTimer}s)` : 'Resend Code'}
               </button>
-            )}
-            <button
-              onClick={() => navigate('/login')}
-              style={{ fontSize: 13, fontWeight: 700, color: '#64748B', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-            >
-              Change ID
-            </button>
+
+              <button
+                type="button"
+                onClick={() => navigate('/login')}
+                style={{
+                  fontSize: 13, fontWeight: 700, color: '#64748B',
+                  background: 'none', border: 'none', cursor: 'pointer', padding: '4px 6px'
+                }}
+              >
+                Change ID
+              </button>
+            </div>
           </motion.div>
 
           {/* Verify button */}

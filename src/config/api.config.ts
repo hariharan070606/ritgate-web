@@ -4,9 +4,6 @@ const PRODUCTION_URL = 'https://rit-gate.onrender.com/api';
 export const API_CONFIG = {
   BASE_URL: PRODUCTION_URL,
   TIMEOUT: 120000,
-  // Render free-tier backends cold-start (502/503 while booting). A single
-  // retry isn't enough to ride out a spin-up, so retry a few times with
-  // exponential backoff before surfacing a "Sync Failed" error.
   RETRY_ATTEMPTS: 4,
   RETRY_DELAY: 1500,
   RETRY_MAX_DELAY: 8000,
@@ -15,7 +12,7 @@ export const API_CONFIG = {
 export const OTP_CONFIG = {
   LENGTH: 6,
   EXPIRY_MINUTES: 5,
-  RESEND_DELAY_SECONDS: 60,
+  RESEND_DELAY_SECONDS: 30,
 };
 
 export const QR_CONFIG = {
