@@ -157,7 +157,8 @@ export default function SinglePassDetailsModal({
     request.studentName || request.requesterName || request.visitorName || 'Gate Pass Requester';
   const requesterPhoto = resolveProfilePhoto(request) || fetchedPhoto;
 
-  const isOwner = getUserId() === request.regNo || getUserId() === request.staffCode || getUserId() === request.requestedByStaffCode;
+  const isApproverRole = ['hod', 'hr', 'admin', 'security', 'ntf', 'nci'].includes((viewerRole || '').toLowerCase());
+  const isOwner = !isApproverRole && (getUserId() === request.regNo || getUserId() === request.staffCode || getUserId() === request.requestedByStaffCode);
   
   const getComputedTimeline = (): TimelineStep[] => {
     if (timelineSteps && timelineSteps.length > 0) return timelineSteps;
