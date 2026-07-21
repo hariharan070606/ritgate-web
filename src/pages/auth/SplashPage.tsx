@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -89,7 +89,7 @@ export default function SplashPage() {
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center px-4">
-        {/* Logo Container with Energy Aura */}
+        {/* Clean Logo Container */}
         <motion.div
           initial={{ scale: 0.5, opacity: 0, y: -20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -99,35 +99,12 @@ export default function SplashPage() {
           }}
           className="relative mb-8"
         >
-          {/* Concentric Energy Waves */}
-          {[0, 0.4, 0.8].map((delay, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: [0.9, 1.45], opacity: [0.4, 0] }}
-              transition={{
-                duration: 2.4,
-                repeat: Infinity,
-                delay,
-                ease: 'easeOut',
-              }}
-              className="absolute inset-0 rounded-full border border-blue-500/25 pointer-events-none"
-            />
-          ))}
-
-          {/* Rotating Gradient Aura */}
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-            className="absolute -inset-3 rounded-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-sky-400/20 blur-md pointer-events-none"
-          />
-
           {/* Micro-Float */}
           <motion.div
             animate={{ y: [-4, 4, -4] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <RITLogo size={160} glow className="shadow-2xl ring-4 ring-blue-500/10" />
+            <RITLogo size={160} glow className="shadow-2xl" />
           </motion.div>
         </motion.div>
 
@@ -238,4 +215,3 @@ export default function SplashPage() {
     </div>
   );
 }
-
