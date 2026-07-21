@@ -35,7 +35,7 @@ import ConfirmationModal from './ConfirmationModal';
 import GatePassQRModal from './GatePassQRModal';
 import Badge from '../ui/Badge';
 import { useAuth } from '../../context/AuthContext';
-import { getGatePassQRCode } from '../../services/api.service';
+import { getGatePassQRCode, getProfilePhoto } from '../../services/api.service';
 
 interface TimelineStep {
   label: string;
@@ -83,14 +83,37 @@ export default function SinglePassDetailsModal({
   const [qrLoading, setQrLoading] = useState(false);
   const [qrData, setQrData] = useState<{ code: string; manual: string | undefined; expires: string | undefined } | null>(null);
   const [qrError, setQrError] = useState('');
+  const [fetchedPhoto, setFetchedPhoto] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (isOpen && request?.id) {
       setRemark('');
       setQrData(null);
       setQrError('');
+      setFetchedPhoto(undefined);
     }
   }, [isOpen, request?.id]);
+
+  useEffect(() => {
+    if (!isOpen || !request) return;
+    if (request.requestType === 'VISITOR' || request.passType === 'VISITOR') return;
+    
+    // If it's already resolved from payload, no need to fetch
+    const preResolved = resolveProfilePhoto(request);
+    if (preResolved) return;
+
+    const code = request.regNo || request.staffCode || request.requestedByStaffCode;
+    if (!code) return;
+
+    let active = true;
+    getProfilePhoto(String(code)).then(url => {
+      if (active && url) {
+        setFetchedPhoto(url);
+      }
+    });
+
+    return () => { active = false; };
+  }, [isOpen, request]);
 
   const handleViewQR = async () => {
     if (onViewQR) { onClose(); onViewQR(request); return; }
@@ -132,7 +155,7 @@ export default function SinglePassDetailsModal({
 
   const requesterDisplayName =
     request.studentName || request.requesterName || request.visitorName || 'Gate Pass Requester';
-  const requesterPhoto = resolveProfilePhoto(request);
+  const requesterPhoto = resolveProfilePhoto(request) || fetchedPhoto;
 
   const isOwner = getUserId() === request.regNo || getUserId() === request.staffCode || getUserId() === request.hodCode || getUserId() === request.hrCode || getUserId() === request.requestedByStaffCode;
   
