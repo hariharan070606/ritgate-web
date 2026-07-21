@@ -173,27 +173,23 @@ export default function SinglePassDetailsModal({
 
     const gateScanTime = request?.scannedAt || request?.entryTime || request?.exitTime || request?.usedAt;
 
-    const gateRemark = isGateUsed
-      ? `Gate Entry Verified by Security${gateScanTime ? ` (${formatDateTime(gateScanTime)})` : ''}`
-      : (isHodDone || isApproved)
-      ? 'QR Code ready — awaiting gate scan at campus entrance'
-      : 'Awaiting prior authorizations';
-
     return [
       {
         label: 'Staff Authorization',
         status: isStaffDone ? 'done' : isStaffRejected ? 'rejected' : 'pending',
-        remark: request?.staffRemark || (isStaffDone ? 'Authorization Granted' : isStaffRejected ? 'Authorization Denied' : undefined),
+        remark: request?.staffRemark ? String(request.staffRemark).trim() : undefined,
       },
       {
         label: 'HOD Authorization',
         status: isHodDone ? 'done' : isHodRejected ? 'rejected' : 'pending',
-        remark: request?.hodRemark || (isHodDone ? 'Authorization Granted' : isHodRejected ? 'Authorization Denied' : undefined),
+        remark: request?.hodRemark ? String(request.hodRemark).trim() : undefined,
       },
       {
         label: 'Campus Gate Access',
         status: isGateUsed ? 'done' : 'pending',
-        remark: gateRemark,
+        remark: isGateUsed
+          ? `Gate Entry Verified by Security${gateScanTime ? ` (${formatDateTime(gateScanTime)})` : ''}`
+          : undefined,
       },
     ];
   };
