@@ -419,7 +419,7 @@ export default function StudentHome() {
                 )}
               </div>
               <Button 
-                variant="primary"
+                variant="dark"
                 disabled={gatePassDisabled}
                 onClick={() => !gatePassDisabled && (window.location.href = '/new-request')}
                 className="px-5 py-2.5 rounded-2xl text-[12px] font-black uppercase tracking-widest lg:h-12 lg:px-7"
@@ -536,7 +536,7 @@ export default function StudentHome() {
 
                     {request.status === 'APPROVED' && request.passType !== 'BULK' && (
                       <Button
-                        variant="primary"
+                        variant="dark"
                         onClick={(e) => { e.stopPropagation(); handleViewQR(request); }}
                         className="w-full mt-2 rounded-xl h-10 text-[12px]"
                         icon={<QrCode className="w-4 h-4" />}
