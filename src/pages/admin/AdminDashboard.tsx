@@ -259,7 +259,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
                       <td className="max-w-[360px] truncate">{req.purpose || 'Campus Visit'}</td>
                       <td>{relativeTime(req.createdAt)}</td>
                       <td><Badge status={req.status} size="sm" /></td>
-                      <td className="text-center"><Button size="sm" variant="secondary" onClick={() => openDetail(req)}>View</Button></td>
+                      <td className="text-center"><Button size="sm" variant="dark" onClick={() => openDetail(req)}>View</Button></td>
                     </tr>
                   ))}
                 </tbody>

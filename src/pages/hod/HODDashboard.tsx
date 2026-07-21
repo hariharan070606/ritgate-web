@@ -323,7 +323,7 @@ export default function HODDashboard() {
                           </td>
                           <td className="text-center py-5">
                             <div className="flex items-center justify-center">
-                              <Button size="sm" variant="primary" onClick={() => { setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
+                              <Button size="sm" variant="dark" onClick={() => { setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
                             </div>
                           </td>
                         </tr>
@@ -416,7 +416,7 @@ export default function HODDashboard() {
                          </span>
                       </div>
                       
-                      <Button size="sm" variant="primary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
+                      <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
                     </div>
                   </motion.div>
                 );

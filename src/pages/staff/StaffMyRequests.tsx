@@ -226,7 +226,7 @@ export default function StaffMyRequests() {
                             </span>
                           </td>
                           <td className="text-center">
-                            <Button size="sm" variant="secondary" onClick={() => handleReviewRequest(request)}>View</Button>
+                            <Button size="sm" variant="dark" onClick={() => handleReviewRequest(request)}>View</Button>
                           </td>
                         </tr>
                       );

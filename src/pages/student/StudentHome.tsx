@@ -474,7 +474,7 @@ export default function StudentHome() {
                             {request.status === 'APPROVED' && request.passType !== 'BULK' ? (
                               <Button size="sm" onClick={(e) => { e.stopPropagation(); handleViewQR(request); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
                             ) : (
-                              <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setShowDetailsModal(true); }}>View</Button>
+                              <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setShowDetailsModal(true); }}>View</Button>
                             )}
                           </td>
                         </tr>

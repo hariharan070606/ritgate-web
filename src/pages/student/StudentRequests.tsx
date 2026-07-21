@@ -199,7 +199,7 @@ export default function StudentRequests() {
                                 View QR
                               </Button>
                             ) : (
-                              <Button className="mx-auto" size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); openRequestDetails(request); }}>View</Button>
+                              <Button className="mx-auto" size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); openRequestDetails(request); }}>View</Button>
                             )}
                           </td>
                         </tr>

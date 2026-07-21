@@ -187,7 +187,7 @@ export default function HRMyRequests() {
                           {isApproved ? (
                             <Button size="sm" onClick={(e) => { e.stopPropagation(); handleViewQR(req); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
                           ) : (
-                            <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); setShowDetailModal(true); }}>View</Button>
+                            <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); setShowDetailModal(true); }}>View</Button>
                           )}
                         </td>
                       </tr>

@@ -253,7 +253,7 @@ export default function NTFDashboard() {
                               <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); handleReject(req); }} disabled={isProcessing}>Reject</Button>
                             </div>
                           ) : (
-                            <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); setShowDetail(true); }}>View</Button>
+                            <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); setShowDetail(true); }}>View</Button>
                           )}
                         </td>
                       </tr>

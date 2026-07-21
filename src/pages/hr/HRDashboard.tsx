@@ -288,7 +288,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
                         </td>
                         <td className="text-center">
                           <div className="flex justify-center">
-                            <Button size="sm" variant="primary" onClick={() => { setSelectedRequest(req); isBulk ? setShowBulkDetail(true) : setShowDetail(true); }}>View</Button>
+                            <Button size="sm" variant="dark" onClick={() => { setSelectedRequest(req); isBulk ? setShowBulkDetail(true) : setShowDetail(true); }}>View</Button>
                           </div>
                         </td>
                       </tr>
@@ -364,7 +364,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
                         </span>
                       </div>
                       {isBulk && <span className="text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-500 flex items-center gap-1"><Users className="w-3 h-3" />Bulk Gatepass</span>}
-                      <Button size="sm" variant="primary" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); isBulk ? setShowBulkDetail(true) : setShowDetail(true); }}>View</Button>
+                      <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); isBulk ? setShowBulkDetail(true) : setShowDetail(true); }}>View</Button>
                     </div>
                   </div>
                 </motion.div>
