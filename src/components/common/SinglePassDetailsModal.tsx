@@ -163,6 +163,14 @@ export default function SinglePassDetailsModal({
   const getComputedTimeline = (): TimelineStep[] => {
     if (timelineSteps && timelineSteps.length > 0) return timelineSteps;
 
+    const cleanRemark = (r: unknown) => {
+      if (!r) return undefined;
+      const s = String(r).trim();
+      const l = s.toLowerCase();
+      if (['authorization granted', 'approved', 'authorized', 'n/a', 'na'].includes(l)) return undefined;
+      return s;
+    };
+
     const rawStatus = (request?.status || request?.approvalStatus || '').toUpperCase();
 
     const isStaffDone =
@@ -203,12 +211,12 @@ export default function SinglePassDetailsModal({
       {
         label: 'Staff Authorization',
         status: isStaffDone ? 'done' : isStaffRejected ? 'rejected' : 'pending',
-        remark: request?.staffRemark ? String(request.staffRemark).trim() : undefined,
+        remark: cleanRemark(request?.staffRemark),
       },
       {
         label: 'HOD Authorization',
         status: isHodDone ? 'done' : isHodRejected ? 'rejected' : 'pending',
-        remark: request?.hodRemark ? String(request.hodRemark).trim() : undefined,
+        remark: cleanRemark(request?.hodRemark),
       },
       {
         label: 'Campus Gate Access',

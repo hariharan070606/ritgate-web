@@ -109,6 +109,15 @@ export default function MyRequestsBulkModal({
 
   const statusVariant = isRejected ? 'danger' : isApproved ? 'success' : 'warning';
 
+  const cleanRemark = (r: unknown) => {
+    if (!r) return undefined;
+    const s = String(r).trim();
+    const l = s.toLowerCase();
+    if (['authorization granted', 'approved', 'authorized', 'n/a', 'na'].includes(l)) return undefined;
+    return s;
+  };
+  const hodRemark = cleanRemark(details?.hodRemark);
+
   if (!isOpen) return null;
 
   return createPortal(
@@ -275,10 +284,10 @@ export default function MyRequestsBulkModal({
                       )}>
                         {isApproved ? '✓ Completed' : isRejected ? '✗ Rejected' : 'Pending'}
                       </p>
-                      {details?.hodRemark && (
+                      {hodRemark && (
                          <div className="mt-2 bg-slate-50 dark:bg-slate-800 p-2 rounded-lg border-l-2 border-amber-500 italic">
                             <p className="text-[10px] font-black text-slate-400 uppercase mb-0.5">Remark:</p>
-                            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">{details.hodRemark}</p>
+                            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">{hodRemark}</p>
                          </div>
                       )}
                     </div>
