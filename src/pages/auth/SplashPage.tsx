@@ -1,63 +1,30 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
-import LogoImg from '../../assets/logo.png';
-import { cn } from '../../utils/cn';
+import RITLogo from '../../components/common/RITLogo';
 
-const BG = '#F7F9FF';
-const ACCENT = '#2563EB';
-
-const Particle = ({ delay }: { delay: number }) => (
-  <motion.div
-    initial={{ y: '110vh', opacity: 0, x: Math.random() * 100 + 'vw' }}
-    animate={{ y: '-10vh', opacity: [0, 0.3, 0] }}
-    transition={{ duration: 8, delay, repeat: Infinity, ease: "linear" }}
-    className="absolute w-1 h-1 bg-blue-500/30 rounded-full"
-  />
-);
-
-const RippleRing = ({ delay, scale }: { delay: number, scale: number }) => (
-  <motion.div
-    initial={{ scale: 0.5, opacity: 0 }}
-    animate={{ scale, opacity: [0, 0.5, 0] }}
-    transition={{ duration: 1.2, delay, repeat: Infinity, ease: "easeOut" }}
-    className="absolute w-40 h-40 border border-blue-500/20 rounded-full"
-  />
-);
-
-const AnimLetter = ({ char, delay }: { char: string, delay: number }) => (
-  <motion.span
-    initial={{ opacity: 0, scale: 0.7, x: 0 }}
-    animate={{ opacity: 1, scale: [0.7, 1.2, 1], x: [0, -2, 2, 0] }}
-    transition={{ duration: 0.4, delay }}
-    className="inline-block text-[72px] font-black tracking-widest text-slate-900 select-none"
-  >
-    {char}
-  </motion.span>
-);
+const particles = Array.from({ length: 14 }).map((_, i) => ({
+  id: i,
+  size: Math.random() * 4 + 2,
+  left: `${Math.random() * 90 + 5}%`,
+  duration: Math.random() * 5 + 6,
+  delay: Math.random() * 2,
+}));
 
 export default function SplashPage() {
   const { isBackendReady, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [showContent, setShowContent] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowContent(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     if (isBackendReady) {
       const timer = setTimeout(() => {
         navigate(isAuthenticated ? '/dashboard' : '/login', { replace: true });
-      }, 3000); // Allow time for cinematic animations
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [isBackendReady, isAuthenticated, navigate]);
 
-  // Fallback: never strand the user on the splash if the wake-up ping
-  // fails or times out (backend asleep / offline).
   useEffect(() => {
     const fallback = setTimeout(() => {
       navigate(isAuthenticated ? '/dashboard' : '/login', { replace: true });
@@ -65,90 +32,210 @@ export default function SplashPage() {
     return () => clearTimeout(fallback);
   }, [isAuthenticated, navigate]);
 
+  const ritLetters = ['R', 'I', 'T'];
+  const gateLetters = ['G', 'A', 'T', 'E'];
+
   return (
-    <div className="fixed inset-0 bg-[#F7F9FF] overflow-hidden flex flex-col items-center justify-center">
-      {/* Cinematic Particles */}
-      {[...Array(12)].map((_, i) => <Particle key={i} delay={i * 0.8} />)}
-
-      {/* Floating Background Orbs */}
-      <motion.div 
-        animate={{ y: [0, 30, 0], scale: [1, 1.15, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-[20%] -left-[10%] w-[100vw] h-[100vw] bg-blue-500/[0.03] rounded-full blur-3xl pointer-events-none" 
-      />
-      <motion.div 
-        animate={{ y: [0, -30, 0], scale: [1, 1.1, 1] }}
-        transition={{ duration: 8, delay: 1, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -bottom-[20%] -right-[10%] w-[80vw] h-[80vw] bg-blue-500/[0.03] rounded-full blur-3xl pointer-events-none" 
-      />
-
-      {/* Main Stage */}
-      <div className="relative flex flex-col items-center">
-        {/* Logo & Rings */}
+    <div className="fixed inset-0 bg-[#F7F9FF] overflow-hidden flex flex-col items-center justify-center select-none">
+      {/* Background Ambient Mesh & Blobs */}
+      <div className="absolute inset-0 pointer-events-none">
         <motion.div
-           initial={{ y: -40, opacity: 0, scale: 0.62 }}
-           animate={{ y: -80, opacity: 1, scale: 1 }}
-           transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
-           className="relative w-44 h-44 flex items-center justify-center mb-14"
-        >
-          {/* Ripple Rings */}
-          <RippleRing delay={0} scale={1.8} />
-          <RippleRing delay={0.2} scale={2.4} />
-          
-          <div className="relative w-40 h-40 rounded-full bg-white shadow-2xl flex items-center justify-center overflow-hidden z-10 border-4 border-blue-50 p-6">
-            <img src={LogoImg} alt="Logo" className="w-full h-full object-contain" />
-            {/* Logo Shimmer */}
-            <motion.div 
-              initial={{ x: '-150%' }}
-              animate={{ x: '200%' }}
-              transition={{ delay: 0.6, duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg] pointer-events-none"
-            />
-          </div>
-        </motion.div>
-
-        {/* Wordmark */}
-        <div className="flex flex-col items-center -mt-6">
-          <div className="flex gap-4">
-            {['R', 'I', 'T'].map((char, i) => (
-              <AnimLetter key={`r${i}`} char={char} delay={0.9 + i * 0.1} />
-            ))}
-          </div>
-          <div className="flex gap-4 -mt-2">
-            {['G', 'A', 'T', 'E'].map((char, i) => (
-              <AnimLetter key={`g${i}`} char={char} delay={1.2 + i * 0.1} />
-            ))}
-          </div>
-        </div>
-
-        {/* Loading Indicator */}
-        <div className="mt-12 flex items-center gap-2">
-          {[0, 1, 2].map((i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0.1, scale: 1 }}
-              animate={{ opacity: [0.1, 1, 0.1], scale: [1, 1.8, 1] }}
-              transition={{ duration: 0.5, delay: i * 0.15, repeat: Infinity, repeatDelay: 0.4 }}
-              className="w-1.5 h-1.5 rounded-full bg-blue-600 border border-white/80 shrink-0"
-            />
-          ))}
-        </div>
+          animate={{
+            scale: [1, 1.15, 1],
+            x: [0, 20, 0],
+            y: [0, -15, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-[15%] -right-[10%] w-[65vw] h-[65vw] max-w-[700px] max-h-[700px] bg-gradient-to-br from-blue-300/30 via-indigo-200/20 to-transparent rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, -25, 0],
+            y: [0, 20, 0],
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          className="absolute -bottom-[15%] -left-[10%] w-[70vw] h-[70vw] max-w-[800px] max-h-[800px] bg-gradient-to-tr from-blue-400/20 via-sky-200/20 to-transparent rounded-full blur-3xl"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(#2563eb_0.8px,transparent_0.8px)] [background-size:24px_24px] opacity-[0.04]" />
       </div>
 
-      {/* Progress Bar (Bottom) */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="fixed bottom-0 left-0 right-0 h-1 bg-blue-600/10 overflow-hidden"
+      {/* Floating Particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {particles.map((p) => (
+          <motion.div
+            key={p.id}
+            initial={{ y: '105vh', opacity: 0 }}
+            animate={{
+              y: '-10vh',
+              opacity: [0, 0.6, 0],
+              scale: [0.5, 1.2, 0.8],
+            }}
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              delay: p.delay,
+              ease: 'linear',
+            }}
+            style={{
+              left: p.left,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+            }}
+            className="absolute rounded-full bg-blue-500/40 shadow-[0_0_8px_rgba(37,99,235,0.6)]"
+          />
+        ))}
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col items-center px-4">
+        {/* Logo Container with Energy Aura */}
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0, y: -20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="relative mb-8"
+        >
+          {/* Concentric Energy Waves */}
+          {[0, 0.4, 0.8].map((delay, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: [0.9, 1.45], opacity: [0.4, 0] }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                delay,
+                ease: 'easeOut',
+              }}
+              className="absolute inset-0 rounded-full border border-blue-500/25 pointer-events-none"
+            />
+          ))}
+
+          {/* Rotating Gradient Aura */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+            className="absolute -inset-3 rounded-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-sky-400/20 blur-md pointer-events-none"
+          />
+
+          {/* Micro-Float */}
+          <motion.div
+            animate={{ y: [-4, 4, -4] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <RITLogo size={160} glow className="shadow-2xl ring-4 ring-blue-500/10" />
+          </motion.div>
+        </motion.div>
+
+        {/* Glass Card */}
+        <motion.div
+          initial={{ y: 30, opacity: 0, scale: 0.95 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="relative overflow-hidden bg-white/90 backdrop-blur-2xl border border-white/80 px-12 py-8 rounded-[2.5rem] shadow-[0_25px_60px_-15px_rgba(37,99,235,0.12)] flex flex-col items-center text-center max-w-sm w-full"
+        >
+          {/* Metallic Shimmer Sweep */}
+          <motion.div
+            initial={{ x: '-100%' }}
+            animate={{ x: '200%' }}
+            transition={{ delay: 0.8, duration: 1.2, ease: 'easeInOut' }}
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/50 to-transparent skew-x-[-25deg] pointer-events-none"
+          />
+
+          {/* Animated Wordmark */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex gap-2 justify-center">
+              {ritLetters.map((char, index) => (
+                <motion.span
+                  key={`rit-${index}`}
+                  initial={{ opacity: 0, y: 15, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{
+                    delay: 0.4 + index * 0.08,
+                    duration: 0.5,
+                    type: 'spring',
+                    stiffness: 180,
+                    damping: 14,
+                  }}
+                  className="text-5xl sm:text-6xl font-extrabold text-[#1A3B71] tracking-tight"
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </div>
+
+            <div className="flex gap-2 justify-center">
+              {gateLetters.map((char, index) => (
+                <motion.span
+                  key={`gate-${index}`}
+                  initial={{ opacity: 0, y: 15, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{
+                    delay: 0.65 + index * 0.08,
+                    duration: 0.5,
+                    type: 'spring',
+                    stiffness: 180,
+                    damping: 14,
+                  }}
+                  className="text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-[#2563EB] via-[#3B82F6] to-[#60A5FA] bg-clip-text text-transparent tracking-tight drop-shadow-sm"
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1, duration: 0.6 }}
+            className="mt-3 text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-slate-400 uppercase"
+          >
+            Campus Gateway System
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Loading Indicator */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.0 }}
+        className="absolute bottom-16 flex items-center gap-2.5 z-10"
       >
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: isBackendReady ? '100%' : '70%' }}
-          transition={{ duration: isBackendReady ? 0.6 : 30, ease: "easeOut" }}
-          className="h-full bg-blue-600 rounded-full"
-        />
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.3, 1, 0.3],
+              backgroundColor: ['#93C5FD', '#2563EB', '#93C5FD'],
+            }}
+            transition={{
+              duration: 1.2,
+              repeat: Infinity,
+              delay: i * 0.25,
+              ease: 'easeInOut',
+            }}
+            className="w-2.5 h-2.5 rounded-full shadow-sm"
+          />
+        ))}
       </motion.div>
+
+      {/* Progress Bar (Bottom) */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-blue-100/60 overflow-hidden">
+        <motion.div
+          initial={{ width: '0%' }}
+          animate={{ width: isBackendReady ? '100%' : '70%' }}
+          transition={{ duration: isBackendReady ? 0.6 : 30, ease: 'easeOut' }}
+          className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-sky-400 shadow-[0_0_10px_rgba(37,99,235,0.8)]"
+        />
+      </div>
     </div>
   );
 }
+
