@@ -339,7 +339,7 @@ export default function StaffMyRequests() {
                             e.stopPropagation();
                             handleViewQR(request);
                           }}
-                          className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] rounded-xl text-white shadow-lg shadow-blue-100 dark:shadow-none active:scale-95 transition-transform"
+                          className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl active:scale-95 transition-transform"
                         >
                           <QrCode className="w-4 h-4 text-white" />
                           <span className="text-[11px] font-black uppercase tracking-widest">View QR</span>

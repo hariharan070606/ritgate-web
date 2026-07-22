@@ -183,7 +183,7 @@ export default function HRMyRequests() {
                         </td>
                         <td className="text-center">
                           {isApproved ? (
-                            <Button size="sm" onClick={(e) => { e.stopPropagation(); handleViewQR(req); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
+                            <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); handleViewQR(req); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
                           ) : (
                             <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); setShowDetailModal(true); }}>View</Button>
                           )}
@@ -245,7 +245,7 @@ export default function HRMyRequests() {
                       </div>
                       {isApproved && (
                         <button onClick={e => { e.stopPropagation(); handleViewQR(req); }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-primary)] rounded-xl text-white text-[11px] font-bold shadow-sm active:scale-95 transition-transform">
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-950 text-white dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl text-[11px] font-bold shadow-sm active:scale-95 transition-transform">
                           <QrCode className="w-3.5 h-3.5" /> VIEW QR
                         </button>
                       )}

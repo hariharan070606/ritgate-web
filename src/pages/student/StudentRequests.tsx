@@ -191,10 +191,10 @@ export default function StudentRequests() {
                             {(request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') && !isBulk ? (
                               <Button
                                 size="sm"
-                                variant="primary"
+                                variant="dark"
                                 onClick={(e) => { e.stopPropagation(); handleViewQR(request); }}
                                 icon={<QrCode className="w-4 h-4" />}
-                                className="mx-auto bg-blue-600 hover:bg-blue-700 text-white font-extrabold shadow-sm border border-blue-500"
+                                className="mx-auto"
                               >
                                 View QR
                               </Button>
@@ -294,7 +294,7 @@ export default function StudentRequests() {
                             e.stopPropagation();
                             handleViewQR(request);
                           }}
-                          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white border border-blue-500 text-[11px] font-black uppercase tracking-widest shadow-md transition-all active:scale-95"
+                          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-950 text-white dark:bg-slate-800 dark:hover:bg-slate-700 text-[11px] font-black uppercase tracking-widest shadow-md transition-all active:scale-95"
                         >
                           <QrCode className="w-4 h-4" />
                           <span>View QR</span>

@@ -200,7 +200,7 @@ export default function HODMyRequests() {
                            </td>
                           <td className="text-center">
                             {isApproved ? (
-                              <Button size="sm" onClick={(e) => { e.stopPropagation(); handleViewQR(request); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
+                              <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); handleViewQR(request); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
                             ) : (
                               <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); if (isBulk) setShowBulkModal(true); else setShowDetailModal(true); }}>View</Button>
                             )}
@@ -307,7 +307,7 @@ export default function HODMyRequests() {
                             e.stopPropagation();
                             handleViewQR(request);
                           }}
-                          className="flex items-center gap-2 px-4 py-2 bg-amber-600 rounded-xl text-white shadow-lg shadow-amber-100 dark:shadow-none active:scale-95 transition-transform"
+                          className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl active:scale-95 transition-transform"
                         >
                           <QrCode className="w-4 h-4 text-white" />
                           <span className="text-[11px] font-black uppercase tracking-widest">View QR</span>
