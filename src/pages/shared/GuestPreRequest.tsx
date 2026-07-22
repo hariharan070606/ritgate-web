@@ -82,6 +82,10 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
       showToastError('Missing Fields', 'Please enter valid guest details and purpose');
       return;
     }
+    if (!visitorPhoto) {
+      showToastError('Photo Required', 'Please upload the guest’s photograph before submitting.');
+      return;
+    }
 
     await withLock(async () => {
       setIsSubmitting(true);
@@ -95,7 +99,7 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
           purpose: purpose.trim(),
           creatorStaffCode: staffCode,
           creatorRole: role || 'STAFF',
-          visitorPhoto: visitorPhoto || undefined,
+          visitorPhoto,
         });
         if (res.success) {
           showToastSuccess('Pass Generated', 'Visitor pass has been provisioned successfully');
@@ -203,12 +207,12 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
                  </div>
               </div>
 
-              <VisitorPhotoUpload value={visitorPhoto} onChange={setVisitorPhoto} label="Visitor Photograph" />
+              <VisitorPhotoUpload value={visitorPhoto} onChange={setVisitorPhoto} label="Visitor Photograph" required />
 
               <div className="pt-4">
                  <button 
                     onClick={handleSubmit}
-                    disabled={isSubmitting || loadingCreator}
+                    disabled={isSubmitting || loadingCreator || !visitorPhoto}
                     className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-[14px] uppercase tracking-[0.16em] shadow-lg shadow-blue-600/30 border border-blue-500 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2.5 sm:ml-auto sm:max-w-[18rem] disabled:opacity-55"
                  >
                     {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin text-current" /> : (
