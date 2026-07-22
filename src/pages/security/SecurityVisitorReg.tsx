@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { UserPlus, ShieldCheck, MapPin, Phone, User, Building2, Car, ChevronDown } from 'lucide-react';
+import { UserPlus, ShieldCheck, MapPin, Phone, User, Building2, Car, ChevronDown, Camera } from 'lucide-react';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
+import LiveCameraCapture from '../../components/common/LiveCameraCapture';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { registerVisitor, getDepartments, getStaffByDepartment } from '../../services/api.service';
@@ -26,6 +27,7 @@ export default function SecurityVisitorReg() {
     vehicleNumber: '', vehicleType: ''
   });
 
+  const [visitorPhoto, setVisitorPhoto] = useState('');
   const [departments, setDepartments] = useState<any[]>([]);
   const [staffList, setStaffList] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,14 +52,19 @@ export default function SecurityVisitorReg() {
       showError('Incomplete Form', 'Please fill all required fields marked with *');
       return;
     }
-    
+    if (!visitorPhoto) {
+      showError('Photo Required', 'Please capture the visitor’s photo before registering.');
+      return;
+    }
+
     await withLock(async () => {
       setIsSubmitting(true);
       try {
-        const res = await registerVisitor({ ...formData, securityId });
+        const res = await registerVisitor({ ...formData, visitorPhoto, securityId });
         if (res.success) {
           showSuccess('Visitor Registered', 'Approval request sent to HOD/HR');
           setFormData({ name: '', phone: '', email: '', numberOfPeople: 1, purpose: '', role: 'VISITOR', departmentId: '', staffCode: '', vehicleNumber: '', vehicleType: '' });
+          setVisitorPhoto('');
         } else showError('Failed', res.message);
       } finally {
         setIsSubmitting(false);
@@ -109,6 +116,15 @@ export default function SecurityVisitorReg() {
                />
             </div>
           </div>
+        </div>
+
+        {/* Live Photo Capture Section */}
+        <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-2 px-1">
+             <Camera className="w-3.5 h-3.5 text-slate-400" />
+             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live Photo Capture</h3>
+          </div>
+          <LiveCameraCapture value={visitorPhoto} onChange={setVisitorPhoto} label="Visitor Photo" required />
         </div>
 
         {/* Visit Context Section */}
@@ -166,7 +182,7 @@ export default function SecurityVisitorReg() {
           </div>
         </div>
 
-        <Button fullWidth size="lg" onClick={handleSubmit} isLoading={isSubmitting} className="h-14 rounded-2xl shadow-blue-100">
+        <Button fullWidth size="lg" onClick={handleSubmit} isLoading={isSubmitting} disabled={!visitorPhoto} className="h-14 rounded-2xl shadow-blue-100">
           COMPLETE REGISTRATION
         </Button>
       </Card>

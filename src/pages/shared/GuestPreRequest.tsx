@@ -20,6 +20,7 @@ import { useToast } from '../../context/ToastContext';
 import { useActionLock } from '../../context/ActionLockContext';
 import { createInstantGuestPass, getStaffDirectory } from '../../services/api.service';
 import GatePassQRModal from '../../components/common/GatePassQRModal';
+import VisitorPhotoUpload from '../../components/common/VisitorPhotoUpload';
 import { cn } from '../../utils/cn';
 
 interface GuestPreRequestProps {
@@ -44,6 +45,7 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
   const [phone, setPhone] = useState('');
   const [numberOfPeople, setNumberOfPeople] = useState('1');
   const [purpose, setPurpose] = useState('');
+  const [visitorPhoto, setVisitorPhoto] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [creatorDepartment, setCreatorDepartment] = useState(creatorDeptProp);
   const [loadingCreator, setLoadingCreator] = useState(!creatorDeptProp);
@@ -92,7 +94,8 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
           staffCode,
           purpose: purpose.trim(),
           creatorStaffCode: staffCode,
-          creatorRole: role || 'STAFF'
+          creatorRole: role || 'STAFF',
+          visitorPhoto: visitorPhoto || undefined,
         });
         if (res.success) {
           showToastSuccess('Pass Generated', 'Visitor pass has been provisioned successfully');
@@ -111,7 +114,7 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
   };
 
   const resetForm = () => {
-    setVisitorName(''); setPhone(''); setNumberOfPeople('1'); setPurpose('');
+    setVisitorName(''); setPhone(''); setNumberOfPeople('1'); setPurpose(''); setVisitorPhoto('');
   };
 
   return (
@@ -191,7 +194,7 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Objective Detail</label>
                  <div className="relative">
                     <LayoutGrid className="absolute left-4 top-4 w-4.5 h-4.5 text-slate-400" />
-                    <textarea 
+                    <textarea
                         value={purpose}
                         onChange={(e) => setPurpose(e.target.value.toUpperCase())}
                         placeholder="PURPOSE OF VISIT..."
@@ -199,6 +202,8 @@ export default function GuestPreRequest({ onBack, embedded = false }: GuestPreRe
                     />
                  </div>
               </div>
+
+              <VisitorPhotoUpload value={visitorPhoto} onChange={setVisitorPhoto} label="Visitor Photograph" />
 
               <div className="pt-4">
                  <button 

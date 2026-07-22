@@ -30,6 +30,7 @@ import { formatDateTime } from '../../utils/dateUtils';
 import { getStatusMeta, normalizeRequestStatus } from '../../utils/statusUtils';
 import { resolveProfilePhoto } from '../../utils/profilePhoto';
 import VisitorAvatar from './VisitorAvatar';
+import ImageLightbox from './ImageLightbox';
 import Button from '../ui/Button';
 import ConfirmationModal from './ConfirmationModal';
 import GatePassQRModal from './GatePassQRModal';
@@ -73,6 +74,7 @@ export default function SinglePassDetailsModal({
   const [processing, setProcessing] = useState(false);
   const isProcessing = externalProcessing ?? processing;
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [showPhotoPreview, setShowPhotoPreview] = useState(false);
   
   const [showApproveConfirm, setShowApproveConfirm] = useState(false);
   const [showRejectConfirm, setShowRejectConfirm] = useState(false);
@@ -265,17 +267,24 @@ export default function SinglePassDetailsModal({
           <div className="flex-1 overflow-y-auto w-full max-w-5xl lg:max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 py-8 lg:py-10 space-y-6 sm:space-y-8">
             {/* Student Info Card */}
             <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 lg:p-9 rounded-[28px] lg:rounded-[32px] border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-5 sm:gap-6">
-              <VisitorAvatar
-                name={requesterDisplayName}
-                photoUrl={requesterPhoto}
-                size="auto"
-                className="w-16 h-16 sm:w-20 sm:h-20 shadow-md ring-4 ring-slate-100 dark:ring-slate-800"
-                fallback={
-                  <div className="w-full h-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white font-black text-xl sm:text-2xl">
-                    {getInitials(requesterDisplayName)}
-                  </div>
-                }
-              />
+              <button
+                type="button"
+                onClick={() => { if (requesterPhoto) setShowPhotoPreview(true); }}
+                className={cn('shrink-0 rounded-full transition-transform', requesterPhoto ? 'cursor-zoom-in active:scale-95' : 'cursor-default')}
+                aria-label="View photo"
+              >
+                <VisitorAvatar
+                  name={requesterDisplayName}
+                  photoUrl={requesterPhoto}
+                  size="auto"
+                  className="w-16 h-16 sm:w-20 sm:h-20 shadow-md ring-4 ring-slate-100 dark:ring-slate-800"
+                  fallback={
+                    <div className="w-full h-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white font-black text-xl sm:text-2xl">
+                      {getInitials(requesterDisplayName)}
+                    </div>
+                  }
+                />
+              </button>
               <div className="min-w-0 flex-1">
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight truncate">
                   {requesterDisplayName}
@@ -590,6 +599,14 @@ export default function SinglePassDetailsModal({
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Requester / visitor photo preview */}
+          <ImageLightbox
+            open={showPhotoPreview}
+            src={requesterPhoto}
+            alt={`${requesterDisplayName} photo`}
+            onClose={() => setShowPhotoPreview(false)}
+          />
 
           {/* Internal QR Modal */}
           {qrData && (

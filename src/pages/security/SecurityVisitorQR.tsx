@@ -23,6 +23,7 @@ import TopRefreshControl from '../../components/common/TopRefreshControl';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import Badge from '../../components/ui/Badge';
 import VisitorAvatar from '../../components/common/VisitorAvatar';
+import ImageLightbox from '../../components/common/ImageLightbox';
 import { resolveProfilePhoto } from '../../utils/profilePhoto';
 import { cn } from '../../utils/cn';
 
@@ -60,6 +61,7 @@ export default function SecurityVisitorQR() {
   
   const [selectedVisitor, setSelectedVisitor] = useState<VisitorRequest | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -175,11 +177,17 @@ export default function SecurityVisitorQR() {
                   )}
                 >
                   <div className="flex items-center gap-4">
-                    <VisitorAvatar
-                      name={visitor.name}
-                      photoUrl={getVisitorPhoto(visitor)}
-                      size={48}
-                    />
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); const p = getVisitorPhoto(visitor); if (p) setLightboxPhoto(p); }}
+                      className="shrink-0 active:scale-95 transition-transform"
+                    >
+                      <VisitorAvatar
+                        name={visitor.name}
+                        photoUrl={getVisitorPhoto(visitor)}
+                        size={48}
+                      />
+                    </button>
                     <div className="flex-1 min-w-0 text-left">
                       <h4 className="text-[16px] font-black text-slate-900 dark:text-white truncate tracking-tight uppercase">{visitor.name}</h4>
                       <div className="flex items-center gap-2 mt-0.5">
@@ -229,13 +237,25 @@ export default function SecurityVisitorQR() {
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
               className="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-[40px] p-8 shadow-2xl overflow-hidden"
             >
-              {/* Header */}
+              {/* Header — visitor photo for face verification */}
               <div className="flex flex-col items-center mb-8">
-                <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 rounded-3xl flex items-center justify-center text-emerald-600 mb-4">
-                  <QrCode className="w-8 h-8" />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => { const p = getVisitorPhoto(selectedVisitor); if (p) setLightboxPhoto(p); }}
+                  className="mb-4 active:scale-95 transition-transform"
+                >
+                  <VisitorAvatar
+                    name={selectedVisitor.name}
+                    photoUrl={getVisitorPhoto(selectedVisitor)}
+                    size={96}
+                    className="ring-4 ring-emerald-100 dark:ring-emerald-900/40 shadow-lg"
+                  />
+                </button>
                 <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Visitor Entry Pass</h3>
                 <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">#{selectedVisitor.id}</p>
+                {getVisitorPhoto(selectedVisitor) && (
+                  <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">Tap photo to enlarge</p>
+                )}
               </div>
 
               {/* QR Code Placeholder (Using lucide-react QrCode as visual) */}
@@ -287,6 +307,13 @@ export default function SecurityVisitorQR() {
           </div>
         )}
       </AnimatePresence>
+
+      <ImageLightbox
+        open={!!lightboxPhoto}
+        src={lightboxPhoto}
+        alt={`${selectedVisitor?.name || 'Visitor'} photo`}
+        onClose={() => setLightboxPhoto(null)}
+      />
     </div>
   );
 }

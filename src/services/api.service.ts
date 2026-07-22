@@ -637,6 +637,7 @@ export async function registerVisitor(d: {
   name: string; phone: string; email: string; numberOfPeople: number;
   role?: 'VISITOR' | 'VENDOR'; departmentId: string; staffCode: string;
   purpose: string; vehicleNumber?: string; vehicleType?: string; securityId: string;
+  visitorPhoto?: string;
 }): Promise<ApiResponse> {
   try { return (await api.post('/security/register-visitor', d)).data; }
   catch (e) { return { success: false, message: extractError(e) }; }
@@ -686,6 +687,7 @@ export async function createInstantGuestPass(d: {
   name: string; email: string; phone: string; department: string;
   staffCode: string; purpose: string; numberOfPeople?: number;
   vehicleNumber?: string; creatorStaffCode: string; creatorRole: string;
+  visitorPhoto?: string;
 }): Promise<{ success: boolean; id?: number; qrCode?: string; manualCode?: string; message?: string }> {
   try {
     const { data } = await api.post('/unified-visitors/instant-guest', d);
