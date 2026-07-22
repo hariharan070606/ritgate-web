@@ -84,7 +84,7 @@ function applyCSSVars(preset: ThemePreset, isDark: boolean) {
   root.style.setProperty('--gradient-primary', UNIFIED_ACTION_GRADIENT);
 }
 
-const UNIFIED_ACTION_GRADIENT = 'linear-gradient(to right, #111827 0%, #374151 100%)';
+const UNIFIED_ACTION_GRADIENT = '#000000';
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
