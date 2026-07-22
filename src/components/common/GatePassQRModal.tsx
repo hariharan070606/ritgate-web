@@ -32,6 +32,17 @@ export default function GatePassQRModal({
 }: GatePassQRModalProps) {
   const [copied, setCopied] = React.useState(false);
 
+  const formatValidUntil = (val: string) => {
+    try {
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return val;
+      return d.toLocaleString('en-IN', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true,
+      });
+    } catch { return val; }
+  };
+
   const handleCopy = () => {
     if (manualCode) {
       navigator.clipboard.writeText(manualCode);
@@ -121,7 +132,7 @@ export default function GatePassQRModal({
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold text-slate-400 uppercase">Valid Until:</span>
                   <span className="text-sm font-black text-slate-900 dark:text-white">
-                    {validUntil}
+                    {formatValidUntil(validUntil)}
                   </span>
                 </div>
               </div>
