@@ -162,6 +162,7 @@ export default function SinglePassDetailsModal({
 
   const isApproverRole = ['hod', 'hr', 'admin', 'security', 'ntf', 'nci'].includes((viewerRole || '').toLowerCase());
   const isOwner = !isApproverRole && (getUserId() === request.regNo || getUserId() === request.staffCode || getUserId() === request.requestedByStaffCode);
+  const canTakeAction = Boolean(showActions && status !== 'APPROVED' && status !== 'REJECTED' && status !== 'USED' && status !== 'EXITED');
   
   const getComputedTimeline = (): TimelineStep[] => {
     if (timelineSteps && timelineSteps.length > 0) return timelineSteps;
@@ -482,7 +483,7 @@ export default function SinglePassDetailsModal({
           {/* Fixed Footer Action Bar */}
           <footer className="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-5 sm:px-10 lg:px-12 py-5 z-30 shrink-0 shadow-lg mt-auto">
             <div className="max-w-5xl lg:max-w-6xl mx-auto w-full flex items-center justify-end gap-4">
-              {showActions ? (
+              {canTakeAction ? (
                 <div className="w-full flex flex-col space-y-3">
                   <div className="w-full">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Review Notes / Remarks</label>

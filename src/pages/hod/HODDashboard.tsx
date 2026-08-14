@@ -155,6 +155,20 @@ export default function HODDashboard() {
   const handleApprove = async (id: number, remark: string = '') => {
     const req = requests.find(r => r.id === id) || selectedRequest;
     if (!req) return;
+
+    // Immediately update local state so request moves to APPROVED tab
+    setRequests(prev => prev.map(item => {
+      if (item.id === id || item.id === req.id) {
+        return {
+          ...item,
+          status: 'APPROVED',
+          hodApproval: 'APPROVED',
+          hodRemark: remark,
+        };
+      }
+      return item;
+    }));
+
     setShowDetailModal(false);
     setShowBulkModal(false);
     await withLock(async () => {
@@ -168,12 +182,13 @@ export default function HODDashboard() {
         
         if (res.success) {
           showToastSuccess('Authorized', 'Request has been approved');
-          loadData();
         } else {
           showToastError('Failed', res.message);
         }
       } catch {
         showToastError('Error', 'An internal error occurred');
+      } finally {
+        loadData();
       }
     }, 'Authorizing...');
   };
@@ -182,6 +197,20 @@ export default function HODDashboard() {
     const req = requests.find(r => r.id === id) || selectedRequest;
     if (!req) return;
     if (!remark.trim()) return showToastError('Required', 'Please provide a reason for rejection');
+
+    // Immediately update local state so request moves to REJECTED tab
+    setRequests(prev => prev.map(item => {
+      if (item.id === id || item.id === req.id) {
+        return {
+          ...item,
+          status: 'REJECTED',
+          hodApproval: 'REJECTED',
+          hodRemark: remark,
+        };
+      }
+      return item;
+    }));
+
     setShowDetailModal(false);
     setShowBulkModal(false);
     await withLock(async () => {
@@ -195,12 +224,13 @@ export default function HODDashboard() {
         
         if (res.success) {
           showToastSuccess('Rejected', 'Request has been rejected');
-          loadData();
         } else {
           showToastError('Failed', res.message);
         }
       } catch {
         showToastError('Error', 'An internal error occurred');
+      } finally {
+        loadData();
       }
     }, 'Authorizing...');
   };

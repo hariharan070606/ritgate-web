@@ -179,6 +179,20 @@ export default function StaffDashboard() {
   const handleApprove = async (id: number, remark: string = '') => {
     const req = requests.find(r => r.id === id) || selectedRequest;
     if (!req) return;
+
+    // Immediately update local state so request moves to APPROVED tab
+    setRequests(prev => prev.map(item => {
+      if (item.id === id || item.id === req.id) {
+        return {
+          ...item,
+          status: 'APPROVED',
+          staffApproval: 'APPROVED',
+          staffRemark: remark,
+        };
+      }
+      return item;
+    }));
+
     setShowDetailModal(false);
     setShowBulkModal(false);
     await withLock(async () => {
@@ -189,12 +203,13 @@ export default function StaffDashboard() {
         
         if (res.success) {
           showToastSuccess('Approved', 'Request authorized successfully');
-          loadData();
         } else {
           showToastError('Failed', res.message);
         }
       } catch {
         showToastError('Error', 'An internal error occurred');
+      } finally {
+        loadData();
       }
     }, 'Authorizing...');
   };
@@ -202,6 +217,20 @@ export default function StaffDashboard() {
   const handleReject = async (id: number, remark: string) => {
     const req = requests.find(r => r.id === id) || selectedRequest;
     if (!req) return;
+
+    // Immediately update local state so request moves to REJECTED tab
+    setRequests(prev => prev.map(item => {
+      if (item.id === id || item.id === req.id) {
+        return {
+          ...item,
+          status: 'REJECTED',
+          staffApproval: 'REJECTED',
+          staffRemark: remark,
+        };
+      }
+      return item;
+    }));
+
     setShowDetailModal(false);
     setShowBulkModal(false);
     await withLock(async () => {
@@ -212,12 +241,13 @@ export default function StaffDashboard() {
         
         if (res.success) {
           showToastSuccess('Rejected', 'Request has been rejected');
-          loadData();
         } else {
           showToastError('Failed', res.message);
         }
       } catch {
         showToastError('Error', 'An internal error occurred');
+      } finally {
+        loadData();
       }
     }, 'Authorizing...');
   };

@@ -132,6 +132,16 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       : req.id;
 
   const handleApprove = async (req: any) => {
+    setRequests(prev => prev.map(item => {
+      if (item.id === req.id) {
+        return {
+          ...item,
+          status: 'APPROVED',
+          hrApproval: 'APPROVED',
+        };
+      }
+      return item;
+    }));
     setShowDetail(false);
     setShowBulkDetail(false);
     await withLock(async () => {
@@ -140,16 +150,29 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
         const res = req.passType === 'VISITOR'
           ? await approveVisitorByHR(numericId, hrCode)
           : await approveGatePassByHR(hrCode, numericId);
-        if (res.success) { showSuccess('Approved', 'Request approved successfully.'); fetchRequests(); }
+        if (res.success) { showSuccess('Approved', 'Request approved successfully.'); }
         else showError('Failed', res.message);
       } catch {
         showError('Error', 'An internal error occurred');
+      } finally {
+        fetchRequests();
       }
     }, 'Authorizing...');
   };
 
   const handleReject = async (req: any) => {
     if (!rejectReason.trim()) { showError('Required', 'Please provide a reason'); return; }
+    setRequests(prev => prev.map(item => {
+      if (item.id === req.id) {
+        return {
+          ...item,
+          status: 'REJECTED',
+          hrApproval: 'REJECTED',
+          hrRemark: rejectReason.trim(),
+        };
+      }
+      return item;
+    }));
     setShowReject(false);
     setShowDetail(false);
     setShowBulkDetail(false);
@@ -159,10 +182,12 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
         const res = req.passType === 'VISITOR'
           ? await rejectVisitorByHR(numericId, rejectReason.trim())
           : await rejectGatePassByHR(hrCode, numericId, rejectReason.trim());
-        if (res.success) { showSuccess('Rejected', 'Request has been rejected.'); setRejectReason(''); fetchRequests(); }
+        if (res.success) { showSuccess('Rejected', 'Request has been rejected.'); setRejectReason(''); }
         else showError('Failed', res.message);
       } catch {
         showError('Error', 'An internal error occurred');
+      } finally {
+        fetchRequests();
       }
     }, 'Authorizing...');
   };
