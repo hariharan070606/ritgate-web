@@ -13,7 +13,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
-import { getStaffOwnRequests, getStaffBulkPassRequests, getGatePassQRCode } from '../../services/api.service';
+import { getStaffOwnRequests, getStaffBulkPassRequests, getVisitorRequestsForStaff, getGatePassQRCode } from '../../services/api.service';
 import PageHeader from '../../components/common/PageHeader';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
 import { SkeletonList } from '../../components/ui/Skeleton';
@@ -56,14 +56,34 @@ export default function StaffMyRequests() {
   const loadData = async () => {
     if (!staffCode) return;
     try {
-      const [singleRes, bulkRes] = await Promise.all([
+      const [singleRes, bulkRes, visitorRes] = await Promise.all([
         getStaffOwnRequests(staffCode),
-        getStaffBulkPassRequests(staffCode)
+        getStaffBulkPassRequests(staffCode),
+        getVisitorRequestsForStaff(staffCode)
       ]);
 
       let combined: any[] = [];
-      if (singleRes.success) combined = [...(singleRes.requests || [])];
-      if (bulkRes.success) combined = [...combined, ...(bulkRes.requests || [])];
+      if (singleRes.success) combined = [...(singleRes.requests || []).map((r: any) => ({ ...r, isOwnRequest: true }))];
+      if (bulkRes.success) combined = [...combined, ...(bulkRes.requests || []).map((r: any) => ({ ...r, isOwnRequest: true }))];
+      if (visitorRes.success) {
+        const ownVisitors = (visitorRes.requests || [])
+          .filter((r: any) => {
+            const creator = String(r.creatorStaffCode || r.requestedByStaffCode || r.staffCode || '').toLowerCase();
+            return creator === String(staffCode).toLowerCase() || r.isOwnRequest === true;
+          })
+          .map((r: any) => ({
+            ...r,
+            id: `VISITOR-${r.requestId || r.id}`,
+            requestType: 'VISITOR',
+            isOwnRequest: true,
+            studentName: r.visitorName || r.name || r.requesterName || 'Visitor',
+            purpose: r.purpose || r.reason || 'Visitor Gate Pass',
+            reason: r.purpose || r.reason || 'Visitor Gate Pass',
+            status: r.status,
+            createdAt: r.createdAt || r.requestDate
+          }));
+        combined = [...combined, ...ownVisitors];
+      }
       
       // Deduplicate and sort
       const uniqueMap = new Map();

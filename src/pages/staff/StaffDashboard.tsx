@@ -95,17 +95,20 @@ export default function StaffDashboard() {
         all = [...all, ...(assignedRes.requests || []).map((r: any) => ({ ...r, isOwnRequest: false, requestType: 'GATEPASS' }))];
       }
       if (visitorRes.success) {
-        all = [...all, ...(visitorRes.requests || []).map((r: any) => ({
-          ...r,
-          id: `VISITOR-${r.requestId}`,
-          requestType: 'VISITOR',
-          isOwnRequest: false,
-          studentName: r.requesterName,
-          reason: r.purpose,
-          status: r.status,
-          staffApproval: r.status,
-          createdAt: r.createdAt
-        }))];
+        all = [...all, ...(visitorRes.requests || []).map((r: any) => {
+          const isOwn = String(r.creatorStaffCode || r.requestedByStaffCode || r.staffCode || '').toLowerCase() === String(staffCode).toLowerCase();
+          return {
+            ...r,
+            id: `VISITOR-${r.requestId || r.id}`,
+            requestType: 'VISITOR',
+            isOwnRequest: isOwn,
+            studentName: r.visitorName || r.name || r.requesterName,
+            reason: r.purpose || r.reason,
+            status: r.status,
+            staffApproval: r.status,
+            createdAt: r.createdAt
+          };
+        })];
       }
 
       // Filter for unique and sort
