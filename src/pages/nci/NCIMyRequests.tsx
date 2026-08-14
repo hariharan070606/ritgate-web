@@ -9,6 +9,7 @@ import { useToast } from '../../context/ToastContext';
 import { getNCIOwnRequests, getNTFOwnRequests, getVisitorRequestsForStaff, getGatePassQRCode } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
+import { normalizeRequestStatus } from '../../utils/statusUtils';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAdaptive } from '../../utils/useAdaptive';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
@@ -158,8 +159,14 @@ export default function NCIMyRequests() {
                   </thead>
                   <tbody>
                     {filtered.map((request) => {
-                      const isApproved = request.status === 'APPROVED';
-                      const isRejected = request.status === 'REJECTED';
+                      const dateStr = request.createdAt || request.requestDate || '';
+                      const normStatus = normalizeRequestStatus(request);
+                      const isUsedOrExited = normStatus === 'USED' || normStatus === 'EXITED' || Boolean((request as any).isUsed);
+                      const isTodayPass = isToday(dateStr);
+                      const canShowQR = normStatus === 'APPROVED' && !isUsedOrExited && isTodayPass;
+                      const isRejected = normStatus === 'REJECTED';
+                      const isExpired = normStatus === 'APPROVED' && !isTodayPass;
+
                       return (
                         <tr key={request.id} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35" onClick={() => { setSelectedRequest(request); setShowDetailModal(true); }}>
                           <td>
@@ -167,16 +174,17 @@ export default function NCIMyRequests() {
                             <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Request #{request.id}</p>
                           </td>
                           <td>Single Pass</td>
-                          <td>{formatDateTime(request.createdAt || request.requestDate)}</td>
+                          <td>{formatDateTime(dateStr)}</td>
                           <td>
                             <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
-                              isApproved ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :
+                              canShowQR ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :
                               isRejected ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' :
+                              isExpired ? 'bg-slate-100 text-slate-600 dark:bg-slate-800/50 dark:text-slate-400' :
                               'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300'
-                            )}>{isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING'}</span>
+                            )}>{canShowQR ? 'APPROVED' : isRejected ? 'REJECTED' : isExpired ? 'EXPIRED' : 'PENDING'}</span>
                           </td>
                           <td className="text-center">
-                            {isApproved ? (
+                            {canShowQR ? (
                               <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); handleViewQR(request); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
                             ) : (
                               <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setShowDetailModal(true); }}>View</Button>
@@ -192,8 +200,13 @@ export default function NCIMyRequests() {
           ) : (
             <AnimatePresence>
               {filtered.map(request => {
-                const isApproved = request.status === 'APPROVED';
-                const isRejected = request.status === 'REJECTED';
+                const dateStr = request.createdAt || request.requestDate || '';
+                const normStatus = normalizeRequestStatus(request);
+                const isUsedOrExited = normStatus === 'USED' || normStatus === 'EXITED' || Boolean((request as any).isUsed);
+                const isTodayPass = isToday(dateStr);
+                const canShowQR = normStatus === 'APPROVED' && !isUsedOrExited && isTodayPass;
+                const isRejected = normStatus === 'REJECTED';
+                const isExpired = normStatus === 'APPROVED' && !isTodayPass;
 
                 return (
                   <motion.div
@@ -253,21 +266,21 @@ export default function NCIMyRequests() {
                     <div className="flex items-center justify-between">
                       <div className={cn(
                         'flex items-center gap-2 px-3 py-1.5 rounded-full',
-                        isApproved ? 'bg-emerald-500/10' : isRejected ? 'bg-rose-500/10' : 'bg-amber-500/10'
+                        canShowQR ? 'bg-emerald-500/10' : isRejected ? 'bg-rose-500/10' : isExpired ? 'bg-slate-500/10' : 'bg-amber-500/10'
                       )}>
                         <div className={cn(
                           'w-1.5 h-1.5 rounded-full',
-                          isApproved ? 'bg-emerald-500' : isRejected ? 'bg-rose-500' : 'bg-amber-500'
+                          canShowQR ? 'bg-emerald-500' : isRejected ? 'bg-rose-500' : isExpired ? 'bg-slate-400' : 'bg-amber-500'
                         )} />
                         <span className={cn(
                           'text-[10px] font-black uppercase tracking-widest',
-                          isApproved ? 'text-emerald-600' : isRejected ? 'text-rose-600' : 'text-amber-600'
+                          canShowQR ? 'text-emerald-600' : isRejected ? 'text-rose-600' : isExpired ? 'text-slate-500' : 'text-amber-600'
                         )}>
-                          {isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'PENDING'}
+                          {canShowQR ? 'APPROVED' : isRejected ? 'REJECTED' : isExpired ? 'EXPIRED' : 'PENDING'}
                         </span>
                       </div>
 
-                      {isApproved && (
+                      {canShowQR && (
                         <button
                           onClick={e => { e.stopPropagation(); handleViewQR(request); }}
                           className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl active:scale-95 transition-transform"

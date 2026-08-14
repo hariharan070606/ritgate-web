@@ -22,7 +22,8 @@ import GatePassQRModal from '../../components/common/GatePassQRModal';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import { cn } from '../../utils/cn';
 import type { Student } from '../../types';
-import { formatDateTime, isToday } from '../../utils/dateUtils';
+import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
+import { normalizeRequestStatus } from '../../utils/statusUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import EmptyState from '../../components/ui/EmptyState';
@@ -151,26 +152,33 @@ export default function StudentHome() {
     return 'GOOD EVENING,';
   };
 
-  const getStatusConfig = (status: string) => {
-    switch (status) {
-      case 'APPROVED': case 'APPROVED_BY_HOD':
-        return { label: 'APPROVED', color: 'bg-emerald-500' };
-      case 'REJECTED':
-        return { label: 'REJECTED', color: 'bg-rose-500' };
-      case 'PENDING_HOD':
-        return { label: 'AWAITING HOD', color: 'bg-blue-500' };
-      case 'PENDING_STAFF':
-        return { label: 'AWAITING STAFF', color: 'bg-orange-500' };
-      case 'USED':
-        return { label: 'USED', color: 'bg-slate-400' };
-      default:
-        return { label: status || 'PENDING', color: 'bg-amber-500' };
+  const getStatusConfig = (request: any) => {
+    const s = normalizeRequestStatus(request);
+    const dateVal = typeof request === 'object' && request ? (request.requestDate || request.createdAt || request.visitDate) : null;
+    const isPastDate = dateVal ? !isToday(dateVal) : false;
+
+    if (s === 'APPROVED') {
+      if (isPastDate) {
+        return { label: 'EXPIRED', color: 'bg-slate-500' };
+      }
+      return { label: 'APPROVED', color: 'bg-emerald-500' };
     }
+    if (s.startsWith('REJECTED')) return { label: 'REJECTED', color: 'bg-rose-500' };
+    if (s === 'PENDING_HOD') return { label: 'AWAITING HOD', color: 'bg-blue-500' };
+    if (s === 'PENDING_HR') return { label: 'AWAITING HR', color: 'bg-purple-500' };
+    if (s === 'PENDING_STAFF') return { label: 'AWAITING STAFF', color: 'bg-orange-500' };
+    if (s === 'USED') return { label: 'USED', color: 'bg-slate-400' };
+    if (s === 'EXITED') return { label: 'EXITED', color: 'bg-slate-400' };
+    return { label: 'PENDING', color: 'bg-amber-500' };
   };
 
   const handleViewQR = async (request: any) => {
-    if (request.status !== 'APPROVED') {
-       showError('Wait for Approval', 'This request is not fully approved yet');
+    const s = normalizeRequestStatus(request);
+    const isUsedOrExited = s === 'USED' || s === 'EXITED' || Boolean(request.isUsed);
+    const dateVal = request.requestDate || request.createdAt || request.visitDate;
+
+    if (s !== 'APPROVED' || isUsedOrExited || !isToday(dateVal)) {
+       showError('Expired / Invalid Pass', 'This QR code is only available for active passes approved today.');
        return;
     }
     setSelectedRequest(request);
@@ -507,14 +515,20 @@ export default function StudentHome() {
                   </thead>
                   <tbody>
                     {filteredRequests.map((request) => {
-                      const status = getStatusConfig(request.status);
+                      const isBulk = request.passType === 'BULK';
+                      const status = getStatusConfig(request);
+                      const normStatus = normalizeRequestStatus(request);
+                      const isUsedOrExited = normStatus === 'USED' || normStatus === 'EXITED' || Boolean(request.isUsed);
+                      const dateVal = request.requestDate || request.createdAt || request.visitDate;
+                      const canShowCardQR = normStatus === 'APPROVED' && !isUsedOrExited && isToday(dateVal) && !isBulk;
+
                       return (
                         <tr key={request.id} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35" onClick={() => { setSelectedRequest(request); setShowDetailsModal(true); }}>
                           <td>
                             <p className="font-bold text-slate-950 dark:text-white">{request.purpose || 'Gate Pass Request'}</p>
                             <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Request #{request.id}</p>
                           </td>
-                          <td>{request.passType === 'BULK' ? 'Bulk Pass' : 'Single Pass'}</td>
+                          <td>{isBulk ? 'Bulk Pass' : 'Single Pass'}</td>
                           <td>{formatDateTime(request.requestDate || request.createdAt)}</td>
                           <td>
                             <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase text-white', status.color)}>
@@ -522,7 +536,7 @@ export default function StudentHome() {
                             </span>
                           </td>
                           <td className="text-center">
-                            {(request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') && request.passType !== 'BULK' ? (
+                            {canShowCardQR ? (
                               <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); handleViewQR(request); }} icon={<QrCode className="w-4 h-4" />}>View QR</Button>
                             ) : (
                               <Button size="sm" variant="dark" onClick={(e) => { e.stopPropagation(); setSelectedRequest(request); setShowDetailsModal(true); }}>View</Button>
@@ -538,7 +552,13 @@ export default function StudentHome() {
           ) : filteredRequests.length > 0 ? (
             <div className="space-y-3">
               {filteredRequests.map((request) => {
-                const status = getStatusConfig(request.status);
+                const isBulk = request.passType === 'BULK';
+                const status = getStatusConfig(request);
+                const normStatus = normalizeRequestStatus(request);
+                const isUsedOrExited = normStatus === 'USED' || normStatus === 'EXITED' || Boolean(request.isUsed);
+                const dateVal = request.requestDate || request.createdAt || request.visitDate;
+                const canShowCardQR = normStatus === 'APPROVED' && !isUsedOrExited && isToday(dateVal) && !isBulk;
+
                 return (
                   <motion.div
                     key={request.id}
@@ -552,17 +572,17 @@ export default function StudentHome() {
                     <div className="flex items-center justify-between mb-2">
                       <div className={cn(
                         "px-2.5 py-1 rounded-md",
-                        request.passType === 'BULK'
+                        isBulk
                           ? "bg-blue-50 dark:bg-indigo-900/20"
                           : "bg-emerald-50 dark:bg-emerald-900/20"
                       )}>
                         <span className={cn(
                           "text-[10px] font-bold",
-                          request.passType === 'BULK'
+                          isBulk
                             ? "text-[var(--color-primary)] dark:text-blue-400"
                             : "text-emerald-600 dark:text-emerald-400"
                         )}>
-                          {request.passType === 'BULK' ? 'Bulk Pass' : 'Single Pass'}
+                          {isBulk ? 'Bulk Pass' : 'Single Pass'}
                         </span>
                       </div>
                       <div className={cn("px-2.5 py-1 rounded-md", status.color)}>
@@ -579,7 +599,7 @@ export default function StudentHome() {
                       {formatDateTime(request.requestDate || request.createdAt)}
                     </p>
 
-                    {(request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') && request.passType !== 'BULK' && (
+                    {canShowCardQR && (
                       <Button
                         variant="dark"
                         onClick={(e) => { e.stopPropagation(); handleViewQR(request); }}

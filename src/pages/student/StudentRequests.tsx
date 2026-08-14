@@ -23,6 +23,7 @@ import MyRequestsBulkModal from '../../components/common/MyRequestsBulkModal';
 import { cn } from '../../utils/cn';
 import type { Student } from '../../types';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
+import { normalizeRequestStatus } from '../../utils/statusUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import Button from '../../components/ui/Button';
@@ -86,7 +87,11 @@ export default function StudentRequests() {
   };
 
   const handleViewQR = async (request: any) => {
-    if (request.status !== 'APPROVED') return;
+    const s = normalizeRequestStatus(request);
+    const isUsedOrExited = s === 'USED' || s === 'EXITED' || Boolean(request.isUsed);
+    const dateVal = request.requestDate || request.createdAt || request.visitDate;
+    if (s !== 'APPROVED' || isUsedOrExited || !isToday(dateVal)) return;
+
     setSelectedRequest(request);
     setShowQRModal(true);
     try {
@@ -123,14 +128,24 @@ export default function StudentRequests() {
 
   const filteredRequests = requests;
 
-  const getStatusConfig = (status: string) => {
-    const s = String(status || '').toUpperCase();
-    if (s === 'APPROVED' || s === 'APPROVED_BY_HOD') return { text: 'ACTIVE', color: 'text-emerald-600', bg: 'bg-emerald-50', dot: 'bg-emerald-500' };
-    if (s === 'REJECTED') return { text: 'REJECTED', color: 'text-rose-600', bg: 'bg-rose-50', dot: 'bg-rose-500' };
-    if (s === 'PENDING_HOD') return { text: 'AWAITING HOD', color: 'text-blue-600', bg: 'bg-blue-50', dot: 'bg-blue-500' };
-    if (s === 'USED') return { text: 'USED', color: 'text-slate-600', bg: 'bg-slate-100', dot: 'bg-slate-500' };
-    if (s === 'EXITED') return { text: 'EXITED', color: 'text-slate-600', bg: 'bg-slate-100', dot: 'bg-slate-500' };
-    return { text: 'AWAITING STAFF', color: 'text-amber-600', bg: 'bg-amber-50', dot: 'bg-amber-500' };
+  const getStatusConfig = (request: any) => {
+    const s = normalizeRequestStatus(request);
+    const dateVal = typeof request === 'object' && request ? (request.requestDate || request.createdAt || request.visitDate) : null;
+    const isPastDate = dateVal ? !isToday(dateVal) : false;
+
+    if (s === 'APPROVED') {
+      if (isPastDate) {
+        return { text: 'EXPIRED', color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800/50', dot: 'bg-slate-400' };
+      }
+      return { text: 'ACTIVE', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/30', dot: 'bg-emerald-500' };
+    }
+    if (s.startsWith('REJECTED')) return { text: 'REJECTED', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-950/30', dot: 'bg-rose-500' };
+    if (s === 'PENDING_HOD') return { text: 'AWAITING HOD', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-950/30', dot: 'bg-blue-500' };
+    if (s === 'PENDING_HR') return { text: 'AWAITING HR', color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-950/30', dot: 'bg-purple-500' };
+    if (s === 'PENDING_STAFF') return { text: 'AWAITING STAFF', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/30', dot: 'bg-amber-500' };
+    if (s === 'USED') return { text: 'USED', color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800/50', dot: 'bg-slate-400' };
+    if (s === 'EXITED') return { text: 'EXITED', color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800/50', dot: 'bg-slate-400' };
+    return { text: 'AWAITING STAFF', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/30', dot: 'bg-amber-500' };
   };
 
   const studentName = `${user?.firstName} ${user?.lastName || ''}`.trim();
@@ -138,42 +153,42 @@ export default function StudentRequests() {
 
   return (
     <div className="min-h-screen lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
+      {/* Header */}
       <PageHeader title="My Requests" />
 
       {isDesktop && (
         <DesktopPageHeader
-          title="My Requests"
-          subtitle="Track today's active gate pass requests"
+          title="Gate Pass Requests"
+          subtitle="View and manage all your single and bulk gate pass requests."
         />
       )}
-      <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
-        <div className="px-5 pt-4 pb-28 min-h-screen flex flex-col lg:px-0 lg:pt-6 lg:pb-8 lg:min-h-0">
+
+      {/* Main Content */}
+      <TopRefreshControl onRefresh={handleRefresh} refreshing={refreshing}>
+        <div className="px-4 sm:px-5 py-4 sm:py-6 pb-28 lg:px-0 lg:py-0 space-y-6">
           {loading ? (
             <SkeletonList count={4} />
           ) : isDesktop && filteredRequests.length > 0 ? (
-            <section className="desktop-card overflow-hidden">
-              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
-                <div>
-                  <h3 className="text-base font-bold text-slate-950 dark:text-white">Request Queue</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Today&apos;s active requests</p>
-                </div>
-                <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filteredRequests.length} Requests</span>
-              </div>
+            <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm">
               <div className="overflow-x-auto">
-                <table className="desktop-table">
+                <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300 border-separate border-spacing-y-2">
                   <thead>
-                    <tr>
-                      <th>Request</th>
-                      <th>Type</th>
-                      <th>Date</th>
-                      <th className="!text-center">Status</th>
-                      <th className="!text-center">Action</th>
+                    <tr className="text-xs uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                      <th className="pb-3 font-extrabold">Request Info</th>
+                      <th className="pb-3 font-extrabold">Type</th>
+                      <th className="pb-3 font-extrabold">Date & Time</th>
+                      <th className="pb-3 font-extrabold">Status</th>
+                      <th className="pb-3 font-extrabold text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredRequests.map((request) => {
-                      const config = getStatusConfig(request.status);
                       const isBulk = request.passType === 'BULK';
+                      const normStatus = normalizeRequestStatus(request);
+                      const isUsedOrExited = normStatus === 'USED' || normStatus === 'EXITED' || Boolean(request.isUsed);
+                      const dateVal = request.requestDate || request.createdAt || request.visitDate;
+                      const canShowCardQR = normStatus === 'APPROVED' && !isUsedOrExited && isToday(dateVal) && !isBulk;
+                      const config = getStatusConfig(request);
                       return (
                         <tr
                           key={request.id}
@@ -188,7 +203,7 @@ export default function StudentRequests() {
                           <td>{formatDateTime(request.requestDate || request.createdAt)}</td>
                           <td><span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase', config.bg, config.color)}>{config.text}</span></td>
                           <td className="text-center">
-                            {(request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') && !isBulk ? (
+                            {canShowCardQR ? (
                               <Button
                                 size="sm"
                                 variant="dark"
@@ -213,8 +228,11 @@ export default function StudentRequests() {
             <div className="space-y-4">
               {filteredRequests.map((request) => {
                 const isBulk = request.passType === 'BULK';
-                const isApproved = request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD';
-                const isRejected = request.status === 'REJECTED';
+                const normStatus = normalizeRequestStatus(request);
+                const isUsedOrExited = normStatus === 'USED' || normStatus === 'EXITED' || Boolean(request.isUsed);
+                const dateVal = request.requestDate || request.createdAt || request.visitDate;
+                const canShowCardQR = normStatus === 'APPROVED' && !isUsedOrExited && isToday(dateVal) && !isBulk;
+                const config = getStatusConfig(request);
                 
                 return (
                   <motion.div 
@@ -274,21 +292,21 @@ export default function StudentRequests() {
                     <div className="flex items-center justify-between">
                       <div className={cn(
                         "flex items-center gap-2 px-3 py-1.5 rounded-full",
-                        isApproved ? "bg-emerald-500/10" : isRejected ? "bg-rose-500/10" : "bg-amber-500/10"
+                        config.bg
                       )}>
                          <div className={cn(
                            "w-1.5 h-1.5 rounded-full",
-                           isApproved ? "bg-emerald-500" : isRejected ? "bg-rose-500" : "bg-amber-500"
+                           config.dot
                          )} />
                          <span className={cn(
                            "text-[10px] font-black uppercase tracking-widest",
-                           isApproved ? "text-emerald-600" : isRejected ? "text-rose-600" : "text-amber-600"
+                           config.color
                          )}>
-                           {isApproved ? 'ACTIVE' : isRejected ? 'REJECTED' : 'PENDING'}
+                           {config.text}
                          </span>
                       </div>
                       
-                      {(request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') && !isBulk && (
+                      {canShowCardQR && (
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
