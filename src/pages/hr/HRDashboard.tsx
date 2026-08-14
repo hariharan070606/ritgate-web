@@ -94,21 +94,35 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
     fetchRequests();
   }, [fetchRequests]);
 
+  const isRequestApproved = (r: any) => {
+    const s = String(r.status || r.hrApproval || '').toUpperCase();
+    return s === 'APPROVED' || s === 'APPROVED_BY_HR' || r.hrApproval === 'APPROVED';
+  };
+
+  const isRequestRejected = (r: any) => {
+    const s = String(r.status || r.hrApproval || '').toUpperCase();
+    return s === 'REJECTED' || r.hrApproval === 'REJECTED';
+  };
+
+  const isRequestPending = (r: any) => {
+    const s = String(r.status || r.hrApproval || '').toUpperCase();
+    return s === 'PENDING_HR' || (r.passType === 'VISITOR' && s === 'PENDING') || (!isRequestApproved(r) && !isRequestRejected(r));
+  };
+
   const stats = {
-    pending: requests.filter(r => r.hrApproval === 'PENDING_HR' || r.status === 'PENDING_HR' || (r.passType === 'VISITOR' && r.status === 'PENDING')).length,
-    approved: requests.filter(r => r.hrApproval === 'APPROVED' || (r.passType === 'VISITOR' && r.status === 'APPROVED')).length,
-    rejected: requests.filter(r => r.hrApproval === 'REJECTED' || (r.passType === 'VISITOR' && r.status === 'REJECTED')).length,
+    pending: requests.filter(isRequestPending).length,
+    approved: requests.filter(isRequestApproved).length,
+    rejected: requests.filter(isRequestRejected).length,
   };
 
   const filtered = requests.filter(r => {
     const name = r.requestedByStaffName || r.studentName || r.visitorName || r.regNo || '';
     const matchSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         (r.purpose || '').toLowerCase().includes(searchQuery.toLowerCase());
-    const s = r.passType === 'VISITOR' ? r.status : (r.hrApproval || r.status);
     let matchTab = false;
-    if (activeTab === 'PENDING') matchTab = s === 'PENDING_HR' || s === 'PENDING';
-    else if (activeTab === 'APPROVED') matchTab = s === 'APPROVED';
-    else if (activeTab === 'REJECTED') matchTab = s === 'REJECTED';
+    if (activeTab === 'PENDING') matchTab = isRequestPending(r);
+    else if (activeTab === 'APPROVED') matchTab = isRequestApproved(r);
+    else if (activeTab === 'REJECTED') matchTab = isRequestRejected(r);
     return matchSearch && matchTab;
   });
 

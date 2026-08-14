@@ -103,33 +103,48 @@ export default function HODDashboard() {
     // Exclude HOD's own requests from home
     const isOwn = r.userType === 'HOD' || r.requestedByStaffCode === hodCode || r.regNo === hodCode;
     if (isOwn) return false;
-    // Only show today's requests
-    return isToday(r.createdAt || r.requestDate || r.visitDate || r.exitDateTime);
+    // Only show today's requests (since 12:00 AM midnight today IST)
+    const dateVal = r.createdAt || r.requestDate || r.visitDate || r.exitDateTime;
+    return !dateVal || isToday(dateVal);
   });
+
+  const isRequestApproved = (r: any) => {
+    const s = String(r.status || r.hodApproval || '').toUpperCase();
+    return s === 'APPROVED' || s === 'APPROVED_BY_HOD' || s === 'APPROVED_BY_HR' || r.hodApproval === 'APPROVED';
+  };
+
+  const isRequestRejected = (r: any) => {
+    const s = String(r.status || r.hodApproval || '').toUpperCase();
+    return s === 'REJECTED' || r.hodApproval === 'REJECTED';
+  };
+
+  const isRequestPending = (r: any) => {
+    const s = String(r.status || '').toUpperCase();
+    return s === 'PENDING_HOD' || (r.passType === 'VISITOR' && (s === 'PENDING' || s === 'PENDING_HOD')) || (!isRequestApproved(r) && !isRequestRejected(r));
+  };
 
   const getStats = () => {
     return {
-      PENDING: dashboardRequests.filter(r => 
-        r.status === 'PENDING_HOD' || (r.passType === 'VISITOR' && r.status === 'PENDING')
-      ).length,
-      APPROVED: dashboardRequests.filter(r => r.status === 'APPROVED' || r.status === 'APPROVED_BY_HOD').length,
-      REJECTED: dashboardRequests.filter(r => r.status === 'REJECTED').length,
+      PENDING: dashboardRequests.filter(isRequestPending).length,
+      APPROVED: dashboardRequests.filter(isRequestApproved).length,
+      REJECTED: dashboardRequests.filter(isRequestRejected).length,
     };
   };
 
   const filteredRequests = dashboardRequests.filter(r => {
+    const searchLow = searchQuery.toLowerCase();
     const matchesSearch = searchQuery === '' || 
-      r.studentName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.purpose?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (r.studentName || r.requesterName || r.visitorName || '').toLowerCase().includes(searchLow) ||
+      (r.purpose || r.reason || '').toLowerCase().includes(searchLow) ||
       r.id?.toString().includes(searchQuery);
 
     let matchesTab = false;
     if (activeTab === 'PENDING') {
-      matchesTab = r.status === 'PENDING_HOD' || (r.passType === 'VISITOR' && r.status === 'PENDING');
+      matchesTab = isRequestPending(r);
     } else if (activeTab === 'APPROVED') {
-      matchesTab = r.status === 'APPROVED' || r.status === 'APPROVED_BY_HOD';
+      matchesTab = isRequestApproved(r);
     } else if (activeTab === 'REJECTED') {
-      matchesTab = r.status === 'REJECTED';
+      matchesTab = isRequestRejected(r);
     }
     return matchesSearch && matchesTab;
   });

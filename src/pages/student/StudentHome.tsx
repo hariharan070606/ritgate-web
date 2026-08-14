@@ -7,6 +7,8 @@ import {
   Ban,
   ArrowRight,
   Clock3,
+  Sparkles,
+  ShieldCheck,
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
@@ -381,52 +383,95 @@ export default function StudentHome() {
 
       <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
         <div className="px-4 pt-4 pb-28 min-h-screen w-full max-w-full overflow-x-hidden box-border flex flex-col lg:px-0 lg:pt-6 lg:pb-8 lg:min-h-0">
-          {/* Main Action Card */}
+          {/* Main Action Hero Card */}
           <motion.div 
-            whileTap={{ scale: gatePassDisabled ? 1 : 0.98 }}
+            whileHover={gatePassDisabled ? undefined : { y: -2 }}
+            whileTap={gatePassDisabled ? undefined : { scale: 0.98 }}
             onClick={() => !gatePassDisabled && (window.location.href = '/new-request')}
-            className="rounded-[24px] overflow-hidden shadow-md shadow-indigo-500/10 border border-slate-100 dark:border-indigo-900/20 lg:desktop-card lg:grid lg:grid-cols-[minmax(260px,420px)_1fr] lg:rounded-[28px]"
+            className={cn(
+              "relative overflow-hidden rounded-[26px] sm:rounded-[30px] border transition-all duration-300 p-5 sm:p-7 box-border w-full",
+              gatePassDisabled
+                ? "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm"
+                : "bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white border-blue-500/30 shadow-xl shadow-blue-700/20 cursor-pointer"
+            )}
           >
-            <div className={cn(
-              "flex h-40 items-center justify-center relative overflow-hidden lg:h-56 lg:hidden",
-              gatePassDisabled ? "bg-slate-400" : "bg-[var(--color-primary)]"
-            )}>
-              <motion.div
-                animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="w-40 h-40 bg-white/10 rounded-full blur-3xl absolute"
-              />
-              <GatePassIllustration 
-                transparentBg={true}
-                className={cn(
-                  "relative z-10 h-32 w-32 drop-shadow-[0_18px_28px_rgba(15,23,42,0.18)]",
-                  gatePassDisabled && "grayscale opacity-75",
-              )} />
-            </div>
-            
-            <div className="bg-white dark:bg-slate-900 px-5 py-4 flex items-center justify-between lg:p-8">
-              <div className="flex-1">
-                <h3 className="text-[17px] font-black text-slate-900 dark:text-white leading-tight lg:text-2xl">
-                  Request Gate Pass
-                </h3>
-                {gatePassDisabled && (
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <AlertCircle className="w-3 h-3 text-rose-500" />
-                    <span className="text-[10px] font-bold text-rose-500 uppercase tracking-tight">
-                      Not available after 3:00 PM
-                    </span>
+            {/* Ambient Glowing Orbs */}
+            {!gatePassDisabled && (
+              <>
+                <div className="absolute -right-12 -top-12 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -left-12 -bottom-12 w-40 h-40 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
+              </>
+            )}
+
+            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 w-full">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className={cn(
+                  "w-13 h-13 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center shrink-0 border shadow-md transition-transform",
+                  gatePassDisabled
+                    ? "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"
+                    : "bg-white/15 border-white/30 text-white backdrop-blur-md shadow-blue-950/20"
+                )}>
+                  {gatePassDisabled ? (
+                    <Ban className="w-6 h-6 sm:w-7 sm:h-7" />
+                  ) : (
+                    <QrCode className="w-6 h-6 sm:w-7 sm:h-7" />
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className={cn(
+                      "text-18 sm:text-2xl font-black tracking-tight leading-tight",
+                      gatePassDisabled ? "text-slate-900 dark:text-white" : "text-white"
+                    )}>
+                      Request Gate Pass
+                    </h3>
+                    {!gatePassDisabled && (
+                      <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-white/20 text-white border border-white/30 backdrop-blur-sm">
+                        <Sparkles className="w-3 h-3 text-amber-300" /> Pass Access
+                      </span>
+                    )}
                   </div>
-                )}
+
+                  <p className={cn(
+                    "text-xs sm:text-sm font-medium leading-relaxed max-w-md",
+                    gatePassDisabled ? "text-slate-500 dark:text-slate-400" : "text-blue-100/90"
+                  )}>
+                    {gatePassDisabled
+                      ? 'Student gate pass requests are closed after 3:00 PM IST.'
+                      : 'Apply for a new student gate pass and track real-time authorization.'}
+                  </p>
+
+                  {gatePassDisabled && (
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                      <span className="text-[11px] font-bold text-rose-500 uppercase tracking-tight">
+                        Not available after 3:00 PM IST
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <Button 
-                variant="dark"
-                disabled={gatePassDisabled}
-                onClick={() => !gatePassDisabled && (window.location.href = '/new-request')}
-                className="px-5 py-2.5 rounded-2xl text-[12px] font-black uppercase tracking-widest lg:h-12 lg:px-7"
-                icon={gatePassDisabled ? <Ban className="w-5 h-5" /> : undefined}
-              >
-                {gatePassDisabled ? 'Apply Now' : 'Apply Now'}
-              </Button>
+
+              <div className="w-full sm:w-auto shrink-0 pt-1 sm:pt-0">
+                <button
+                  type="button"
+                  disabled={gatePassDisabled}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!gatePassDisabled) window.location.href = '/new-request';
+                  }}
+                  className={cn(
+                    "w-full sm:w-auto px-6 h-12 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2.5 transition-all shadow-md active:scale-95",
+                    gatePassDisabled
+                      ? "bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed shadow-none"
+                      : "bg-white text-blue-700 hover:bg-blue-50 border border-white shadow-blue-900/20 hover:scale-[1.02]"
+                  )}
+                >
+                  <span>{gatePassDisabled ? 'Window Closed' : 'Apply Now'}</span>
+                  {!gatePassDisabled && <ArrowRight className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
           </motion.div>
 

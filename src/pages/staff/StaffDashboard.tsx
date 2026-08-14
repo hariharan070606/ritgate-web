@@ -129,35 +129,48 @@ export default function StaffDashboard() {
   const dashboardRequests = requests.filter(r => {
     // Basic dashboard rule: Don't show own requests on home (only in "My Requests")
     if (r.isOwnRequest) return false;
-    // Only show today's requests on the dashboard
-    return isToday(r.createdAt || r.requestDate || r.visitDate);
+    // Only show today's requests (since 12:00 AM midnight today IST)
+    const dateVal = r.createdAt || r.requestDate || r.visitDate;
+    return !dateVal || isToday(dateVal);
   });
+
+  const isRequestApproved = (r: any) => {
+    const s = String(r.status || r.staffApproval || '').toUpperCase();
+    return s === 'APPROVED' || s === 'APPROVED_BY_STAFF' || s === 'APPROVED_BY_HOD' || r.staffApproval === 'APPROVED';
+  };
+
+  const isRequestRejected = (r: any) => {
+    const s = String(r.status || r.staffApproval || '').toUpperCase();
+    return s === 'REJECTED' || r.staffApproval === 'REJECTED';
+  };
+
+  const isRequestPending = (r: any) => {
+    const s = String(r.status || '').toUpperCase();
+    return s === 'PENDING_STAFF' || (r.requestType === 'VISITOR' && (s === 'PENDING' || s === 'PENDING_STAFF')) || (!isRequestApproved(r) && !isRequestRejected(r));
+  };
 
   const getStats = () => {
     return {
-      PENDING: dashboardRequests.filter(r => 
-        r.status === 'PENDING_STAFF' || 
-        (r.requestType === 'VISITOR' && (r.status === 'PENDING' || r.status === 'PENDING_STAFF'))
-      ).length,
-      APPROVED: dashboardRequests.filter(r => r.staffApproval === 'APPROVED').length,
-      REJECTED: dashboardRequests.filter(r => r.staffApproval === 'REJECTED').length,
+      PENDING: dashboardRequests.filter(isRequestPending).length,
+      APPROVED: dashboardRequests.filter(isRequestApproved).length,
+      REJECTED: dashboardRequests.filter(isRequestRejected).length,
     };
   };
 
   const filteredRequests = dashboardRequests.filter(r => {
+    const searchLow = searchQuery.toLowerCase();
     const matchesSearch = searchQuery === '' || 
-      r.studentName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.purpose?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (r.studentName || r.requesterName || r.visitorName || '').toLowerCase().includes(searchLow) ||
+      (r.purpose || r.reason || '').toLowerCase().includes(searchLow) ||
       r.id?.toString().includes(searchQuery);
 
     let matchesTab = false;
     if (activeTab === 'PENDING') {
-      matchesTab = r.status === 'PENDING_STAFF' || 
-                   (r.requestType === 'VISITOR' && (r.status === 'PENDING' || r.status === 'PENDING_STAFF'));
+      matchesTab = isRequestPending(r);
     } else if (activeTab === 'APPROVED') {
-      matchesTab = r.staffApproval === 'APPROVED';
+      matchesTab = isRequestApproved(r);
     } else if (activeTab === 'REJECTED') {
-      matchesTab = r.staffApproval === 'REJECTED';
+      matchesTab = isRequestRejected(r);
     }
     return matchesSearch && matchesTab;
   });
