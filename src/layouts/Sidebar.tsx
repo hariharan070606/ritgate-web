@@ -72,50 +72,44 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       {/* ── User Card ─────────────────────────────────────── */}
       {/* ── Navigation ────────────────────────────────────── */}
       <nav className="flex-1 overflow-y-auto sidebar-scroll py-5 px-3.5 space-y-1.5">
-        {navItems.map((item) => {
-          const isActive =
-            location.pathname === item.path ||
-            (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
+        {navItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            title={collapsed ? item.label : undefined}
+            className={({ isActive }) => cn(
+              'group flex items-center gap-3 rounded-xl min-h-[44px] border transition-all duration-150 relative select-none font-semibold text-[13px]',
+              collapsed ? 'justify-center px-0 py-2.5' : 'px-3.5 py-2.5',
+              isActive
+                ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/25 font-bold'
+                : 'border-transparent text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white',
+            )}
+          >
+            {({ isActive }) => (
+              <>
+                <item.icon className={cn(
+                  'shrink-0 transition-transform duration-150',
+                  collapsed ? 'w-5 h-5' : 'w-[18px] h-[18px]',
+                  isActive ? 'text-white' : 'text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:scale-110',
+                )} />
 
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              title={collapsed ? item.label : undefined}
-              className={cn(
-                'group flex items-center gap-3 rounded-xl min-h-[44px] border transition-all duration-150 relative select-none',
-                collapsed ? 'justify-center px-0 py-2.5' : 'px-3.5 py-2.5',
-                isActive
-                  ? 'bg-slate-900 dark:bg-blue-600 text-white font-semibold border-transparent shadow-md shadow-slate-900/15'
-                  : 'border-transparent text-slate-600 dark:text-slate-400 hover:bg-[var(--color-primary-subtle)] dark:hover:bg-white/[0.06] hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary)]',
-              )}
-            >
-              <item.icon className={cn(
-                'shrink-0 transition-transform duration-150',
-                collapsed ? 'w-5 h-5' : 'w-[18px] h-[18px]',
-                isActive ? 'text-white' : 'group-hover:text-[var(--color-primary)]',
-                !isActive && 'group-hover:scale-110',
-              )} />
-
-              <AnimatePresence>
-                {!collapsed && (
-                  <motion.span
-                    initial={{ opacity: 0, x: -4 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -4 }}
-                    transition={{ duration: 0.12 }}
-                    className={cn(
-                      'text-[13px] font-medium truncate',
-                      isActive ? 'font-semibold' : '',
-                    )}
-                  >
-                    {item.label}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </NavLink>
-          );
-        })}
+                <AnimatePresence>
+                  {!collapsed && (
+                    <motion.span
+                      initial={{ opacity: 0, x: -4 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -4 }}
+                      transition={{ duration: 0.12 }}
+                      className="truncate text-current"
+                    >
+                      {item.label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </>
+            )}
+          </NavLink>
+        ))}
       </nav>
 
       {/* ── Bottom Controls ───────────────────────────────── */}
