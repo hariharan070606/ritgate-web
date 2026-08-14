@@ -93,7 +93,7 @@ export default function HODNewPass() {
                className="w-full flex-1 flex flex-col justify-between"
             >
                {/* Container Box with 4 Curved Corners — Stretches till bottom */}
-               <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm w-full flex-1 flex flex-col justify-between space-y-6">
+               <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm w-full flex-1 flex flex-col justify-between space-y-6 min-h-[calc(100vh-170px)] lg:min-h-[calc(100vh-180px)]">
                  
                  {/* Section Header */}
                  <div className="border-b border-slate-100 dark:border-slate-800 pb-5">

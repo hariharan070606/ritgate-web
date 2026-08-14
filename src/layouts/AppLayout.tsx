@@ -206,7 +206,7 @@ export default function AppLayout() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
-                className="native-page-enter"
+                className="native-page-enter flex-1 flex flex-col w-full"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
