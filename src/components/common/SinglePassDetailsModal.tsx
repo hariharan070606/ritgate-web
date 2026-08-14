@@ -14,6 +14,7 @@ import {
   Check,
   X,
   Clock,
+  CircleSlash2,
   QrCode,
   Target,
   CalendarDays,
@@ -40,7 +41,7 @@ import { getGatePassQRCode, getProfilePhoto } from '../../services/api.service';
 
 interface TimelineStep {
   label: string;
-  status: 'done' | 'rejected' | 'pending';
+  status: 'done' | 'rejected' | 'pending' | 'cancelled';
   remark?: string;
 }
 
@@ -174,28 +175,33 @@ export default function SinglePassDetailsModal({
     };
 
     const rawStatus = (request?.status || request?.approvalStatus || '').toUpperCase();
+    const staffApproval = (request?.staffApproval || '').toUpperCase();
+    const hodApproval = (request?.hodApproval || '').toUpperCase();
 
     const isStaffDone =
       rawStatus === 'APPROVED' ||
       rawStatus === 'PENDING_HOD' ||
+      rawStatus === 'APPROVED_BY_STAFF' ||
       rawStatus === 'APPROVED_BY_HOD' ||
       rawStatus === 'USED' ||
       rawStatus === 'EXITED' ||
-      request?.staffStatus === 'APPROVED';
+      staffApproval === 'APPROVED';
 
     const isStaffRejected =
       rawStatus === 'REJECTED_BY_STAFF' ||
-      (rawStatus === 'REJECTED' && !request?.staffStatus && !request?.hodStatus);
+      staffApproval === 'REJECTED' ||
+      (rawStatus === 'REJECTED' && !isStaffDone && !hodApproval && !request?.hodStatus);
 
     const isHodDone =
       rawStatus === 'APPROVED' ||
       rawStatus === 'APPROVED_BY_HOD' ||
       rawStatus === 'USED' ||
       rawStatus === 'EXITED' ||
-      request?.hodStatus === 'APPROVED';
+      hodApproval === 'APPROVED';
 
     const isHodRejected =
       rawStatus === 'REJECTED_BY_HOD' ||
+      hodApproval === 'REJECTED' ||
       (rawStatus === 'REJECTED' && isStaffDone);
 
     const isGateUsed =
@@ -208,22 +214,36 @@ export default function SinglePassDetailsModal({
       Boolean(request?.entryTime) ||
       Boolean(request?.scannedBy);
 
-    const gateScanTime = request?.scannedAt || request?.entryTime || request?.exitTime || request?.usedAt;
+    const staffStatus = isStaffDone ? 'done' : isStaffRejected ? 'rejected' : 'pending';
+
+    const hodStatus = isStaffRejected
+      ? 'cancelled'
+      : isHodDone
+      ? 'done'
+      : isHodRejected
+      ? 'rejected'
+      : 'pending';
+
+    const gateStatus = (isStaffRejected || isHodRejected || rawStatus === 'REJECTED')
+      ? 'cancelled'
+      : isGateUsed
+      ? 'done'
+      : 'pending';
 
     return [
       {
         label: 'Staff Authorization',
-        status: isStaffDone ? 'done' : isStaffRejected ? 'rejected' : 'pending',
+        status: staffStatus,
         remark: cleanRemark(request?.staffRemark),
       },
       {
         label: 'HOD Authorization',
-        status: isHodDone ? 'done' : isHodRejected ? 'rejected' : 'pending',
+        status: hodStatus,
         remark: cleanRemark(request?.hodRemark),
       },
       {
         label: 'Campus Gate Access',
-        status: isGateUsed ? 'done' : 'pending',
+        status: gateStatus,
         remark: undefined,
       },
     ];
@@ -398,6 +418,7 @@ export default function SinglePassDetailsModal({
                   {activeTimeline.map((step, idx) => {
                     const isDone = step.status === 'done';
                     const isRejected = step.status === 'rejected';
+                    const isCancelled = step.status === 'cancelled';
                     const isLast = idx === activeTimeline.length - 1;
 
                     return (
@@ -408,10 +429,12 @@ export default function SinglePassDetailsModal({
                             "w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0 z-10 font-bold transition-all shadow-md",
                             isDone ? "bg-emerald-500 text-white shadow-emerald-500/25" : 
                             isRejected ? "bg-rose-500 text-white shadow-rose-500/25" : 
+                            isCancelled ? "bg-slate-200 dark:bg-slate-800 text-slate-400 border border-slate-300 dark:border-slate-700" :
                             "bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700"
                           )}>
                             {isDone ? <Check className="w-6 h-6 stroke-[2.5]" /> : 
                              isRejected ? <X className="w-6 h-6 stroke-[2.5]" /> : 
+                             isCancelled ? <CircleSlash2 className="w-5 h-5 text-slate-400 dark:text-slate-500" /> :
                              <Clock className="w-5 h-5 text-slate-400 dark:text-slate-500" />}
                           </div>
                           {!isLast && (
@@ -432,9 +455,10 @@ export default function SinglePassDetailsModal({
                               "text-[10px] sm:text-xs font-extrabold uppercase px-3 py-1.5 rounded-full tracking-wider shrink-0 shadow-2xs whitespace-nowrap",
                               isDone ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50" : 
                               isRejected ? "bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50" : 
+                              isCancelled ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700" :
                               "bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50"
                             )}>
-                              {isDone ? '✓ Completed' : isRejected ? '✗ Rejected' : '● Pending'}
+                              {isDone ? '✓ Completed' : isRejected ? '✗ Rejected' : isCancelled ? '— Terminated' : '● Pending'}
                             </span>
                           </div>
                           {step.remark && (

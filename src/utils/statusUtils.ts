@@ -33,8 +33,8 @@ export function normalizeRequestStatus(requestOrStatus: unknown): string {
 
   const isStudentRequest = !!(request.regNo || request.studentCount || request.students || (!request.staffCode && !request.hodCode));
 
-  if (['REJECTED', 'APPROVED', 'USED', 'EXITED', 'CANCELLED', 'COMPLETED'].includes(status)) return status;
-  if (hrApproval === 'REJECTED' || hodApproval === 'REJECTED' || staffApproval === 'REJECTED') return 'REJECTED';
+  if (status.startsWith('REJECTED') || hrApproval === 'REJECTED' || hodApproval === 'REJECTED' || staffApproval === 'REJECTED') return 'REJECTED';
+  if (['APPROVED', 'USED', 'EXITED', 'CANCELLED', 'COMPLETED'].includes(status)) return status;
   if (hrApproval === 'APPROVED') return 'APPROVED';
   if (status === 'PENDING_HR' || status === 'APPROVED_BY_HOD' || hodApproval === 'APPROVED') {
     return isStudentRequest ? 'APPROVED' : 'PENDING_HR';

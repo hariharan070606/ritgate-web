@@ -114,13 +114,16 @@ export default function HODDashboard() {
   };
 
   const isRequestRejected = (r: any) => {
-    const s = String(r.status || r.hodApproval || '').toUpperCase();
-    return s === 'REJECTED' || r.hodApproval === 'REJECTED';
+    const s = String(r.status || r.hodApproval || r.staffApproval || '').toUpperCase();
+    return s === 'REJECTED' || s === 'REJECTED_BY_STAFF' || s === 'REJECTED_BY_HOD' || r.hodApproval === 'REJECTED' || r.staffApproval === 'REJECTED';
   };
 
   const isRequestPending = (r: any) => {
+    if (isRequestRejected(r) || isRequestApproved(r)) return false;
     const s = String(r.status || '').toUpperCase();
-    return s === 'PENDING_HOD' || (r.passType === 'VISITOR' && (s === 'PENDING' || s === 'PENDING_HOD')) || (!isRequestApproved(r) && !isRequestRejected(r));
+    const staffApp = String(r.staffApproval || '').toUpperCase();
+    if (s === 'PENDING_STAFF' || staffApp === 'PENDING') return false;
+    return s === 'PENDING_HOD' || (r.passType === 'VISITOR' && (s === 'PENDING' || s === 'PENDING_HOD'));
   };
 
   const getStats = () => {

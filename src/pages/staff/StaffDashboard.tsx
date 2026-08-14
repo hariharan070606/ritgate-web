@@ -141,12 +141,13 @@ export default function StaffDashboard() {
 
   const isRequestRejected = (r: any) => {
     const s = String(r.status || r.staffApproval || '').toUpperCase();
-    return s === 'REJECTED' || r.staffApproval === 'REJECTED';
+    return s === 'REJECTED' || s === 'REJECTED_BY_STAFF' || r.staffApproval === 'REJECTED';
   };
 
   const isRequestPending = (r: any) => {
+    if (isRequestApproved(r) || isRequestRejected(r)) return false;
     const s = String(r.status || '').toUpperCase();
-    return s === 'PENDING_STAFF' || (r.requestType === 'VISITOR' && (s === 'PENDING' || s === 'PENDING_STAFF')) || (!isRequestApproved(r) && !isRequestRejected(r));
+    return s === 'PENDING_STAFF' || (r.requestType === 'VISITOR' && (s === 'PENDING' || s === 'PENDING_STAFF'));
   };
 
   const getStats = () => {

@@ -21,15 +21,24 @@ export default function RequestTimeline({ request }: RequestTimelineProps) {
   const hodApproved = normalizedHodApproval === 'APPROVED' || ['APPROVED', 'USED'].includes(normalizedStatus);
 
   const getStepStatus = (step: number) => {
-    if (normalizedStatus === 'REJECTED') {
+    const isStaffRejected = normalizedStaffApproval === 'REJECTED' || normalizedStatus === 'REJECTED_BY_STAFF';
+    const isHodRejected = normalizedHodApproval === 'REJECTED' || normalizedStatus === 'REJECTED_BY_HOD';
+    const isRejected = normalizedStatus.startsWith('REJECTED') || isStaffRejected || isHodRejected;
+
+    if (isRejected) {
       if (step === 1) return 'completed';
       if (step === 2) {
-        if (normalizedStaffApproval === 'REJECTED') return 'rejected';
+        if (isStaffRejected || (isRejected && !staffApproved && !hodApproved)) return 'rejected';
         if (staffApproved) return 'completed';
-        return 'pending';
+        return 'cancelled';
       }
-      if (step === 3 && normalizedHodApproval === 'REJECTED') return 'rejected';
-      return 'pending';
+      if (step === 3) {
+        if (isHodRejected) return 'rejected';
+        if (isStaffRejected || isRejected) return 'cancelled';
+        if (hodApproved) return 'completed';
+        return 'cancelled';
+      }
+      return 'cancelled';
     }
 
     if (normalizedStatus === 'APPROVED' || normalizedStatus === 'USED') {
@@ -39,13 +48,13 @@ export default function RequestTimeline({ request }: RequestTimelineProps) {
     if (step === 1) return 'completed';
     if (step === 2) {
       if (staffApproved) return 'completed';
-      if (normalizedStaffApproval === 'REJECTED') return 'rejected';
+      if (isStaffRejected) return 'rejected';
       return 'active';
     }
     if (step === 3) {
       if (hodApproved) return 'completed';
-      if (normalizedHodApproval === 'REJECTED') return 'rejected';
-      if (staffApproved) return 'active';
+      if (isHodRejected) return 'rejected';
+      if (isStaffRejected) return 'cancelled';
       return 'pending';
     }
     return 'pending';
@@ -55,6 +64,7 @@ export default function RequestTimeline({ request }: RequestTimelineProps) {
     switch (stepStatus) {
       case 'completed': return { text: 'text-emerald-500', bg: 'bg-emerald-500/20', icon: CheckCircle2, color: '#10B981' };
       case 'rejected': return { text: 'text-rose-500', bg: 'bg-rose-500/20', icon: XCircle, color: '#EF4444' };
+      case 'cancelled': return { text: 'text-slate-400', bg: 'bg-slate-200 dark:bg-slate-800', icon: Circle, color: '#94A3B8' };
       case 'active': return { text: 'text-amber-500', bg: 'bg-amber-500/20', icon: Clock, color: '#F59E0B' };
       default: return { text: 'text-slate-300', bg: 'bg-slate-100', icon: Circle, color: '#CBD5E1' };
     }
