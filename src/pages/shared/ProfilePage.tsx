@@ -7,12 +7,9 @@ import {
   ArrowLeft,
   Building2,
   ShieldCheck,
-  Copy,
-  Check,
   UserCheck,
   Sun,
-  Moon,
-  Palette
+  Moon
 } from "lucide-react";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { useAuth } from "../../context/AuthContext";
@@ -41,7 +38,6 @@ export default function ProfilePage({
   const { profileImage } = useProfile();
 
   const [refreshing, setRefreshing] = useState(false);
-  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const userId = getUserId();
   const email = (user as any)?.email || (user as any)?.mail || "";
@@ -96,13 +92,6 @@ export default function ProfilePage({
         return role || "User";
     }
   })();
-
-  const handleCopy = (text: string, fieldName: string) => {
-    if (!text) return;
-    navigator.clipboard.writeText(text);
-    setCopiedField(fieldName);
-    setTimeout(() => setCopiedField(null), 2000);
-  };
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -213,15 +202,6 @@ export default function ProfilePage({
                           </p>
                         </div>
                       </div>
-                      {userId && (
-                        <button
-                          onClick={() => handleCopy(userId, "id")}
-                          className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors shrink-0 shadow-sm"
-                          title="Copy ID"
-                        >
-                          {copiedField === "id" ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-                        </button>
-                      )}
                     </div>
 
                     {/* Email Field */}
@@ -239,15 +219,6 @@ export default function ProfilePage({
                           </p>
                         </div>
                       </div>
-                      {email && (
-                        <button
-                          onClick={() => handleCopy(email, "email")}
-                          className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors shrink-0 shadow-sm"
-                          title="Copy Email"
-                        >
-                          {copiedField === "email" ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-                        </button>
-                      )}
                     </div>
 
                     {/* Phone Field */}
@@ -265,15 +236,6 @@ export default function ProfilePage({
                           </p>
                         </div>
                       </div>
-                      {phone && (
-                        <button
-                          onClick={() => handleCopy(phone, "phone")}
-                          className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors shrink-0 shadow-sm"
-                          title="Copy Phone"
-                        >
-                          {copiedField === "phone" ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-                        </button>
-                      )}
                     </div>
                   </div>
                 </div>
