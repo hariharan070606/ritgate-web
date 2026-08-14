@@ -82,12 +82,11 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               key={item.path}
               to={item.path}
               title={collapsed ? item.label : undefined}
-              style={isActive ? { backgroundImage: 'var(--gradient-primary)' } : undefined}
               className={cn(
                 'group flex items-center gap-3 rounded-xl min-h-[44px] border transition-all duration-150 relative select-none',
                 collapsed ? 'justify-center px-0 py-2.5' : 'px-3.5 py-2.5',
                 isActive
-                  ? 'text-white border-slate-700/40 shadow-[0_8px_18px_-12px_rgba(15,23,42,0.55)]'
+                  ? 'bg-slate-900 dark:bg-blue-600 text-white font-semibold border-transparent shadow-md shadow-slate-900/15'
                   : 'border-transparent text-slate-600 dark:text-slate-400 hover:bg-[var(--color-primary-subtle)] dark:hover:bg-white/[0.06] hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary)]',
               )}
             >

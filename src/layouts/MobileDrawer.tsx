@@ -81,22 +81,21 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto scroll-momentum p-3 space-y-0.5">
+            <nav className="flex-1 overflow-y-auto scroll-momentum p-3 space-y-1">
               {navItems.map((item) => (
                 <NavLink
                   key={item.path}
                   to={item.path}
                   onClick={onClose}
-                  style={({ isActive }) => isActive ? { backgroundImage: 'var(--gradient-primary)' } : undefined}
                   className={({ isActive }) => cn(
-                    'flex items-center gap-3 px-3.5 min-h-[48px] rounded-xl transition-colors duration-150 border',
+                    'flex items-center gap-3.5 px-4 min-h-[48px] rounded-xl transition-all duration-150 border font-semibold text-sm',
                     isActive
-                      ? 'text-white font-semibold border-slate-700/40 shadow-[0_8px_18px_-12px_rgba(15,23,42,0.55)]'
-                      : 'border-transparent text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800',
+                      ? 'bg-slate-900 dark:bg-blue-600 text-white border-transparent shadow-md shadow-slate-900/15'
+                      : 'border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white',
                   )}
                 >
                   <item.icon className="w-5 h-5 shrink-0" />
-                  <span className="text-sm">{item.label}</span>
+                  <span>{item.label}</span>
                 </NavLink>
               ))}
             </nav>
