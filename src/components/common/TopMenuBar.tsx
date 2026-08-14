@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { Bell, ArrowLeft } from 'lucide-react';
+import { Bell, ArrowLeft, Sun, Moon } from 'lucide-react';
 import { useNotifications } from '../../context/NotificationContext';
 import { useProfile } from '../../context/ProfileContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useAdaptive } from '../../utils/useAdaptive';
 import VisitorAvatar from './VisitorAvatar';
 
@@ -29,6 +30,7 @@ export default function TopMenuBar({
   const navigate = useNavigate();
   const { unreadCount } = useNotifications();
   const { profileImage } = useProfile();
+  const { isDark, toggleTheme } = useTheme();
   const { isMobile } = useAdaptive();
 
   // Only render on mobile — desktop/tablet use the AppLayout Header
@@ -82,8 +84,17 @@ export default function TopMenuBar({
           </div>
         </div>
 
-        {/* ── Right: notification bell ────── */}
+        {/* ── Right: Theme toggle + Notification bell ────── */}
         <div className="flex items-center gap-2 shrink-0">
+          {/* Theme toggle button */}
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme mode"
+            className="w-11 h-11 rounded-full bg-white/72 dark:bg-white/[0.05] border border-white/60 dark:border-white/10 flex items-center justify-center text-slate-700 dark:text-slate-200 active:scale-90 transition-all shadow-sm dark:shadow-none shrink-0"
+          >
+            {isDark ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-slate-700" />}
+          </button>
+
           {/* Notification bell */}
           <button
             onClick={() => navigate('/notifications')}

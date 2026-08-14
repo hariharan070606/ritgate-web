@@ -81,7 +81,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               'group flex items-center gap-3 rounded-xl min-h-[44px] border transition-all duration-150 relative select-none font-semibold text-[13px]',
               collapsed ? 'justify-center px-0 py-2.5' : 'px-3.5 py-2.5',
               isActive
-                ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/25 font-bold'
+                ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white shadow-md shadow-slate-900/15 font-bold'
                 : 'border-transparent text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white',
             )}
           >
@@ -90,7 +90,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 <item.icon className={cn(
                   'shrink-0 transition-transform duration-150',
                   collapsed ? 'w-5 h-5' : 'w-[18px] h-[18px]',
-                  isActive ? 'text-white' : 'text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:scale-110',
+                  isActive ? 'text-white dark:text-slate-900' : 'text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white group-hover:scale-110',
                 )} />
 
                 <AnimatePresence>

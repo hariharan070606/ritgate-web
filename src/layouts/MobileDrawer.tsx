@@ -90,13 +90,13 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   className={({ isActive }) => cn(
                     'flex items-center gap-3.5 px-4 min-h-[48px] rounded-xl transition-all duration-150 border font-semibold text-sm',
                     isActive
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20 font-bold'
+                      ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white shadow-md shadow-slate-900/15 font-bold'
                       : 'border-transparent text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white',
                   )}
                 >
                   {({ isActive }) => (
                     <>
-                      <item.icon className={cn("w-5 h-5 shrink-0", isActive ? "text-white" : "text-slate-600 dark:text-slate-400")} />
+                      <item.icon className={cn("w-5 h-5 shrink-0", isActive ? "text-white dark:text-slate-900" : "text-slate-600 dark:text-slate-400")} />
                       <span className="text-current">{item.label}</span>
                     </>
                   )}
