@@ -15,11 +15,11 @@ const LOCAL_TZ_OPTS: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Kolkata' };
  * shifted forward another +5:30.
  */
 const toDate = (d: Date | string | null | undefined): Date => {
-  if (!d) return new Date();
-  if (d instanceof Date) return isNaN(d.getTime()) ? new Date() : d;
+  if (!d) return new Date(0);
+  if (d instanceof Date) return isNaN(d.getTime()) ? new Date(0) : d;
   if (typeof d === 'string') {
     const trimmed = d.trim();
-    if (!trimmed) return new Date();
+    if (!trimmed) return new Date(0);
     if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
       const [y, m, day] = trimmed.split('-').map(Number);
       return new Date(y, m - 1, day, 12, 0, 0);
@@ -27,11 +27,12 @@ const toDate = (d: Date | string | null | undefined): Date => {
     if (/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}(:\d{2})?$/.test(trimmed)) {
       return new Date(trimmed.replace(' ', 'T') + '+05:30');
     }
+    const cleanStr = trimmed.replace(',', '');
     const bare = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/.test(trimmed);
-    const parsed = new Date(bare ? trimmed + '+05:30' : trimmed);
-    return isNaN(parsed.getTime()) ? new Date() : parsed;
+    const parsed = new Date(bare ? trimmed + '+05:30' : cleanStr);
+    return isNaN(parsed.getTime()) ? new Date(0) : parsed;
   }
-  return new Date();
+  return new Date(0);
 };
 
 /**
@@ -203,7 +204,7 @@ export const relativeTime = getRelativeTime;
 export const isToday = (date: Date | string | null | undefined): boolean => {
   if (!date) return false;
   const d = toDate(date);
-  if (!d || isNaN(d.getTime())) return false;
+  if (!d || isNaN(d.getTime()) || d.getTime() <= 0) return false;
   
   const now = new Date();
   const todayStr = now.toLocaleDateString('en-IN', LOCAL_TZ_OPTS);

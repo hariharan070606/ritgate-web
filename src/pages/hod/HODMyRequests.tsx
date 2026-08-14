@@ -316,23 +316,26 @@ export default function HODMyRequests() {
                     {/* Footer Actions */}
                     <div className="flex items-center justify-between">
                        {(() => {
-                         const config = getStatusConfig(request.status);
-                         const isEmerald = config.text === 'APPROVED';
-                         const isRose = config.text === 'REJECTED';
+                         const isPastApproved = normStatus === 'APPROVED' && !isToday(dateVal);
+                         const isEmerald = normStatus === 'APPROVED' && isToday(dateVal) && !isUsedOrExited;
+                         const isRose = normStatus === 'REJECTED';
+                         const isExpired = isPastApproved;
+                         const statusLabel = isEmerald ? 'ACTIVE' : isExpired ? 'EXPIRED' : normStatus === 'APPROVED' ? 'APPROVED' : normStatus === 'REJECTED' ? 'REJECTED' : normStatus === 'USED' ? 'USED' : normStatus === 'EXITED' ? 'EXITED' : 'PENDING';
+
                          return (
                            <div className={cn(
                              "flex items-center gap-2 px-3 py-1.5 rounded-full",
-                             isEmerald ? "bg-emerald-500/10" : isRose ? "bg-rose-500/10" : "bg-amber-500/10"
+                             isEmerald ? "bg-emerald-500/10" : isRose ? "bg-rose-500/10" : isExpired ? "bg-slate-100 dark:bg-slate-800/50" : "bg-amber-500/10"
                            )}>
                               <div className={cn(
                                 "w-1.5 h-1.5 rounded-full",
-                                isEmerald ? "bg-emerald-500" : isRose ? "bg-rose-500" : "bg-amber-500"
+                                isEmerald ? "bg-emerald-500" : isRose ? "bg-rose-500" : isExpired ? "bg-slate-400" : "bg-amber-500"
                               )} />
                               <span className={cn(
                                 "text-[10px] font-black uppercase tracking-widest",
-                                isEmerald ? "text-emerald-600" : isRose ? "text-rose-600" : "text-amber-600"
+                                isEmerald ? "text-emerald-600" : isRose ? "text-rose-600" : isExpired ? "text-slate-600 dark:text-slate-400" : "text-amber-600"
                               )}>
-                                {config.text}
+                                {statusLabel}
                               </span>
                            </div>
                          );
