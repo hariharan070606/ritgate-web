@@ -9,7 +9,8 @@ import {
   ShieldCheck,
   UserCheck,
   Sun,
-  Moon
+  Moon,
+  LogOut
 } from "lucide-react";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { useAuth } from "../../context/AuthContext";
@@ -31,7 +32,7 @@ export default function ProfilePage({
 }: ProfilePageProps = {}) {
   usePageTitle("Profile");
   const navigate = useNavigate();
-  const { user: authUser, role, getUserId } = useAuth();
+  const { user: authUser, role, getUserId, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const user = propUser || authUser;
   const { isDesktop } = useAdaptive();
@@ -344,6 +345,17 @@ export default function ProfilePage({
                   </span>
                 </button>
               </div>
+            </div>
+
+            {/* Phone View Only Logout Button */}
+            <div className="lg:hidden pt-2">
+              <button
+                onClick={logout}
+                className="w-full flex items-center justify-center gap-2.5 p-4 rounded-[24px] bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/50 border border-rose-100 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 font-extrabold text-sm transition-all active:scale-[0.98] shadow-sm"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Log Out</span>
+              </button>
             </div>
 
           </div>
