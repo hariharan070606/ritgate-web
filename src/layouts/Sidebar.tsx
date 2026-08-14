@@ -114,34 +114,6 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* ── Bottom Controls ───────────────────────────────── */}
       <div className="shrink-0 border-t border-slate-200/70 dark:border-white/[0.07] py-4 px-3.5 space-y-1.5">
-        {/* Theme toggle */}
-        <button
-          onClick={toggleTheme}
-          title={collapsed ? (theme === 'dark' ? 'Light Mode' : 'Dark Mode') : undefined}
-          className={cn(
-            'group flex items-center gap-3 rounded-lg min-h-[40px] w-full transition-all duration-150',
-            'text-slate-500 dark:text-slate-400 hover:bg-blue-50/70 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white',
-            collapsed ? 'justify-center px-0 py-2' : 'px-3 py-2',
-          )}
-        >
-          {theme === 'dark'
-            ? <Sun className="w-[18px] h-[18px] text-amber-500 shrink-0" />
-            : <Moon className="w-[18px] h-[18px] text-blue-400 shrink-0" />
-          }
-          <AnimatePresence>
-            {!collapsed && (
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
-                className="text-[13px] font-medium"
-              >
-                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </button>
 
         {/* Logout */}
         <button

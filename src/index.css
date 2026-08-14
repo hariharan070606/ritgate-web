@@ -201,6 +201,18 @@ html, body {
     background: #f6f8fc;
   }
 
+  @media (min-width: 1024px) {
+    .main-area {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .main-area::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+  }
+
   .dark .main-area {
     background: linear-gradient(180deg, #0b1120 0%, #0c1322 60%, #0e1626 100%);
     background-attachment: fixed;

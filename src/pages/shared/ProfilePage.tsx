@@ -309,8 +309,8 @@ export default function ProfilePage({
 
             </div>
 
-            {/* App Theme & Appearance Settings Card */}
-            <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm">
+            {/* App Theme & Appearance Settings Card — Hidden on Desktop */}
+            <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm lg:hidden">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5 min-w-0">
                   <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
