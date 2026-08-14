@@ -89,31 +89,12 @@ export default function SplashScreen() {
 
           {/* Main Content */}
           <div className="relative z-10 flex flex-col items-center px-4">
-            {/* Clean Logo Container */}
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0, y: -20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.9,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="relative mb-8"
-            >
-              {/* Breathing Micro-Float */}
-              <motion.div
-                animate={{ y: [-4, 4, -4] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <RITLogo size={160} glow className="shadow-2xl" />
-              </motion.div>
-            </motion.div>
-
             {/* Premium Glass Card */}
             <motion.div
-              initial={{ y: 30, opacity: 0, scale: 0.95 }}
+              initial={{ y: 20, opacity: 0, scale: 0.95 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="relative overflow-hidden bg-white/90 backdrop-blur-2xl border border-white/80 px-12 py-8 rounded-[2.5rem] shadow-[0_25px_60px_-15px_rgba(37,99,235,0.12)] flex flex-col items-center text-center max-w-sm w-full"
+              className="relative overflow-hidden bg-white/95 backdrop-blur-2xl border border-white/80 px-10 pt-8 pb-8 rounded-[2.5rem] shadow-[0_25px_60px_-15px_rgba(37,99,235,0.14)] flex flex-col items-center text-center max-w-sm w-full"
             >
               {/* Metallic Shimmer Sweep */}
               <motion.div
@@ -122,6 +103,16 @@ export default function SplashScreen() {
                 transition={{ delay: 0.8, duration: 1.2, ease: 'easeInOut' }}
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/50 to-transparent skew-x-[-25deg] pointer-events-none"
               />
+
+              {/* Integrated Logo Header */}
+              <motion.div
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-5"
+              >
+                <RITLogo size={110} glow className="shadow-lg" />
+              </motion.div>
 
               {/* Staggered Animated Wordmark */}
               <div className="flex flex-col items-center gap-1">
