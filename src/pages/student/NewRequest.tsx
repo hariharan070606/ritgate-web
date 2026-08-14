@@ -98,27 +98,27 @@ export default function NewRequest() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:min-h-0 lg:bg-transparent bg-[#F8FAFC] dark:bg-slate-950">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col lg:min-h-0 lg:bg-transparent bg-[#F8FAFC] dark:bg-slate-950 box-border">
       {/* Header — mobile only (dashboard uses the AppLayout header) */}
       <header
-        className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 lg:hidden"
+        className="sticky top-0 z-50 w-full max-w-full bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 lg:hidden box-border"
         style={{ paddingTop: 'env(safe-area-inset-top)' }}
       >
-        <div className="px-4 h-[64px] flex items-center">
+        <div className="px-4 h-[64px] flex items-center w-full max-w-full box-border">
           <button
             onClick={handleGoBack}
-            className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-90 transition-transform mr-3"
+            className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-90 transition-transform mr-3 shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-[16px] font-black text-slate-900 dark:text-white tracking-tight leading-none">
+          <h1 className="text-[16px] font-black text-slate-900 dark:text-white tracking-tight leading-none truncate">
             Apply for Gate Pass
           </h1>
         </div>
       </header>
 
-      <main className="desktop-page flex-1 px-5 pt-6 pb-52 lg:px-0 lg:pt-0 lg:pb-12">
-        <div className="max-w-md mx-auto space-y-6 lg:max-w-2xl">
+      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 pt-4 sm:pt-6 pb-52 lg:px-0 lg:pt-0 lg:pb-12 box-border overflow-x-hidden">
+        <div className="w-full max-w-md mx-auto space-y-6 lg:max-w-2xl box-border">
           {isDesktop && (
             <DesktopPageHeader
               eyebrow="Gate Pass"

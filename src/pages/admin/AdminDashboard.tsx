@@ -147,7 +147,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
   }
 
   return (
-    <div className="min-h-screen lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden box-border lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
       {isMobile && (
         <TopMenuBar
           greeting={greeting.toUpperCase()}
@@ -155,7 +155,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
         />
       )}
 
-      <div className="px-5 pt-4 space-y-4 pb-28 lg:px-0 lg:pt-0 lg:pb-0 lg:space-y-8">
+      <div className="px-5 pt-4 space-y-4 pb-28 w-full max-w-full overflow-x-hidden box-border lg:px-0 lg:pt-0 lg:pb-0 lg:space-y-8">
       {/* 1. Greeting & User Info */}
       <div className="hidden lg:block" />
 

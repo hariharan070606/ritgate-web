@@ -198,7 +198,7 @@ export default function HODDashboard() {
   };
 
   return (
-    <div className="min-h-screen lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden box-border lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
       {!isDesktop && <TopMenuBar
         greeting={getGreeting()}
         title={hodName.toUpperCase()}

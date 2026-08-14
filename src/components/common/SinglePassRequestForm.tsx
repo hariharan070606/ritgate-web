@@ -58,9 +58,9 @@ export default function SinglePassRequestForm({
   className,
 }: SinglePassRequestFormProps) {
   return (
-    <section className={cn('mx-auto w-full max-w-3xl space-y-5 lg:max-w-4xl', className)}>
-      <div className="overflow-hidden rounded-[30px] border border-slate-200/80 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.10)] dark:border-slate-800/70 dark:bg-slate-900">
-        <div className="space-y-5 px-5 py-6 lg:px-7 lg:py-7">
+    <section className={cn('mx-auto w-full max-w-3xl space-y-5 box-border lg:max-w-4xl', className)}>
+      <div className="overflow-hidden rounded-[24px] sm:rounded-[30px] border border-slate-200/80 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.10)] dark:border-slate-800/70 dark:bg-slate-900 w-full max-w-full box-border">
+        <div className="space-y-5 px-4 py-5 sm:px-6 sm:py-7 box-border w-full">
           <div>
             {eyebrow && (
               <p className="mb-1.5 text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">

@@ -370,7 +370,7 @@ export default function StudentHome() {
   }
 
   return (
-    <div className="min-h-screen lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden box-border lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
       <TopMenuBar
         greeting={getGreeting()}
         title={`${user?.firstName} ${user?.lastName || ''}`.toUpperCase()}
@@ -380,7 +380,7 @@ export default function StudentHome() {
       </div>
 
       <TopRefreshControl refreshing={refreshing} onRefresh={handleRefresh}>
-        <div className="px-4 pt-4 pb-28 min-h-screen flex flex-col lg:px-0 lg:pt-6 lg:pb-8 lg:min-h-0">
+        <div className="px-4 pt-4 pb-28 min-h-screen w-full max-w-full overflow-x-hidden box-border flex flex-col lg:px-0 lg:pt-6 lg:pb-8 lg:min-h-0">
           {/* Main Action Card */}
           <motion.div 
             whileTap={{ scale: gatePassDisabled ? 1 : 0.98 }}

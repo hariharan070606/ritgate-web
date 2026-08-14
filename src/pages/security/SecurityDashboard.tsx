@@ -94,7 +94,7 @@ export default function SecurityDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="w-full max-w-full overflow-x-hidden box-border space-y-8">
       {isDesktop && (
         <DesktopPageHeader
           eyebrow="ON DUTY"

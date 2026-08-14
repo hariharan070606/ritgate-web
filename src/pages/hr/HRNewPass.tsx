@@ -106,7 +106,7 @@ export default function HRNewPass() {
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-6 pb-10 lg:max-w-4xl">
+    <div className="w-full max-w-full overflow-x-hidden box-border max-w-md mx-auto space-y-6 pb-10 lg:max-w-4xl">
 
       {/* Time restriction banner */}
       {passDisabled && (

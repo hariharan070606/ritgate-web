@@ -73,10 +73,11 @@ export default function AppLayout() {
   // ── MOBILE LAYOUT ──────────────────────────────────────────────────────────
   if (isMobile) {
     return (
-      <div style={{ minHeight: '100dvh', backgroundColor: 'var(--color-bg)' }}>
+      <div className="w-full max-w-full overflow-x-hidden min-w-0 flex flex-col" style={{ minHeight: '100dvh', backgroundColor: 'var(--color-bg)' }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
+            className="w-full max-w-full overflow-x-hidden flex-1 min-w-0"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}

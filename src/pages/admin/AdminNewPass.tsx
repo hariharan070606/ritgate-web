@@ -107,7 +107,7 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-6 pb-10 text-left lg:max-w-4xl">
+    <div className="w-full max-w-full overflow-x-hidden box-border max-w-md mx-auto space-y-6 pb-10 text-left lg:max-w-4xl">
       {/* Time restriction banner */}
       {passDisabled && (
         <motion.div initial={transitions.page.initial} animate={transitions.page.animate}>

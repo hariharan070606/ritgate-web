@@ -16,6 +16,31 @@
 }
 
 
+/* ── Global Viewport & Mobile Reset ──────────────────────── */
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  min-height: 100dvh;
+  box-sizing: border-box;
+}
+
+.desktop-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 /* ══════════════════════════════════════════════════════════
    RITGate Design System — Adaptive Foundation
    Mobile: PWA-quality app experience

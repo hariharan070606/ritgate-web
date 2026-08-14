@@ -92,27 +92,27 @@ export default function StaffNewPass() {
   };
 
   return (
-    <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen flex flex-col">
+    <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen w-full max-w-full overflow-x-hidden flex flex-col box-border">
       {/* Header */}
       <header
-        className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shrink-0 lg:hidden"
+        className="sticky top-0 z-50 w-full max-w-full bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shrink-0 lg:hidden box-border"
         style={{ paddingTop: 'env(safe-area-inset-top)' }}
       >
-        <div className="px-4 h-[72px] flex items-center justify-between">
+        <div className="px-4 h-[72px] flex items-center justify-between w-full max-w-full box-border">
           <button
             onClick={handleBack}
-            className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-transform shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-[16px] font-black text-slate-900 dark:text-white uppercase tracking-tight">
+          <h1 className="text-[16px] font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">
             {stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle}
           </h1>
-          <div className="w-10 h-10" />
+          <div className="w-10 h-10 shrink-0" />
         </div>
       </header>
 
-      <main className="desktop-page flex-1 px-5 py-6 pb-28 lg:px-0 lg:pt-0 lg:pb-12">
+      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 py-4 sm:py-6 pb-28 lg:px-0 lg:pt-0 lg:pb-12 box-border overflow-x-hidden">
         <DesktopPageHeader
           title={stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle}
           subtitle={stage === 'SELECT' ? PASS_COPY.selectSubtitle : 'Create and manage gate pass clearance with the app wording and desktop spacing.'}

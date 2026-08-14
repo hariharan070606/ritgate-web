@@ -177,7 +177,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
   }
 
   return (
-    <div className="space-y-4 lg:space-y-6">
+    <div className="w-full max-w-full overflow-x-hidden box-border space-y-4 lg:space-y-6">
       {/* Mobile header with notification bell */}
       {isMobile && (
         <TopMenuBar
