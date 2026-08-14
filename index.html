@@ -17,13 +17,20 @@
     <title>RITGate</title>
   </head>
   <body class="antialiased">
-    <!-- Apply saved theme before React renders to prevent flash -->
+    <!-- Apply saved theme before React renders & update ServiceWorker cache -->
     <script>
       (function() {
         try {
           var theme = localStorage.getItem('ritgate_theme');
           if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
+          }
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+              for (var reg of regs) {
+                reg.update();
+              }
+            });
           }
         } catch(e) {}
       })();
