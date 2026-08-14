@@ -87,88 +87,113 @@ export default function HODNewPass() {
           {stage === 'SELECT' && (
             <motion.div 
                key="stage-selection"
-               initial={{ opacity: 0, y: 20 }}
+               initial={{ opacity: 0, y: 15 }}
                animate={{ opacity: 1, y: 0 }}
                exit={{ opacity: 0, x: -20 }}
-               className="space-y-6"
+               className="w-full flex-1 flex flex-col justify-between space-y-6"
             >
-               <div className="mb-8 lg:hidden">
-                  <h2 className="text-[24px] font-black text-slate-900 dark:text-white leading-tight">{PASS_COPY.selectTitle}</h2>
-                  <p className="text-[14px] font-bold text-slate-400 mt-1">{PASS_COPY.selectSubtitle}</p>
-               </div>
+               {/* Container Box */}
+               <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6 w-full">
+                 
+                 {/* Section Header */}
+                 <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
+                   <h2 className="text-[20px] sm:text-[24px] font-black text-slate-900 dark:text-white leading-tight tracking-tight">
+                     {PASS_COPY.selectTitle}
+                   </h2>
+                   <p className="text-[13px] sm:text-[14px] font-semibold text-slate-500 dark:text-slate-400 mt-1">
+                     {PASS_COPY.selectSubtitle}
+                   </p>
+                 </div>
 
-               <div className="grid gap-6 lg:grid-cols-3 lg:gap-6">
-                  {[
-                    { id: 'SINGLE', title: PASS_COPY.singleTitle, sub: PASS_COPY.singleSubtitle, icon: UserPlus, accent: 'blue', restricted: true },
-                    { id: 'BULK', title: PASS_COPY.bulkTitle, sub: PASS_COPY.bulkSubtitle, icon: Users, accent: 'violet', restricted: true },
-                    { id: 'GUEST', title: PASS_COPY.guestTitle, sub: PASS_COPY.guestSubtitle, icon: FileText, accent: 'emerald', restricted: false },
-                  ].map((card) => {
-                    const Icon = card.icon;
-                    const isDisabled = card.restricted && passDisabled;
-                    const accentMap = {
-                      blue: {
-                        icon: 'bg-blue-50 text-blue-700 ring-blue-100 shadow-blue-100/70',
-                        glow: 'from-blue-500/0 via-blue-500/0 to-blue-500/12',
-                        line: 'bg-blue-700',
-                        arrow: 'text-blue-700',
-                      },
-                      violet: {
-                        icon: 'bg-violet-50 text-violet-600 ring-violet-100 shadow-violet-100/70',
-                        glow: 'from-violet-500/0 via-violet-500/0 to-violet-500/12',
-                        line: 'bg-violet-600',
-                        arrow: 'text-violet-600',
-                      },
-                      emerald: {
-                        icon: 'bg-emerald-50 text-emerald-600 ring-emerald-100 shadow-emerald-100/70',
-                        glow: 'from-emerald-500/0 via-emerald-500/0 to-emerald-500/12',
-                        line: 'bg-emerald-500',
-                        arrow: 'text-emerald-600',
-                      },
-                    };
-                    const accent = accentMap[card.accent as keyof typeof accentMap] ?? accentMap.blue;
-                    return (
-                      <motion.button
-                        key={card.id}
-                        whileTap={{ scale: isDisabled ? 1 : 0.98 }}
-                        disabled={isDisabled}
-                        onClick={() => {
-                          if (isDisabled) return;
-                          navigate(`/new-pass?stage=${card.id.toLowerCase()}`);
-                        }}
-                        className={cn(
-                          "group relative w-full overflow-hidden rounded-[14px] border text-left transition-all",
-                          "flex items-center gap-5 p-6 shadow-sm lg:min-h-[340px] lg:flex-col lg:items-start lg:justify-between lg:p-8 lg:shadow-[0_18px_48px_-30px_rgba(15,23,42,0.45)] lg:hover:-translate-y-1 lg:hover:shadow-[0_26px_60px_-34px_rgba(15,23,42,0.65)]",
-                          isDisabled
-                            ? "bg-slate-50 dark:bg-slate-900/40 border-slate-100 dark:border-slate-800 opacity-60 cursor-not-allowed"
-                            : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 active:shadow-none"
-                        )}
-                      >
-                         {!isDisabled && (
-                           <div className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br", accent.glow)} />
-                         )}
-                         <div className={cn(
-                           "relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full ring-1 lg:h-[76px] lg:w-[76px] lg:shadow-xl",
-                           isDisabled ? "bg-slate-200 text-slate-400 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700" : accent.icon,
-                         )}>
-                           <Icon className="h-7 w-7 lg:h-9 lg:w-9" />
-                         </div>
-                         <div className="relative z-10 flex-1 min-w-0 lg:w-full">
-                            <h3 className={cn("text-[16px] font-black tracking-tight mb-2 lg:text-[19px]", isDisabled ? "text-slate-400" : "text-slate-900 dark:text-white")}>{card.title}</h3>
-                            <div className={cn("mb-5 hidden h-0.5 w-8 rounded-full lg:block", isDisabled ? "bg-slate-200 dark:bg-slate-700" : accent.line)} />
-                            <p className="text-[12px] font-bold leading-relaxed text-slate-500 dark:text-slate-400 lg:max-w-[220px] lg:text-[14px]">
-                              {isDisabled ? PASS_COPY.unavailableAfterFive : card.sub}
-                            </p>
-                         </div>
-                         {isDisabled ? (
-                           <Ban className="relative z-10 h-5 w-5 text-rose-400" />
-                         ) : (
-                           <span className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-slate-400 shadow-[0_10px_24px_-16px_rgba(15,23,42,0.6)] ring-1 ring-slate-100 transition-all group-hover:translate-x-1 dark:bg-slate-950 dark:ring-slate-800 lg:mt-auto">
-                             <ChevronRight className={cn("h-5 w-5", accent.arrow)} />
-                           </span>
-                         )}
-                      </motion.button>
-                    );
-                  })}
+                 {/* Cards Responsive Grid */}
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 w-full items-stretch">
+                    {[
+                      { id: 'SINGLE', title: PASS_COPY.singleTitle, sub: PASS_COPY.singleSubtitle, icon: UserPlus, accent: 'blue', restricted: true },
+                      { id: 'BULK', title: PASS_COPY.bulkTitle, sub: PASS_COPY.bulkSubtitle, icon: Users, accent: 'violet', restricted: true },
+                      { id: 'GUEST', title: PASS_COPY.guestTitle, sub: PASS_COPY.guestSubtitle, icon: FileText, accent: 'emerald', restricted: false },
+                    ].map((card) => {
+                      const Icon = card.icon;
+                      const isDisabled = card.restricted && passDisabled;
+                      const accentMap = {
+                        blue: {
+                          icon: 'bg-blue-50 text-blue-700 ring-blue-100 shadow-blue-100/70',
+                          glow: 'from-blue-500/0 via-blue-500/0 to-blue-500/10',
+                          line: 'bg-blue-600',
+                          arrow: 'text-blue-700',
+                        },
+                        violet: {
+                          icon: 'bg-violet-50 text-violet-600 ring-violet-100 shadow-violet-100/70',
+                          glow: 'from-violet-500/0 via-violet-500/0 to-violet-500/10',
+                          line: 'bg-violet-600',
+                          arrow: 'text-violet-600',
+                        },
+                        emerald: {
+                          icon: 'bg-emerald-50 text-emerald-600 ring-emerald-100 shadow-emerald-100/70',
+                          glow: 'from-emerald-500/0 via-emerald-500/0 to-emerald-500/10',
+                          line: 'bg-emerald-500',
+                          arrow: 'text-emerald-600',
+                        },
+                      };
+                      const accent = accentMap[card.accent as keyof typeof accentMap] ?? accentMap.blue;
+                      return (
+                        <motion.button
+                          key={card.id}
+                          whileTap={{ scale: isDisabled ? 1 : 0.98 }}
+                          disabled={isDisabled}
+                          onClick={() => {
+                            if (isDisabled) return;
+                            navigate(`/new-pass?stage=${card.id.toLowerCase()}`);
+                          }}
+                          className={cn(
+                            "group relative w-full overflow-hidden rounded-[24px] border text-left transition-all duration-300",
+                            "flex flex-col justify-between p-6 sm:p-7 shadow-sm hover:shadow-lg min-h-[220px] sm:min-h-[260px]",
+                            isDisabled
+                              ? "bg-slate-50 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800 opacity-60 cursor-not-allowed"
+                              : "bg-white dark:bg-slate-950 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 active:shadow-none"
+                          )}
+                        >
+                           {!isDisabled && (
+                             <div className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br", accent.glow)} />
+                           )}
+                           
+                           {/* Top Row Icon */}
+                           <div className="flex items-center justify-between w-full relative z-10 mb-6">
+                             <div className={cn(
+                               "flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ring-1 shadow-md transition-transform duration-300 group-hover:scale-105",
+                               isDisabled ? "bg-slate-200 text-slate-400 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700" : accent.icon,
+                             )}>
+                               <Icon className="h-7 w-7" />
+                             </div>
+
+                             {isDisabled ? (
+                               <Ban className="h-6 w-6 text-rose-400" />
+                             ) : (
+                               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 shadow-sm group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all duration-300">
+                                 <ChevronRight className="h-5 w-5" />
+                               </span>
+                             )}
+                           </div>
+
+                           {/* Content Section */}
+                           <div className="relative z-10 w-full mt-auto">
+                              <h3 className={cn("text-[17px] sm:text-[19px] font-black tracking-tight mb-2", isDisabled ? "text-slate-400" : "text-slate-900 dark:text-white")}>
+                                {card.title}
+                              </h3>
+                              <div className={cn("mb-3 h-0.5 w-8 rounded-full transition-all duration-300 group-hover:w-12", isDisabled ? "bg-slate-200 dark:bg-slate-700" : accent.line)} />
+                              <p className="text-[13px] font-medium leading-relaxed text-slate-500 dark:text-slate-400">
+                                {isDisabled ? PASS_COPY.unavailableAfterFive : card.sub}
+                              </p>
+                           </div>
+                        </motion.button>
+                      );
+                    })}
+                 </div>
+
+                 {/* Bottom Footer Info Strip */}
+                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
+                   <span>RIT Gate Pass Clearance System</span>
+                   <span>Operating Window: 06:00 AM – 05:00 PM IST</span>
+                 </div>
                </div>
             </motion.div>
           )}
