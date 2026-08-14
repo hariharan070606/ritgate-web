@@ -126,6 +126,7 @@ export default function StaffNewPass() {
                animate={{ opacity: 1, y: 0 }}
                exit={{ opacity: 0, x: -20 }}
                className="w-full flex-1 flex flex-col justify-between"
+               style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
             >
                {/* Container Box with 4 Curved Corners — Stretches till bottom */}
                <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm w-full flex-1 flex flex-col justify-between space-y-6">
@@ -141,7 +142,7 @@ export default function StaffNewPass() {
                  </div>
 
                  {/* Cards Responsive Grid — 1 Single Line for Desktop (md:grid-cols-3) */}
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 w-full items-stretch">
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 w-full items-stretch flex-1 my-auto">
                     {[
                       { id: 'SINGLE', title: PASS_COPY.singleTitle, sub: PASS_COPY.singleSubtitle, icon: UserPlus, accent: 'blue', restricted: true },
                       { id: 'BULK', title: PASS_COPY.bulkTitle, sub: PASS_COPY.bulkSubtitle, icon: Users, accent: 'violet', restricted: true },
@@ -224,11 +225,6 @@ export default function StaffNewPass() {
                     })}
                  </div>
 
-                 {/* Bottom Footer Info Strip */}
-                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
-                   <span>RIT Gate Pass Clearance System</span>
-                   <span>Operating Window: 06:00 AM – 05:00 PM IST</span>
-                 </div>
                </div>
             </motion.div>
           )}
