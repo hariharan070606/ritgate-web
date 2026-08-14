@@ -112,7 +112,7 @@ export default function StaffNewPass() {
         </div>
       </header>
 
-      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 py-4 sm:py-6 pb-24 lg:px-0 lg:pt-0 lg:pb-8 box-border overflow-x-hidden flex flex-col">
+      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 py-4 sm:py-6 pb-24 lg:px-0 lg:pt-0 lg:pb-0 box-border overflow-x-hidden flex flex-col">
         <DesktopPageHeader
           title={stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle}
           subtitle={stage === 'SELECT' ? PASS_COPY.selectSubtitle : 'Create and manage gate pass clearance with the app wording and desktop spacing.'}

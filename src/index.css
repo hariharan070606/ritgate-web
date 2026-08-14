@@ -228,6 +228,8 @@ html, body {
     min-height: calc(100dvh - var(--header-height));
     padding: 24px 32px 32px;
     background: transparent !important;
+    display: flex;
+    flex-direction: column;
   }
 
   .profile-page-content {
@@ -241,6 +243,16 @@ html, body {
     max-width: none;
     margin-inline: 0;
     padding: 0 !important;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .native-page-enter {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 
   .page-content > .native-page-enter > :is(div, main, section):not(.desktop-card):not(.native-card):first-child {
