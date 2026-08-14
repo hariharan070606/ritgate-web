@@ -72,13 +72,17 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       ]);
       if (gpRes.success) {
         const gpList = gpRes.requests || [];
-        const vList = (visitorRequests || []).map((v: any) => ({
-          ...v,
-          id: `VISITOR-${v.id}`,
-          passType: 'VISITOR',
-          requestType: 'VISITOR',
-          status: v.status || 'PENDING',
-        }));
+        const vList = (visitorRequests || []).map((v: any) => {
+          const isOwn = String(v.creatorStaffCode || v.requestedByStaffCode || v.staffCode || '').toLowerCase() === String(hrCode).toLowerCase() || v.isOwnRequest === true;
+          return {
+            ...v,
+            id: `VISITOR-${v.id}`,
+            passType: 'VISITOR',
+            requestType: 'VISITOR',
+            isOwnRequest: isOwn,
+            status: v.status || 'PENDING',
+          };
+        });
         setRequests([...vList, ...gpList]);
       } else {
         setHasError(true);
@@ -110,12 +114,14 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
   };
 
   const stats = {
-    pending: requests.filter(isRequestPending).length,
-    approved: requests.filter(isRequestApproved).length,
-    rejected: requests.filter(isRequestRejected).length,
+    pending: requests.filter(r => !r.isOwnRequest && isRequestPending(r)).length,
+    approved: requests.filter(r => !r.isOwnRequest && isRequestApproved(r)).length,
+    rejected: requests.filter(r => !r.isOwnRequest && isRequestRejected(r)).length,
   };
 
   const filtered = requests.filter(r => {
+    const isOwn = r.isOwnRequest === true || String(r.requestedByStaffCode || r.creatorStaffCode || r.staffCode || r.regNo || '').toLowerCase() === String(hrCode).toLowerCase();
+    if (isOwn) return false;
     const name = r.requestedByStaffName || r.studentName || r.visitorName || r.regNo || '';
     const matchSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         (r.purpose || '').toLowerCase().includes(searchQuery.toLowerCase());

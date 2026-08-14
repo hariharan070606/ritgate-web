@@ -8,7 +8,7 @@ import Button from '../../components/ui/Button';
 import PageHeader from '../../components/common/PageHeader';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { getStaffOwnRequests, getGatePassQRCode } from '../../services/api.service';
+import { getStaffOwnRequests, getVisitorRequestsForStaff, getHRVisitorRequests, getGatePassQRCode } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
@@ -43,11 +43,35 @@ export default function HRMyRequests() {
     setIsLoading(true);
     setHasError(false);
     try {
-      const res = await getStaffOwnRequests(hrCode);
-      if (res.success) {
-        const sorted = (res.requests || []).sort((a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime());
-        setRequests(sorted);
-      } else setHasError(true);
+      const [singleRes, visitorRes] = await Promise.all([
+        getStaffOwnRequests(hrCode),
+        getVisitorRequestsForStaff(hrCode)
+      ]);
+
+      let combined: any[] = [];
+      if (singleRes.success) combined = [...(singleRes.requests || []).map((r: any) => ({ ...r, isOwnRequest: true }))];
+      if (visitorRes.success) {
+        const ownVisitors = (visitorRes.requests || [])
+          .filter((r: any) => {
+            const creator = String(r.creatorStaffCode || r.requestedByStaffCode || r.staffCode || '').toLowerCase();
+            return creator === String(hrCode).toLowerCase() || r.isOwnRequest === true;
+          })
+          .map((r: any) => ({
+            ...r,
+            id: `VISITOR-${r.requestId || r.id}`,
+            requestType: 'VISITOR',
+            isOwnRequest: true,
+            studentName: r.visitorName || r.name || r.requesterName || 'Visitor',
+            purpose: r.purpose || r.reason || 'Visitor Gate Pass',
+            reason: r.purpose || r.reason || 'Visitor Gate Pass',
+            status: r.status,
+            createdAt: r.createdAt || r.requestDate
+          }));
+        combined = [...combined, ...ownVisitors];
+      }
+
+      const sorted = combined.sort((a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime());
+      setRequests(sorted);
     } catch { setHasError(true); }
     finally { setIsLoading(false); }
   }, [hrCode]);

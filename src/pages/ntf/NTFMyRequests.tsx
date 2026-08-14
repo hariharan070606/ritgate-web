@@ -8,7 +8,7 @@ import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { getNTFOwnRequests, getGatePassQRCode } from '../../services/api.service';
+import { getNTFOwnRequests, getVisitorRequestsForStaff, getGatePassQRCode } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
@@ -43,14 +43,35 @@ export default function NTFMyRequests() {
     setIsLoading(true);
     setHasError(false);
     try {
-      const res = await getNTFOwnRequests(staffCode);
-      if (res.success) {
-        const sorted = (res.requests || [])
-          .sort(
-            (a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime()
-          );
-        setRequests(sorted);
-      } else setHasError(true);
+      const [singleRes, visitorRes] = await Promise.all([
+        getNTFOwnRequests(staffCode),
+        getVisitorRequestsForStaff(staffCode)
+      ]);
+
+      let combined: any[] = [];
+      if (singleRes.success) combined = [...(singleRes.requests || []).map((r: any) => ({ ...r, isOwnRequest: true }))];
+      if (visitorRes.success) {
+        const ownVisitors = (visitorRes.requests || [])
+          .filter((r: any) => {
+            const creator = String(r.creatorStaffCode || r.requestedByStaffCode || r.staffCode || '').toLowerCase();
+            return creator === String(staffCode).toLowerCase() || r.isOwnRequest === true;
+          })
+          .map((r: any) => ({
+            ...r,
+            id: `VISITOR-${r.requestId || r.id}`,
+            requestType: 'VISITOR',
+            isOwnRequest: true,
+            studentName: r.visitorName || r.name || r.requesterName || 'Visitor',
+            purpose: r.purpose || r.reason || 'Visitor Gate Pass',
+            reason: r.purpose || r.reason || 'Visitor Gate Pass',
+            status: r.status,
+            createdAt: r.createdAt || r.requestDate
+          }));
+        combined = [...combined, ...ownVisitors];
+      }
+
+      const sorted = combined.sort((a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime());
+      setRequests(sorted);
     } catch { setHasError(true); }
     finally { setIsLoading(false); }
   }, [staffCode]);

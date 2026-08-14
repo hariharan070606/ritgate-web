@@ -75,14 +75,18 @@ export default function HODDashboard() {
       ]);
 
       const gplist = gpRes.success ? (gpRes.requests || []) : [];
-      const vlist = (visitorRes || []).map((v: any) => ({
-        ...v,
-        id: `VISITOR-${v.id}`,
-        passType: 'VISITOR',
-        requestType: 'VISITOR',
-        studentName: v.visitorName || v.name,
-        reason: v.purpose
-      }));
+      const vlist = (visitorRes || []).map((v: any) => {
+        const isOwn = String(v.creatorStaffCode || v.requestedByStaffCode || v.staffCode || '').toLowerCase() === String(hodCode).toLowerCase() || v.isOwnRequest === true;
+        return {
+          ...v,
+          id: `VISITOR-${v.id}`,
+          passType: 'VISITOR',
+          requestType: 'VISITOR',
+          isOwnRequest: isOwn,
+          studentName: v.visitorName || v.name || v.requesterName,
+          reason: v.purpose
+        };
+      });
 
       const combined = [...gplist, ...vlist];
       
@@ -101,7 +105,7 @@ export default function HODDashboard() {
 
   const dashboardRequests = requests.filter(r => {
     // Exclude HOD's own requests from home
-    const isOwn = r.userType === 'HOD' || r.requestedByStaffCode === hodCode || r.regNo === hodCode;
+    const isOwn = r.isOwnRequest === true || r.userType === 'HOD' || String(r.requestedByStaffCode || r.creatorStaffCode || r.staffCode || r.regNo || '').toLowerCase() === String(hodCode).toLowerCase();
     if (isOwn) return false;
     // Only show today's requests (since 12:00 AM midnight today IST)
     const dateVal = r.createdAt || r.requestDate || r.visitDate || r.exitDateTime;

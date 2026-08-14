@@ -15,7 +15,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
-import { apiService } from '../../services/api.service';
+import { getVisitorRequestsForStaff, getHODBulkPassRequests, getGatePassQRCode, apiService } from '../../services/api.service';
 import PageHeader from '../../components/common/PageHeader';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
 import { SkeletonList } from '../../components/ui/Skeleton';
@@ -57,12 +57,44 @@ export default function HODMyRequests() {
   const loadData = async () => {
     if (!hodCode) return;
     try {
-      const res = await apiService.getHODMyGatePassRequests(hodCode);
-      if (res.success) {
-        const list = res.requests || [];
-        const sorted = list.sort((a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime());
-        setRequests(sorted);
+      const [singleRes, bulkRes, visitorRes] = await Promise.all([
+        apiService.getHODMyGatePassRequests(hodCode),
+        getHODBulkPassRequests(hodCode),
+        getVisitorRequestsForStaff(hodCode)
+      ]);
+
+      let combined: any[] = [];
+      if (singleRes.success) combined = [...(singleRes.requests || []).map((r: any) => ({ ...r, isOwnRequest: true }))];
+      if (bulkRes && Array.isArray(bulkRes)) combined = [...combined, ...bulkRes.map((r: any) => ({ ...r, isOwnRequest: true }))];
+      if (visitorRes.success) {
+        const ownVisitors = (visitorRes.requests || [])
+          .filter((r: any) => {
+            const creator = String(r.creatorStaffCode || r.requestedByStaffCode || r.staffCode || '').toLowerCase();
+            return creator === String(hodCode).toLowerCase() || r.isOwnRequest === true;
+          })
+          .map((r: any) => ({
+            ...r,
+            id: `VISITOR-${r.requestId || r.id}`,
+            requestType: 'VISITOR',
+            isOwnRequest: true,
+            studentName: r.visitorName || r.name || r.requesterName || 'Visitor',
+            purpose: r.purpose || r.reason || 'Visitor Gate Pass',
+            reason: r.purpose || r.reason || 'Visitor Gate Pass',
+            status: r.status,
+            createdAt: r.createdAt || r.requestDate
+          }));
+        combined = [...combined, ...ownVisitors];
       }
+
+      const uniqueMap = new Map();
+      combined.forEach(req => {
+        if (!uniqueMap.has(req.id)) {
+          uniqueMap.set(req.id, req);
+        }
+      });
+      const unique = Array.from(uniqueMap.values());
+      const sorted = unique.sort((a, b) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime());
+      setRequests(sorted);
     } catch (err) {
       console.error('Failed to load my requests:', err);
     } finally {

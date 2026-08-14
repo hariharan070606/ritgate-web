@@ -6,7 +6,7 @@ import SinglePassDetailsModal from '../../components/common/SinglePassDetailsMod
 import GatePassQRModal from '../../components/common/GatePassQRModal';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { getNTFOwnRequests, getGatePassQRCode } from '../../services/api.service';
+import { getNCIOwnRequests, getNTFOwnRequests, getVisitorRequestsForStaff, getGatePassQRCode } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 import { usePageTitle } from '../../hooks/usePageTitle';
@@ -36,16 +36,38 @@ export default function NCIMyRequests() {
 
   useEffect(() => {
     const fetchRequests = async () => {
+      if (!staffCode) return;
       setIsLoading(true);
       try {
-        const res = await getNTFOwnRequests(staffCode);
-        if (res.success) {
-          const sorted = (res.requests || [])
-            .sort(
-              (a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime()
-            );
-          setRequests(sorted);
+        const [singleRes, visitorRes] = await Promise.all([
+          getNTFOwnRequests(staffCode),
+          getVisitorRequestsForStaff(staffCode)
+        ]);
+
+        let combined: any[] = [];
+        if (singleRes.success) combined = [...(singleRes.requests || []).map((r: any) => ({ ...r, isOwnRequest: true }))];
+        if (visitorRes.success) {
+          const ownVisitors = (visitorRes.requests || [])
+            .filter((r: any) => {
+              const creator = String(r.creatorStaffCode || r.requestedByStaffCode || r.staffCode || '').toLowerCase();
+              return creator === String(staffCode).toLowerCase() || r.isOwnRequest === true;
+            })
+            .map((r: any) => ({
+              ...r,
+              id: `VISITOR-${r.requestId || r.id}`,
+              requestType: 'VISITOR',
+              isOwnRequest: true,
+              studentName: r.visitorName || r.name || r.requesterName || 'Visitor',
+              purpose: r.purpose || r.reason || 'Visitor Gate Pass',
+              reason: r.purpose || r.reason || 'Visitor Gate Pass',
+              status: r.status,
+              createdAt: r.createdAt || r.requestDate
+            }));
+          combined = [...combined, ...ownVisitors];
         }
+
+        const sorted = combined.sort((a: any, b: any) => new Date(b.createdAt || b.requestDate).getTime() - new Date(a.createdAt || a.requestDate).getTime());
+        setRequests(sorted);
       } catch (error) {
         console.error('Failed to fetch NCI requests:', error);
       } finally {
