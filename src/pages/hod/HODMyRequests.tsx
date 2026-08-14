@@ -1,21 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
   FileText, 
-  Calendar, 
   Users, 
   QrCode, 
-  CheckCircle2,
-  AlertCircle,
   Clock
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
 import { useToast } from '../../context/ToastContext';
-import { getVisitorRequestsForStaff, getHODBulkPassRequests, getGatePassQRCode, apiService } from '../../services/api.service';
+import { getVisitorRequestsForStaff, getHODBulkPassRequests, apiService } from '../../services/api.service';
 import PageHeader from '../../components/common/PageHeader';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
 import { SkeletonList } from '../../components/ui/Skeleton';
@@ -29,10 +26,11 @@ import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import DesktopToolbar from '../../components/desktop/DesktopToolbar';
 import Button from '../../components/ui/Button';
 import EmptyState from '../../components/ui/EmptyState';
+import { normalizeRequestStatus } from '../../utils/statusUtils';
 
 export default function HODMyRequests() {
   usePageTitle('My Requests');
-  const { user, logout, getUserId } = useAuth();
+  const { user, getUserId } = useAuth();
   const { isDesktop } = useAdaptive();
   const { refreshCount } = useRefresh();
   const { error: showToastError } = useToast();
@@ -117,7 +115,12 @@ export default function HODMyRequests() {
   });
 
   const handleViewQR = async (request: any) => {
-    if (request.status !== 'APPROVED' && request.status !== 'APPROVED_BY_HOD') return;
+    const s = normalizeRequestStatus(request.status);
+    const isUsedOrExited = s === 'USED' || s === 'EXITED' || Boolean(request.isUsed);
+    const dateVal = request.requestDate || request.createdAt || request.visitDate;
+    
+    if (s !== 'APPROVED' || isUsedOrExited || !isToday(dateVal)) return;
+
     setSelectedRequest(request);
     setShowQRModal(true);
     try {
@@ -142,8 +145,8 @@ export default function HODMyRequests() {
   const initials = hodName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   const getStatusConfig = (status: string) => {
-    const s = String(status || '').toUpperCase();
-    if (s === 'APPROVED' || s === 'APPROVED_BY_HOD') return { text: 'APPROVED', color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-950/30' };
+    const s = normalizeRequestStatus(status);
+    if (s === 'APPROVED') return { text: 'APPROVED', color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-950/30' };
     if (s === 'REJECTED') return { text: 'REJECTED', color: 'text-rose-700 dark:text-rose-300', bg: 'bg-rose-50 dark:bg-rose-950/30' };
     if (s === 'PENDING_HOD') return { text: 'PENDING HOD', color: 'text-blue-700 dark:text-blue-300', bg: 'bg-blue-50 dark:bg-blue-950/30' };
     if (s === 'PENDING_HR') return { text: 'PENDING HR', color: 'text-purple-700 dark:text-purple-300', bg: 'bg-purple-50 dark:bg-purple-950/30' };
@@ -154,7 +157,6 @@ export default function HODMyRequests() {
 
   return (
     <div className="min-h-screen lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
-      {/* Header */}
       <PageHeader title="My Requests" />
 
       {isDesktop && (
@@ -248,7 +250,10 @@ export default function HODMyRequests() {
             <div className="space-y-4">
               {filteredRequests.map((request) => {
                 const isBulk = request.passType === 'BULK';
-                const isApproved = request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD';
+                const normStatus = normalizeRequestStatus(request.status);
+                const isUsedOrExited = normStatus === 'USED' || normStatus === 'EXITED' || Boolean(request.isUsed);
+                const dateVal = request.requestDate || request.createdAt || request.visitDate;
+                const canShowCardQR = normStatus === 'APPROVED' && !isUsedOrExited && isToday(dateVal);
                 
                 return (
                   <motion.div 
@@ -333,16 +338,16 @@ export default function HODMyRequests() {
                          );
                        })()}
                       
-                      {isApproved && (
+                      {canShowCardQR && (
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
                             handleViewQR(request);
                           }}
-                          className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl active:scale-95 transition-transform"
+                          className="px-4 py-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-extrabold text-[12px] rounded-xl border border-emerald-100 dark:border-emerald-800/50 flex items-center gap-2 active:scale-95 transition-all shadow-xs"
                         >
-                          <QrCode className="w-4 h-4 text-white" />
-                          <span className="text-[11px] font-black uppercase tracking-widest">View QR</span>
+                          <QrCode className="w-4 h-4" />
+                          <span>View QR</span>
                         </button>
                       )}
                     </div>

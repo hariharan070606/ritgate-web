@@ -27,7 +27,7 @@ import SectionLabel from './SectionLabel';
 import { cn } from '../../utils/cn';
 import { isPdfAttachment } from '../../utils/attachmentUtils';
 import { formatDate } from '../../utils/date';
-import { formatDateTime } from '../../utils/dateUtils';
+import { formatDateTime, isToday } from '../../utils/dateUtils';
 import { getStatusMeta, normalizeRequestStatus } from '../../utils/statusUtils';
 import { resolveProfilePhoto } from '../../utils/profilePhoto';
 import VisitorAvatar from './VisitorAvatar';
@@ -150,6 +150,13 @@ export default function SinglePassDetailsModal({
   const status = normalizeRequestStatus(request);
   const statusMeta = getStatusMeta(request);
   const isApproved = status === 'APPROVED';
+  const isUsedOrExited = status === 'USED' || status === 'EXITED' || Boolean(request.isUsed);
+  const dateVal = request.requestDate || request.createdAt || request.visitDate;
+  const isTodayRequest = isToday(dateVal);
+
+  // VIEW QR button is ONLY shown if status is fully APPROVED, pass is NOT USED/EXITED, and request date is TODAY!
+  const canShowQR = isApproved && !isUsedOrExited && isTodayRequest;
+
   const attachmentUri = request.attachmentUri || request.fileUrl;
   const isPdf = isPdfAttachment(attachmentUri);
 
@@ -178,11 +185,13 @@ export default function SinglePassDetailsModal({
     const rawStatus = (request?.status || request?.approvalStatus || '').toUpperCase();
     const staffApproval = (request?.staffApproval || '').toUpperCase();
     const hodApproval = (request?.hodApproval || '').toUpperCase();
+    const hrApproval = (request?.hrApproval || '').toUpperCase();
 
     const isStaffDone =
       rawStatus === 'APPROVED' ||
       rawStatus === 'PENDING_HOD' ||
       rawStatus === 'APPROVED_BY_STAFF' ||
+      rawStatus === 'PENDING_HR' ||
       rawStatus === 'APPROVED_BY_HOD' ||
       rawStatus === 'USED' ||
       rawStatus === 'EXITED' ||
@@ -195,6 +204,7 @@ export default function SinglePassDetailsModal({
 
     const isHodDone =
       rawStatus === 'APPROVED' ||
+      rawStatus === 'PENDING_HR' ||
       rawStatus === 'APPROVED_BY_HOD' ||
       rawStatus === 'USED' ||
       rawStatus === 'EXITED' ||
@@ -215,6 +225,8 @@ export default function SinglePassDetailsModal({
       Boolean(request?.entryTime) ||
       Boolean(request?.scannedBy);
 
+    const isFullyApproved = rawStatus === 'APPROVED' || hrApproval === 'APPROVED';
+
     const staffStatus = isStaffDone ? 'done' : isStaffRejected ? 'rejected' : 'pending';
 
     const hodStatus = isStaffRejected
@@ -228,6 +240,8 @@ export default function SinglePassDetailsModal({
     const gateStatus = (isStaffRejected || isHodRejected || rawStatus === 'REJECTED')
       ? 'cancelled'
       : isGateUsed
+      ? 'done'
+      : isFullyApproved
       ? 'done'
       : 'pending';
 
@@ -527,7 +541,7 @@ export default function SinglePassDetailsModal({
                 </div>
               ) : (
                 <div className="flex gap-3 justify-end w-full sm:w-auto">
-                  {isApproved && (onViewQR || isOwner) ? (
+                  {canShowQR ? (
                     <>
                       <Button
                         variant="primary"

@@ -22,25 +22,52 @@ const cleanStatus = (value: unknown) => String(value || '').trim().toUpperCase()
 
 export function normalizeRequestStatus(requestOrStatus: unknown): string {
   if (!requestOrStatus || typeof requestOrStatus !== 'object') {
-    return cleanStatus(requestOrStatus) || 'PENDING';
+    const s = cleanStatus(requestOrStatus);
+    if (!s) return 'PENDING';
+    if (s.startsWith('REJECTED')) return 'REJECTED';
+    return s;
   }
 
   const request = requestOrStatus as Record<string, unknown>;
-  const status = cleanStatus(request.status);
+  const status = cleanStatus(request.status || request.approvalStatus);
   const staffApproval = cleanStatus(request.staffApproval || request.staff_approval);
   const hodApproval = cleanStatus(request.hodApproval || request.hod_approval);
   const hrApproval = cleanStatus(request.hrApproval || request.hr_approval);
 
-  const isStudentRequest = !!(request.regNo || request.studentCount || request.students || (!request.staffCode && !request.hodCode));
-
-  if (status.startsWith('REJECTED') || hrApproval === 'REJECTED' || hodApproval === 'REJECTED' || staffApproval === 'REJECTED') return 'REJECTED';
-  if (['APPROVED', 'USED', 'EXITED', 'CANCELLED', 'COMPLETED'].includes(status)) return status;
-  if (hrApproval === 'APPROVED') return 'APPROVED';
-  if (status === 'PENDING_HR' || status === 'APPROVED_BY_HOD' || hodApproval === 'APPROVED') {
-    return isStudentRequest ? 'APPROVED' : 'PENDING_HR';
+  // 1. Rejections take top priority
+  if (
+    status.startsWith('REJECTED') ||
+    hrApproval === 'REJECTED' ||
+    hodApproval === 'REJECTED' ||
+    staffApproval === 'REJECTED'
+  ) {
+    return 'REJECTED';
   }
-  if (status === 'PENDING_HOD' || status === 'APPROVED_BY_STAFF' || staffApproval === 'APPROVED') return 'PENDING_HOD';
-  if (status === 'PENDING_STAFF') return 'PENDING_STAFF';
+
+  // 2. Terminal states
+  if (['USED', 'EXITED', 'CANCELLED', 'COMPLETED'].includes(status)) {
+    return status;
+  }
+
+  // 3. Fully Approved
+  if (status === 'APPROVED' || hrApproval === 'APPROVED') {
+    return 'APPROVED';
+  }
+
+  // 4. Pending HR (HOD approved, awaiting HR)
+  if (status === 'PENDING_HR' || status === 'APPROVED_BY_HOD') {
+    return 'PENDING_HR';
+  }
+
+  // 5. Pending HOD (Staff approved, awaiting HOD)
+  if (status === 'PENDING_HOD' || status === 'APPROVED_BY_STAFF') {
+    return 'PENDING_HOD';
+  }
+
+  // 6. Pending Staff
+  if (status === 'PENDING_STAFF') {
+    return 'PENDING_STAFF';
+  }
 
   return status || 'PENDING';
 }

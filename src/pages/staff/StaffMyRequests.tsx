@@ -23,6 +23,7 @@ import MyRequestsBulkModal from '../../components/common/MyRequestsBulkModal';
 import type { Staff } from '../../types';
 import { cn } from '../../utils/cn';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
+import { normalizeRequestStatus } from '../../utils/statusUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import DesktopToolbar from '../../components/desktop/DesktopToolbar';
@@ -118,7 +119,11 @@ export default function StaffMyRequests() {
   });
 
   const handleViewQR = async (request: any) => {
-    if (request.status !== 'APPROVED' && request.status !== 'APPROVED_BY_HOD') return;
+    const s = normalizeRequestStatus(request);
+    const isUsedOrExited = s === 'USED' || s === 'EXITED' || Boolean(request.isUsed);
+    const dateVal = request.requestDate || request.createdAt || request.visitDate;
+    if (s !== 'APPROVED' || isUsedOrExited || !isToday(dateVal)) return;
+
     setSelectedRequest(request);
     setShowQRModal(true);
     try {
@@ -161,11 +166,12 @@ export default function StaffMyRequests() {
   const initials = staffName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   const getStatusConfig = (status: string) => {
-    const s = String(status || '').toUpperCase();
-    if (s === 'APPROVED' || s === 'APPROVED_BY_HOD') return { text: 'APPROVED', color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-950/30' };
+    const s = normalizeRequestStatus(status);
+    if (s === 'APPROVED') return { text: 'APPROVED', color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-950/30' };
     if (s === 'REJECTED') return { text: 'REJECTED', color: 'text-rose-700 dark:text-rose-300', bg: 'bg-rose-50 dark:bg-rose-950/30' };
-    if (s === 'PENDING_HOD') return { text: 'PENDING HOD', color: 'text-blue-700 dark:text-blue-300', bg: 'bg-blue-50 dark:bg-blue-950/30' };
+    if (s === 'PENDING_HOD') return { text: 'PENDING HOD', color: 'text-orange-700 dark:text-orange-300', bg: 'bg-orange-50 dark:bg-orange-950/30' };
     if (s === 'PENDING_HR') return { text: 'PENDING HR', color: 'text-purple-700 dark:text-purple-300', bg: 'bg-purple-50 dark:bg-purple-950/30' };
+    if (s === 'PENDING_STAFF') return { text: 'PENDING STAFF', color: 'text-amber-700 dark:text-amber-300', bg: 'bg-amber-50 dark:bg-amber-950/30' };
     if (s === 'USED') return { text: 'USED', color: 'text-slate-600 dark:text-slate-300', bg: 'bg-slate-100 dark:bg-slate-800/50' };
     if (s === 'EXITED') return { text: 'EXITED', color: 'text-slate-600 dark:text-slate-300', bg: 'bg-slate-100 dark:bg-slate-800/50' };
     return { text: 'PENDING', color: 'text-amber-700 dark:text-amber-300', bg: 'bg-amber-50 dark:bg-amber-950/30' };
@@ -265,7 +271,10 @@ export default function StaffMyRequests() {
             <div className="space-y-4">
               {filteredRequests.map((request) => {
                 const isBulk = request.passType === 'BULK';
-                const isApproved = request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD';
+                const normStatus = normalizeRequestStatus(request);
+                const isUsedOrExited = normStatus === 'USED' || normStatus === 'EXITED' || Boolean(request.isUsed);
+                const dateVal = request.requestDate || request.createdAt || request.visitDate;
+                const canShowCardQR = normStatus === 'APPROVED' && !isUsedOrExited && isToday(dateVal);
                 
                 return (
                   <motion.div 
@@ -353,16 +362,16 @@ export default function StaffMyRequests() {
                          );
                        })()}
                       
-                      {isApproved && (
+                      {canShowCardQR && (
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
                             handleViewQR(request);
                           }}
-                          className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl active:scale-95 transition-transform"
+                          className="px-4 py-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-extrabold text-[12px] rounded-xl border border-emerald-100 dark:border-emerald-800/50 flex items-center gap-2 active:scale-95 transition-all shadow-xs"
                         >
-                          <QrCode className="w-4 h-4 text-white" />
-                          <span className="text-[11px] font-black uppercase tracking-widest">View QR</span>
+                          <QrCode className="w-4 h-4" />
+                          <span>View QR</span>
                         </button>
                       )}
                     </div>
