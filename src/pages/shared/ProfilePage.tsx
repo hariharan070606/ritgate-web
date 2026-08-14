@@ -331,14 +331,14 @@ export default function ProfilePage({
                   onClick={toggleTheme}
                   aria-label="Toggle theme mode"
                   className={cn(
-                    "relative inline-flex h-9 w-16 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none shadow-inner",
-                    isDark ? "bg-blue-600" : "bg-slate-300"
+                    "relative inline-flex h-10 w-18 shrink-0 items-center cursor-pointer rounded-full p-1 transition-colors duration-200 ease-in-out focus:outline-none shadow-inner",
+                    isDark ? "bg-blue-600" : "bg-slate-200 dark:bg-slate-700"
                   )}
                 >
                   <span
                     className={cn(
-                      "pointer-events-none inline-block h-8 w-8 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out flex items-center justify-center text-slate-700",
-                      isDark ? "translate-x-7" : "translate-x-0"
+                      "pointer-events-none flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md transition-transform duration-200 ease-in-out text-slate-700",
+                      isDark ? "translate-x-8" : "translate-x-0"
                     )}
                   >
                     {isDark ? <Moon className="w-4 h-4 text-blue-600" /> : <Sun className="w-4 h-4 text-amber-500" />}
