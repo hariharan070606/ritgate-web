@@ -125,110 +125,96 @@ export default function StaffNewPass() {
                initial={{ opacity: 0, y: 15 }}
                animate={{ opacity: 1, y: 0 }}
                exit={{ opacity: 0, x: -20 }}
-               className="w-full flex-1 flex flex-col justify-between space-y-6"
+               className="w-full space-y-6"
             >
-               {/* Container Box */}
-               <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6 w-full">
-                 
-                 {/* Section Header */}
-                 <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
-                   <h2 className="text-[20px] sm:text-[24px] font-black text-slate-900 dark:text-white leading-tight tracking-tight">
-                     {PASS_COPY.selectTitle}
-                   </h2>
-                   <p className="text-[13px] sm:text-[14px] font-semibold text-slate-500 dark:text-slate-400 mt-1">
-                     {PASS_COPY.selectSubtitle}
-                   </p>
-                 </div>
+               {/* Mobile Section Title */}
+               <div className="mb-4 lg:hidden">
+                  <h2 className="text-[24px] font-black text-slate-900 dark:text-white leading-tight mb-1 tracking-tight">{PASS_COPY.selectTitle}</h2>
+                  <p className="text-[14px] font-bold text-slate-400">{PASS_COPY.selectSubtitle}</p>
+               </div>
 
-                 {/* Cards Responsive Grid */}
-                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 w-full items-stretch">
-                    {[
-                      { id: 'SINGLE', title: PASS_COPY.singleTitle, sub: PASS_COPY.singleSubtitle, icon: UserPlus, accent: 'blue', restricted: true },
-                      { id: 'BULK', title: PASS_COPY.bulkTitle, sub: PASS_COPY.bulkSubtitle, icon: Users, accent: 'violet', restricted: true },
-                      { id: 'GUEST', title: PASS_COPY.guestTitle, sub: PASS_COPY.guestSubtitle, icon: FileText, accent: 'emerald', restricted: false },
-                    ].filter(item => {
-                      // HR, NCI, NTF, and Admin Officer only get Single + Guest — no bulk
-                      if (item.id === 'BULK' && ['HR', 'NON_CLASS_INCHARGE', 'NON_TEACHING', 'ADMIN_OFFICER'].includes(role || '')) return false;
-                      return true;
-                    }).map((item) => {
-                      const isDisabled = item.restricted && passDisabled;
-                      const accentMap = {
-                        blue: {
-                          icon: 'bg-blue-50 text-blue-700 ring-blue-100 shadow-blue-100/70',
-                          glow: 'from-blue-500/0 via-blue-500/0 to-blue-500/10',
-                          line: 'bg-blue-600',
-                          arrow: 'text-blue-700',
-                        },
-                        violet: {
-                          icon: 'bg-violet-50 text-violet-600 ring-violet-100 shadow-violet-100/70',
-                          glow: 'from-violet-500/0 via-violet-500/0 to-violet-500/10',
-                          line: 'bg-violet-600',
-                          arrow: 'text-violet-600',
-                        },
-                        emerald: {
-                          icon: 'bg-emerald-50 text-emerald-600 ring-emerald-100 shadow-emerald-100/70',
-                          glow: 'from-emerald-500/0 via-emerald-500/0 to-emerald-500/10',
-                          line: 'bg-emerald-500',
-                          arrow: 'text-emerald-600',
-                        },
-                      };
-                      const accent = accentMap[item.accent as keyof typeof accentMap] ?? accentMap.blue;
-                      return (
-                      <motion.button
-                        key={item.id}
-                        whileTap={{ scale: isDisabled ? 1 : 0.98 }}
-                        disabled={isDisabled}
-                        onClick={() => !isDisabled && navigate(`/new-pass?stage=${item.id.toLowerCase()}`)}
-                        className={cn(
-                          "group relative w-full overflow-hidden rounded-[24px] border text-left transition-all duration-300",
-                          "flex flex-col justify-between p-6 sm:p-7 shadow-sm hover:shadow-lg min-h-[220px] sm:min-h-[260px]",
-                          isDisabled
-                            ? "bg-slate-50 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800 opacity-60 cursor-not-allowed"
-                            : "bg-white dark:bg-slate-950 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 active:shadow-none"
-                        )}
-                      >
-                         {!isDisabled && (
-                           <div className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br", accent.glow)} />
+               {/* Cards Grid — 1 Single Line for Desktop (md:grid-cols-3) */}
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full items-stretch">
+                  {[
+                    { id: 'SINGLE', title: PASS_COPY.singleTitle, sub: PASS_COPY.singleSubtitle, icon: UserPlus, accent: 'blue', restricted: true },
+                    { id: 'BULK', title: PASS_COPY.bulkTitle, sub: PASS_COPY.bulkSubtitle, icon: Users, accent: 'violet', restricted: true },
+                    { id: 'GUEST', title: PASS_COPY.guestTitle, sub: PASS_COPY.guestSubtitle, icon: FileText, accent: 'emerald', restricted: false },
+                  ].filter(item => {
+                    // HR, NCI, NTF, and Admin Officer only get Single + Guest — no bulk
+                    if (item.id === 'BULK' && ['HR', 'NON_CLASS_INCHARGE', 'NON_TEACHING', 'ADMIN_OFFICER'].includes(role || '')) return false;
+                    return true;
+                  }).map((item) => {
+                    const isDisabled = item.restricted && passDisabled;
+                    const accentMap = {
+                      blue: {
+                        icon: 'bg-blue-50 text-blue-700 ring-blue-100 shadow-blue-100/70',
+                        glow: 'from-blue-500/0 via-blue-500/0 to-blue-500/10',
+                        line: 'bg-blue-600',
+                        arrow: 'text-blue-700',
+                      },
+                      violet: {
+                        icon: 'bg-violet-50 text-violet-600 ring-violet-100 shadow-violet-100/70',
+                        glow: 'from-violet-500/0 via-violet-500/0 to-violet-500/10',
+                        line: 'bg-violet-600',
+                        arrow: 'text-violet-600',
+                      },
+                      emerald: {
+                        icon: 'bg-emerald-50 text-emerald-600 ring-emerald-100 shadow-emerald-100/70',
+                        glow: 'from-emerald-500/0 via-emerald-500/0 to-emerald-500/10',
+                        line: 'bg-emerald-500',
+                        arrow: 'text-emerald-600',
+                      },
+                    };
+                    const accent = accentMap[item.accent as keyof typeof accentMap] ?? accentMap.blue;
+                    return (
+                    <motion.button
+                      key={item.id}
+                      whileTap={{ scale: isDisabled ? 1 : 0.98 }}
+                      disabled={isDisabled}
+                      onClick={() => !isDisabled && navigate(`/new-pass?stage=${item.id.toLowerCase()}`)}
+                      className={cn(
+                        "group relative w-full overflow-hidden rounded-[28px] border text-left transition-all duration-300",
+                        "flex flex-col justify-between p-7 sm:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 min-h-[260px] md:min-h-[300px]",
+                        isDisabled
+                          ? "bg-white/80 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800 opacity-60 cursor-not-allowed"
+                          : "bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 active:shadow-none"
+                      )}
+                    >
+                       {!isDisabled && (
+                         <div className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br", accent.glow)} />
+                       )}
+                       
+                       {/* Top Row Icon */}
+                       <div className="flex items-center justify-between w-full relative z-10 mb-6">
+                         <div className={cn(
+                           "flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl ring-1 shadow-md transition-transform duration-300 group-hover:scale-105",
+                           isDisabled ? "bg-slate-200 text-slate-400 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700" : accent.icon,
+                         )}>
+                            <item.icon className="h-8 w-8" />
+                         </div>
+
+                         {isDisabled ? (
+                           <Ban className="h-6 w-6 text-rose-400" />
+                         ) : (
+                           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 shadow-sm group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all duration-300">
+                             <ChevronRight className="h-5 w-5" />
+                           </span>
                          )}
-                         
-                         {/* Top Row Icon */}
-                         <div className="flex items-center justify-between w-full relative z-10 mb-6">
-                           <div className={cn(
-                             "flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ring-1 shadow-md transition-transform duration-300 group-hover:scale-105",
-                             isDisabled ? "bg-slate-200 text-slate-400 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700" : accent.icon,
-                           )}>
-                              <item.icon className="h-7 w-7" />
-                           </div>
+                       </div>
 
-                           {isDisabled ? (
-                             <Ban className="h-6 w-6 text-rose-400" />
-                           ) : (
-                             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 shadow-sm group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all duration-300">
-                               <ChevronRight className="h-5 w-5" />
-                             </span>
-                           )}
-                         </div>
-
-                         {/* Content Section */}
-                         <div className="relative z-10 w-full mt-auto">
-                            <h3 className={cn("text-[17px] sm:text-[19px] font-black tracking-tight mb-2", isDisabled ? "text-slate-400" : "text-slate-900 dark:text-white")}>
-                              {item.title}
-                            </h3>
-                            <div className={cn("mb-3 h-0.5 w-8 rounded-full transition-all duration-300 group-hover:w-12", isDisabled ? "bg-slate-200 dark:bg-slate-700" : accent.line)} />
-                            <p className="text-[13px] font-medium leading-relaxed text-slate-500 dark:text-slate-400">
-                              {isDisabled ? PASS_COPY.unavailableAfterFive : item.sub}
-                            </p>
-                         </div>
-                      </motion.button>
-                      );
-                    })}
-                 </div>
-
-                 {/* Bottom Footer Info Strip */}
-                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
-                   <span>RIT Gate Pass Clearance System</span>
-                   <span>Operating Window: 06:00 AM – 05:00 PM IST</span>
-                 </div>
+                       {/* Content Section */}
+                       <div className="relative z-10 w-full mt-auto">
+                          <h3 className={cn("text-[18px] sm:text-[20px] font-black tracking-tight mb-2", isDisabled ? "text-slate-400" : "text-slate-900 dark:text-white")}>
+                            {item.title}
+                          </h3>
+                          <div className={cn("mb-3 h-0.5 w-8 rounded-full transition-all duration-300 group-hover:w-12", isDisabled ? "bg-slate-200 dark:bg-slate-700" : accent.line)} />
+                          <p className="text-[13px] font-medium leading-relaxed text-slate-500 dark:text-slate-400">
+                            {isDisabled ? PASS_COPY.unavailableAfterFive : item.sub}
+                          </p>
+                       </div>
+                    </motion.button>
+                    );
+                  })}
                </div>
             </motion.div>
           )}
