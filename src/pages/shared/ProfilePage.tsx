@@ -9,11 +9,15 @@ import {
   ShieldCheck,
   Copy,
   Check,
-  UserCheck
+  UserCheck,
+  Sun,
+  Moon,
+  Palette
 } from "lucide-react";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../context/ProfileContext";
+import { useTheme } from "../../context/ThemeContext";
 import { cn } from "../../utils/cn";
 import { useAdaptive } from "../../utils/useAdaptive";
 import TopRefreshControl from "../../components/common/TopRefreshControl";
@@ -31,6 +35,7 @@ export default function ProfilePage({
   usePageTitle("Profile");
   const navigate = useNavigate();
   const { user: authUser, role, getUserId } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const user = propUser || authUser;
   const { isDesktop } = useAdaptive();
   const { profileImage } = useProfile();
@@ -340,6 +345,43 @@ export default function ProfilePage({
                 </div>
               </div>
 
+            </div>
+
+            {/* App Theme & Appearance Settings Card */}
+            <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                    {isDark ? <Moon className="w-5 h-5 text-amber-400" /> : <Sun className="w-5 h-5 text-amber-500" />}
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
+                      App Theme Mode
+                    </h3>
+                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      Currently using <span className="font-bold text-slate-800 dark:text-slate-200">{isDark ? "Dark Mode" : "Light Mode (White Mode)"}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={toggleTheme}
+                  aria-label="Toggle theme mode"
+                  className={cn(
+                    "relative inline-flex h-9 w-16 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none shadow-inner",
+                    isDark ? "bg-blue-600" : "bg-slate-300"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "pointer-events-none inline-block h-8 w-8 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out flex items-center justify-center text-slate-700",
+                      isDark ? "translate-x-7" : "translate-x-0"
+                    )}
+                  >
+                    {isDark ? <Moon className="w-4 h-4 text-blue-600" /> : <Sun className="w-4 h-4 text-amber-500" />}
+                  </span>
+                </button>
+              </div>
             </div>
 
           </div>
