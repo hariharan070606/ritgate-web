@@ -77,7 +77,7 @@ export default function HODNewPass() {
         </div>
       </header>
 
-      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 py-4 sm:py-6 pb-28 lg:px-0 lg:pt-0 lg:pb-12 box-border overflow-x-hidden">
+      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 py-4 sm:py-6 pb-24 lg:px-0 lg:pt-0 lg:pb-8 box-border overflow-x-hidden flex flex-col">
         <DesktopPageHeader
           title={stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle}
           subtitle={stage === 'SELECT' ? PASS_COPY.selectSubtitle : 'Create department gate passes with HOD-level controls.'}
@@ -90,10 +90,10 @@ export default function HODNewPass() {
                initial={{ opacity: 0, y: 15 }}
                animate={{ opacity: 1, y: 0 }}
                exit={{ opacity: 0, x: -20 }}
-               className="w-full mb-8 lg:mb-12"
+               className="w-full flex-1 flex flex-col justify-between"
             >
-               {/* Container Box with 4 Curved Corners */}
-               <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6 w-full">
+               {/* Container Box with 4 Curved Corners — Stretches till bottom */}
+               <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm w-full flex-1 flex flex-col justify-between space-y-6">
                  
                  {/* Section Header */}
                  <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
