@@ -400,14 +400,14 @@ export default function StudentHome() {
               "relative overflow-hidden rounded-[26px] sm:rounded-[30px] border transition-all duration-300 p-5 sm:p-7 box-border w-full",
               gatePassDisabled
                 ? "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm"
-                : "bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white border-blue-500/30 shadow-xl shadow-blue-700/20 cursor-pointer"
+                : "bg-gradient-to-br from-slate-900 via-slate-950 to-black text-white border-slate-800 shadow-xl shadow-slate-950/30 cursor-pointer"
             )}
           >
             {/* Ambient Glowing Orbs */}
             {!gatePassDisabled && (
               <>
                 <div className="absolute -right-12 -top-12 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -left-12 -bottom-12 w-40 h-40 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -left-12 -bottom-12 w-40 h-40 bg-slate-700/20 rounded-full blur-2xl pointer-events-none" />
               </>
             )}
 
@@ -417,7 +417,7 @@ export default function StudentHome() {
                   "w-13 h-13 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center shrink-0 border shadow-md transition-transform",
                   gatePassDisabled
                     ? "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"
-                    : "bg-white/15 border-white/30 text-white backdrop-blur-md shadow-blue-950/20"
+                    : "bg-white/10 border-white/20 text-white backdrop-blur-md shadow-black/30"
                 )}>
                   {gatePassDisabled ? (
                     <Ban className="w-6 h-6 sm:w-7 sm:h-7" />
@@ -443,7 +443,7 @@ export default function StudentHome() {
 
                   <p className={cn(
                     "text-xs sm:text-sm font-medium leading-relaxed max-w-md",
-                    gatePassDisabled ? "text-slate-500 dark:text-slate-400" : "text-blue-100/90"
+                    gatePassDisabled ? "text-slate-500 dark:text-slate-400" : "text-slate-300/90"
                   )}>
                     {gatePassDisabled
                       ? 'Student gate pass requests are closed after 3:00 PM IST.'
@@ -473,7 +473,7 @@ export default function StudentHome() {
                     "w-full sm:w-auto px-6 h-12 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2.5 transition-all shadow-md active:scale-95",
                     gatePassDisabled
                       ? "bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed shadow-none"
-                      : "bg-white text-blue-700 hover:bg-blue-50 border border-white shadow-blue-900/20 hover:scale-[1.02]"
+                      : "bg-white text-slate-950 hover:bg-slate-100 border border-white/80 shadow-black/20 hover:scale-[1.02]"
                   )}
                 >
                   <span>{gatePassDisabled ? 'Window Closed' : 'Apply Now'}</span>
