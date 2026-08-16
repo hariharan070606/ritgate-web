@@ -106,20 +106,19 @@ export default function ProfilePage({
       {/* Mobile Header */}
       {!isDesktop && (
         <header
-          className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shrink-0 lg:hidden"
+          className="sticky inset-x-0 top-0 z-[90] bg-white/94 dark:bg-slate-950/95 border-b border-slate-100 dark:border-slate-800 shadow-[0_1px_0_0_rgba(0,0,0,0.04)] backdrop-blur-xl shrink-0 lg:hidden"
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
-          <div className="px-4 h-[64px] flex items-center justify-between">
+          <div className="relative flex items-center h-[64px] px-4">
             <button
               onClick={onBack || (() => navigate(-1))}
-              className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-90 transition-transform z-10 shrink-0"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="text-[17px] font-black text-slate-900 dark:text-white uppercase tracking-tight">
+            <h1 className="absolute left-16 right-16 text-center text-[20px] font-black text-slate-900 dark:text-white tracking-tight leading-none truncate uppercase">
               My Profile
             </h1>
-            <div className="w-10" />
           </div>
         </header>
       )}
