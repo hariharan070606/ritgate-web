@@ -146,7 +146,7 @@ export default function ProfilePage({
                     size="auto"
                     className="w-28 h-28 sm:w-36 sm:h-36 border-4 border-white dark:border-slate-900 bg-white dark:bg-slate-900 shadow-2xl"
                     fallback={
-                      <div className="w-full h-full bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white text-3xl sm:text-4xl font-black">
+                      <div className="w-full h-full bg-gradient-to-tr from-slate-900 via-slate-950 to-black flex items-center justify-center text-white text-3xl sm:text-4xl font-black">
                         {initials}
                       </div>
                     }

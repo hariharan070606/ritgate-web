@@ -36,7 +36,7 @@ export default function VisitorAvatar({
   return (
     <div
       className={`rounded-full overflow-hidden flex items-center justify-center flex-shrink-0 ${
-        showPhoto || fallback ? '' : 'bg-blue-100 dark:bg-blue-900/30'
+        showPhoto || fallback ? '' : 'bg-slate-950 dark:bg-black text-white'
       } ${className}`}
       style={size === 'auto' ? undefined : { width: size, height: size }}
     >
@@ -51,7 +51,7 @@ export default function VisitorAvatar({
         fallback
       ) : (
         <span
-          className="font-bold text-blue-700 dark:text-blue-300"
+          className="font-black text-white"
           style={size === 'auto' ? undefined : { fontSize: size * 0.4 }}
         >
           {initial}
