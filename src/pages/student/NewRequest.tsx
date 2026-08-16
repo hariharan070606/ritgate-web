@@ -98,27 +98,9 @@ export default function NewRequest() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col lg:min-h-0 lg:bg-transparent bg-[#F8FAFC] dark:bg-slate-950 box-border">
-      {/* Header — mobile only (dashboard uses the AppLayout header) */}
-      <header
-        className="sticky top-0 z-50 w-full max-w-full bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 lg:hidden box-border"
-        style={{ paddingTop: 'env(safe-area-inset-top)' }}
-      >
-        <div className="px-4 h-[64px] flex items-center w-full max-w-full box-border">
-          <button
-            onClick={handleGoBack}
-            className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-90 transition-transform mr-3 shrink-0"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-[16px] font-black text-slate-900 dark:text-white tracking-tight leading-none truncate">
-            Apply for Gate Pass
-          </h1>
-        </div>
-      </header>
-
-      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 pt-4 sm:pt-6 pb-52 lg:px-0 lg:pt-0 lg:pb-12 box-border overflow-x-hidden">
-        <div className="w-full max-w-md mx-auto space-y-6 lg:max-w-2xl box-border">
+    <div className="w-full max-w-full overflow-x-hidden flex flex-col box-border min-w-0">
+      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 pt-3 sm:pt-6 pb-24 lg:px-0 lg:pt-0 lg:pb-12 box-border overflow-x-hidden min-w-0">
+        <div className="w-full max-w-md mx-auto space-y-6 lg:max-w-2xl box-border min-w-0">
           {isDesktop && (
             <DesktopPageHeader
               eyebrow="Gate Pass"
@@ -151,31 +133,9 @@ export default function NewRequest() {
             submitting={isLocked}
             disabled={!isFormValid || isLocked}
             onSubmit={() => setShowConfirmSubmit(true)}
-            submitDesktopOnly
           />
         </div>
       </main>
-
-      {/* Submit Button — mobile fixed bar */}
-      <div
-        className="fixed left-0 right-0 z-[60] border-t border-slate-100 bg-white/88 p-4 shadow-[0_-16px_36px_-30px_rgba(15,23,42,0.75)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/88 lg:hidden"
-        style={{ bottom: 'calc(68px + env(safe-area-inset-bottom))' }}
-      >
-        <button 
-          onClick={() => setShowConfirmSubmit(true)}
-          disabled={!isFormValid || isLocked}
-          className={cn(
-            "w-full h-13 bg-blue-600 hover:bg-blue-700 rounded-2xl flex items-center justify-center gap-3 text-white font-black active:scale-95 transition-all shadow-lg shadow-blue-600/30",
-            (!isFormValid || isLocked) && "opacity-60 saturate-50 cursor-not-allowed"
-          )}
-        >
-          {isLocked ? (
-            <Loader2 className="w-6 h-6 animate-spin" />
-          ) : (
-            <span className="text-[16px] font-black uppercase tracking-[0.2em]">Submit Request</span>
-          )}
-        </button>
-      </div>
 
       {/* Modals */}
       <ConfirmationModal 
