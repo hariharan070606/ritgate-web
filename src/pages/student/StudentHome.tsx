@@ -413,18 +413,13 @@ export default function StudentHome() {
 
             <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 w-full">
               <div className="flex items-center gap-4 min-w-0">
-                <div className={cn(
-                  "w-13 h-13 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center shrink-0 border shadow-md transition-transform",
-                  gatePassDisabled
-                    ? "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"
-                    : "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/40"
-                )}>
-                  {gatePassDisabled ? (
+                {gatePassDisabled ? (
+                  <div className="w-13 h-13 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center shrink-0 border bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 shadow-md">
                     <Ban className="w-6 h-6 sm:w-7 sm:h-7" />
-                  ) : (
-                    <QrCode className="w-6 h-6 sm:w-7 sm:h-7" />
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <GatePassIllustration className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 drop-shadow-xl" transparentBg />
+                )}
 
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 mb-1">

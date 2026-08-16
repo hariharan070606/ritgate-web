@@ -22,9 +22,9 @@ const FLIGHT_EASE = [0.42, 0, 0.2, 1] as const; // accelerate out, settle in —
 function PaperPlane({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 48 48" className={className} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M45 5 L3 22.5 L22 28 Z" fill="#4F46E5" />
-      <path d="M45 5 L22 28 L27 43 Z" fill="#4338CA" />
-      <path d="M22 28 L15.5 40.5 L25 33.5 Z" fill="#312E81" />
+      <path d="M45 5 L3 22.5 L22 28 Z" fill="#0F172A" className="dark:fill-slate-100" />
+      <path d="M45 5 L22 28 L27 43 Z" fill="#1E293B" className="dark:fill-slate-300" />
+      <path d="M22 28 L15.5 40.5 L25 33.5 Z" fill="#334155" className="dark:fill-slate-400" />
     </svg>
   );
 }
@@ -74,14 +74,14 @@ export default function MotionLoader({ label = 'Loading', className, compact = f
           />
           {/* Origin / destination markers */}
           <circle cx="24" cy="118" r="3" className="fill-slate-300 dark:fill-slate-700" />
-          <circle cx="318" cy="20" r="3.5" className="fill-indigo-500/70" />
+          <circle cx="318" cy="20" r="3.5" className="fill-slate-900/80 dark:fill-white/80" />
         </svg>
 
         {/* Comet trail — particles riding the same path, lagging the plane */}
         {particles.map((p, i) => (
           <motion.span
             key={i}
-            className="absolute left-0 top-0 rounded-full bg-indigo-500"
+            className="absolute left-0 top-0 rounded-full bg-slate-900 dark:bg-white"
             style={{
               width: p.size,
               height: p.size,
@@ -115,7 +115,7 @@ export default function MotionLoader({ label = 'Loading', className, compact = f
             animate={{ y: [0, -1.5, 0] }}
             transition={{ repeat: Infinity, duration: 1.4, ease: 'easeInOut' }}
           >
-            <PaperPlane className="h-12 w-12 drop-shadow-[0_6px_12px_rgba(79,70,229,0.28)]" />
+            <PaperPlane className="h-12 w-12 drop-shadow-[0_6px_12px_rgba(15,23,42,0.35)] dark:drop-shadow-[0_6px_12px_rgba(255,255,255,0.2)]" />
           </motion.div>
         </motion.div>
       </div>
