@@ -20,6 +20,7 @@ import { cn } from "../../utils/cn";
 import { useAdaptive } from "../../utils/useAdaptive";
 import TopRefreshControl from "../../components/common/TopRefreshControl";
 import VisitorAvatar from "../../components/common/VisitorAvatar";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
 
 interface ProfilePageProps {
   user?: any;
@@ -37,6 +38,7 @@ export default function ProfilePage({
   const user = propUser || authUser;
   const { isDesktop } = useAdaptive();
   const { profileImage } = useProfile();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -350,7 +352,7 @@ export default function ProfilePage({
             {/* Phone View Only Logout Button */}
             <div className="lg:hidden pt-2">
               <button
-                onClick={logout}
+                onClick={() => setShowLogoutModal(true)}
                 className="w-full flex items-center justify-center gap-2.5 p-4 rounded-[24px] bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/50 border border-rose-100 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 font-extrabold text-sm transition-all active:scale-[0.98] shadow-sm"
               >
                 <LogOut className="w-5 h-5" />
@@ -362,6 +364,20 @@ export default function ProfilePage({
 
         </div>
       </TopRefreshControl>
+
+      {/* Confirmation modal for phone view logout */}
+      <ConfirmationModal
+        visible={showLogoutModal}
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={() => {
+          setShowLogoutModal(false);
+          logout();
+        }}
+        title="Log Out"
+        message="Are you sure you want to log out of RIT Gate?"
+        confirmText="Log Out"
+        confirmColor="bg-rose-500 hover:bg-rose-600"
+      />
     </div>
   );
 }

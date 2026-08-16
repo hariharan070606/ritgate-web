@@ -417,7 +417,7 @@ export default function StudentHome() {
                   "w-13 h-13 sm:w-15 sm:h-15 rounded-2xl flex items-center justify-center shrink-0 border shadow-md transition-transform",
                   gatePassDisabled
                     ? "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"
-                    : "bg-white/10 border-white/20 text-white backdrop-blur-md shadow-black/30"
+                    : "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/40"
                 )}>
                   {gatePassDisabled ? (
                     <Ban className="w-6 h-6 sm:w-7 sm:h-7" />
