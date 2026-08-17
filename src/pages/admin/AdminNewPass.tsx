@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { QrCode, Ban } from 'lucide-react';
+import { QrCode, Ban, ArrowLeft } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 import QRCodeModal from '../../components/common/QRCodeModal';
@@ -13,6 +13,7 @@ import { nowIST } from '../../utils/dateUtils';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { PASS_COPY } from '../../config/nativeCopy';
 import SinglePassRequestForm from '../../components/common/SinglePassRequestForm';
+import { useAdaptive } from '../../utils/useAdaptive';
 
 /** Returns current hour in IST (UTC+5:30) */
 const getISTHour = () => {
@@ -27,12 +28,12 @@ interface AdminNewPassProps {
 
 export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
   usePageTitle(PASS_COPY.newRequest);
+  const { isDesktop } = useAdaptive();
   const { getUserId, user } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const { withLock } = useActionLock();
   const adminCode = getUserId();
   const adminName = (user as any)?.staffName || (user as any)?.name || 'Admin';
-
   const passDisabled = getISTHour() >= 17;
   
   const [purpose, setPurpose] = useState('');
@@ -107,7 +108,27 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
   };
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden box-border max-w-md mx-auto space-y-6 pb-10 text-left lg:max-w-4xl">
+    <div className="w-full max-w-full overflow-x-hidden box-border min-h-screen flex flex-col bg-[#F8FAFC] dark:bg-slate-950">
+      {/* Mobile Header */}
+      {!isDesktop && (
+        <header className="sticky inset-x-0 top-0 z-[90] bg-white/95 dark:bg-slate-950/95 border-b border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-xl shrink-0 lg:hidden box-border">
+          <div className="relative flex items-center justify-between h-16 px-4 sm:px-6 w-full max-w-full box-border">
+            <button
+              onClick={() => window.history.back()}
+              className="w-10 h-10 rounded-full bg-slate-100/80 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-transform shrink-0 z-10"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <h1 className="absolute left-16 right-16 text-center text-[17px] font-black text-slate-900 dark:text-white tracking-wider leading-none truncate uppercase">
+              New Request
+            </h1>
+            <div className="w-10 shrink-0" />
+          </div>
+        </header>
+      )}
+
+      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 py-4 sm:py-6 pb-32 lg:px-0 lg:pt-0 lg:pb-0 box-border overflow-x-hidden flex flex-col">
+        <div className="w-full max-w-md mx-auto space-y-6 text-left lg:max-w-4xl">
       {/* Time restriction banner */}
       {passDisabled && (
         <motion.div initial={transitions.page.initial} animate={transitions.page.animate}>
@@ -174,6 +195,8 @@ export default function AdminNewPass({ onBack }: AdminNewPassProps = {}) {
         purpose={purpose}
         title="ADMIN GATE PASS"
       />
+        </div>
+      </main>
     </div>
   );
 }
