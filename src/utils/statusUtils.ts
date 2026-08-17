@@ -25,6 +25,7 @@ export function normalizeRequestStatus(requestOrStatus: unknown): string {
     const s = cleanStatus(requestOrStatus);
     if (!s) return 'PENDING';
     if (s.startsWith('REJECTED')) return 'REJECTED';
+    if (s.startsWith('EXPIRED') || s === 'QR_EXPIRED' || s === 'TIMEOUT') return 'EXPIRED';
     return s;
   }
 
@@ -34,7 +35,19 @@ export function normalizeRequestStatus(requestOrStatus: unknown): string {
   const hodApproval = cleanStatus(request.hodApproval || request.hod_approval);
   const hrApproval = cleanStatus(request.hrApproval || request.hr_approval);
 
-  // 1. Rejections take top priority
+  // 1. Explicit Expiration
+  if (
+    status.startsWith('EXPIRED') ||
+    status === 'QR_EXPIRED' ||
+    status === 'TIMEOUT' ||
+    Boolean(request.isExpired) ||
+    Boolean(request.isExpiredPass) ||
+    Boolean(request.qrExpired)
+  ) {
+    return 'EXPIRED';
+  }
+
+  // 2. Rejections take priority
   if (
     status.startsWith('REJECTED') ||
     hrApproval === 'REJECTED' ||
@@ -44,27 +57,27 @@ export function normalizeRequestStatus(requestOrStatus: unknown): string {
     return 'REJECTED';
   }
 
-  // 2. Terminal states
+  // 3. Terminal states
   if (['USED', 'EXITED', 'CANCELLED', 'COMPLETED'].includes(status)) {
     return status;
   }
 
-  // 3. Fully Approved
+  // 4. Fully Approved
   if (status === 'APPROVED' || hrApproval === 'APPROVED') {
     return 'APPROVED';
   }
 
-  // 4. Pending HR (HOD approved, awaiting HR)
+  // 5. Pending HR (HOD approved, awaiting HR)
   if (status === 'PENDING_HR' || status === 'APPROVED_BY_HOD') {
     return 'PENDING_HR';
   }
 
-  // 5. Pending HOD (Staff approved, awaiting HOD)
+  // 6. Pending HOD (Staff approved, awaiting HOD)
   if (status === 'PENDING_HOD' || status === 'APPROVED_BY_STAFF') {
     return 'PENDING_HOD';
   }
 
-  // 6. Pending Staff
+  // 7. Pending Staff
   if (status === 'PENDING_STAFF') {
     return 'PENDING_STAFF';
   }
@@ -95,6 +108,16 @@ export function getStatusMeta(requestOrStatus: unknown): StatusMeta {
         dotClass: 'bg-rose-500',
         textClass: 'text-rose-700 dark:text-rose-300',
         bgClass: 'bg-rose-50 dark:bg-rose-950/30',
+      };
+    case 'EXPIRED':
+      return {
+        key,
+        label: 'Expired',
+        variant: 'gray',
+        icon: CircleSlash2,
+        dotClass: 'bg-slate-400',
+        textClass: 'text-slate-500 dark:text-slate-400',
+        bgClass: 'bg-slate-100 dark:bg-slate-800/60',
       };
     case 'USED':
       return {
