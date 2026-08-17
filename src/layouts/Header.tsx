@@ -4,6 +4,7 @@ import AppHeader from '../components/common/AppHeader';
 import NotificationBell from '../components/common/NotificationBell';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../context/ProfileContext';
+import { resolveProfilePhoto } from '../utils/profilePhoto';
 import { getNavItems } from '../config/navigation';
 
 interface HeaderProps {
@@ -182,6 +183,7 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
 
   const { profileImage } = useProfile();
   const isDashboard = location.pathname === '/dashboard';
+  const userPhoto = profileImage || resolveProfilePhoto(user);
 
   return (
     <AppHeader
@@ -193,7 +195,7 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
       showBack={showBack}
       onBack={handleBack}
       isDashboard={isDashboard}
-      profileImage={profileImage}
+      profileImage={userPhoto}
       actions={
         (location.pathname === '/gate-logs' && (role === 'HR' || role === 'ADMIN_OFFICER')) ? null : (
           <>
