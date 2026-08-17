@@ -403,12 +403,12 @@ export default function StaffDashboard() {
                 <table className="desktop-table w-full min-w-[700px]">
                   <thead className="bg-slate-100/70 dark:bg-slate-900/80 border-b border-slate-200/60 dark:border-slate-800">
                     <tr>
-                      <th className="w-[220px] xl:w-[280px]">Requester</th>
-                      <th className="w-[140px] xl:w-[160px]">Type</th>
-                      <th className="w-[180px] xl:w-[230px]">Purpose</th>
-                      <th className="w-[160px] xl:w-[190px]">Date</th>
-                      <th className="w-[120px] xl:w-[130px] !text-center">Status</th>
-                      <th className="w-[130px] xl:w-[160px] !text-center">Actions</th>
+                      <th className="w-[220px] xl:w-[280px]">REQUESTER</th>
+                      <th className="w-[140px] xl:w-[160px]">TYPE</th>
+                      <th className="w-[180px] xl:w-[230px]">PURPOSE</th>
+                      <th className="w-[160px] xl:w-[190px]">EXIT DATE</th>
+                      <th className="w-[120px] xl:w-[130px] !text-center">STATUS</th>
+                      <th className="w-[130px] xl:w-[160px] !text-center">ACTION</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -438,14 +438,16 @@ export default function StaffDashboard() {
                               <div className="min-w-0">
                                 <p className="font-black text-slate-950 dark:text-white truncate">{requesterName}</p>
                                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5 truncate">
-                                  {isVisitor ? request.visitorPhone || 'Visitor' : `${request.regNo || 'N/A'} - ${request.department || 'Dept'}`}
+                                  {isVisitor
+                                    ? `${request.visitorPhone || 'Visitor'} • ${request.department || 'Dept'}`
+                                    : `${request.regNo ? `${request.regNo}` : 'N/A'} • ${request.department || 'Dept'}`}
                                 </p>
                               </div>
                             </div>
                           </td>
-                          <td className="font-bold text-slate-700 dark:text-slate-200">{isVisitor ? 'Visitor' : request.passType === 'BULK' ? 'Bulk Gate Pass' : 'Single Gate Pass'}</td>
-                          <td className="max-w-[220px] xl:max-w-[320px] truncate font-bold text-slate-800 dark:text-slate-100">{request.purpose || request.reason || 'General'}</td>
-                          <td className="font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">{formatDateTime(request.requestDate || request.createdAt)}</td>
+                          <td className="font-semibold text-slate-700 dark:text-slate-200">{isVisitor ? 'Visitor Request' : request.passType === 'BULK' ? 'Bulk Student Pass' : 'Single Gate Pass'}</td>
+                          <td className="max-w-[220px] xl:max-w-[320px] truncate font-semibold text-slate-800 dark:text-slate-100">{request.purpose || request.reason || 'General'}</td>
+                          <td className="font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">{formatDateShort(request.exitDateTime || request.requestDate || request.createdAt)}</td>
                           <td>
                             <span className={cn(
                               'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap',

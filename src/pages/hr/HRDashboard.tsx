@@ -306,12 +306,12 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
               <table className="desktop-table">
                 <thead>
                   <tr>
-                    <th>Requester</th>
-                    <th>Type</th>
-                    <th>Purpose</th>
-                    <th>Exit Date</th>
-                    <th className="!text-center">Status</th>
-                    <th className="!text-center">Action</th>
+                    <th>REQUESTER</th>
+                    <th>TYPE</th>
+                    <th>PURPOSE</th>
+                    <th>EXIT DATE</th>
+                    <th className="!text-center">STATUS</th>
+                    <th className="!text-center">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -319,18 +319,22 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
                     const isBulk = req.passType === 'BULK';
                     const isVisitor = req.passType === 'VISITOR';
                     const name = isBulk ? (req.requestedByStaffName || req.hodCode || 'Staff') : isVisitor ? (req.visitorName || req.studentName || 'Visitor') : (req.requestedByStaffName || req.studentName || req.regNo || `Request #${req.id}`);
-                    const sub = isBulk ? `${req.userType || 'HOD'} - ${req.department || 'N/A'}` : isVisitor ? `${req.visitorPhone || ''} - ${req.department || 'Department'}` : `${req.requestedByStaffCode || req.regNo || 'N/A'} - ${req.department || 'Department'}`;
+                    const sub = isBulk 
+                      ? `${req.requestedByStaffName || 'Staff'}${req.requestedByStaffCode ? ` • ID: ${req.requestedByStaffCode}` : ''}`
+                      : isVisitor 
+                      ? `${req.visitorPhone || 'Guest'} • ${req.department || 'Department'}`
+                      : `${req.requestedByStaffCode || req.regNo || 'N/A'} • ${req.department || 'Department'}`;
                     const statusVal = isVisitor ? req.status : (req.hrApproval || req.status);
                     const isPending = statusVal === 'PENDING_HR' || statusVal === 'PENDING';
                     return (
                       <tr key={`${req.passType}-${req.id}`} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
                         <td>
                           <p className="font-bold text-slate-950 dark:text-white">{name}</p>
-                          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{sub}</p>
+                          <p className="mt-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400">{sub}</p>
                         </td>
-                        <td>{isBulk ? 'Bulk Gate Pass' : isVisitor ? 'Visitor Request' : 'Single Gate Pass'}</td>
+                        <td className="font-semibold">{isBulk ? 'Bulk Student Pass' : isVisitor ? 'Visitor Request' : 'Single Gate Pass'}</td>
                         <td className="max-w-[320px] truncate">{req.purpose || req.reason || 'General'}</td>
-                        <td>{fmtDate(req.exitDateTime || req.requestDate || req.createdAt || '')}</td>
+                        <td className="font-medium text-slate-700 dark:text-slate-300">{fmtDate(req.exitDateTime || req.requestDate || req.createdAt || '')}</td>
                         <td>
                           <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
                             statusVal === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :

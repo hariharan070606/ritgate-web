@@ -340,12 +340,12 @@ export default function HODDashboard() {
                 <table className="desktop-table">
                   <thead>
                     <tr>
-                      <th>Requester</th>
-                      <th>Type</th>
-                      <th>Purpose</th>
-                      <th>Requested</th>
-                      <th className="!text-center">Status</th>
-                      <th className="!text-center">Action</th>
+                      <th>REQUESTER</th>
+                      <th>TYPE</th>
+                      <th>PURPOSE</th>
+                      <th>EXIT DATE</th>
+                      <th className="!text-center">STATUS</th>
+                      <th className="!text-center">ACTION</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -357,13 +357,17 @@ export default function HODDashboard() {
                         <tr key={request.id} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
                           <td>
                             <p className="font-bold text-slate-950 dark:text-white">{request.studentName || 'Unknown'}</p>
-                            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                              {isBulk ? (request.requestedByStaffName || 'Staff') : isVisitor ? request.visitorPhone || 'Guest' : `${request.regNo || 'N/A'} - ${request.department || 'Dept'}`}
+                            <p className="mt-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                              {isBulk
+                                ? `${request.requestedByStaffName || 'Staff'}${request.requestedByStaffCode ? ` • ID: ${request.requestedByStaffCode}` : ''}`
+                                : isVisitor
+                                ? `${request.visitorPhone || 'Guest'} • ${request.department || 'Department'}`
+                                : `${request.regNo ? `${request.regNo}` : 'N/A'} • ${request.department || 'Dept'}`}
                             </p>
                           </td>
-                          <td>{isBulk ? 'Bulk Student Pass' : isVisitor ? (request.role || 'Visitor') : 'Single Pass'}</td>
+                          <td className="font-semibold">{isBulk ? 'Bulk Student Pass' : isVisitor ? (request.role || 'Visitor') : 'Single Gate Pass'}</td>
                           <td className="max-w-[320px] truncate">{request.purpose || request.reason || 'General'}</td>
-                          <td>{formatDateTime(request.exitDateTime || request.requestDate || request.createdAt)}</td>
+                          <td className="font-medium text-slate-700 dark:text-slate-300">{formatDateShort(request.exitDateTime || request.requestDate || request.createdAt)}</td>
                           <td>
                             <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
                               (request.status === 'USED' || request.status === 'EXITED') ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700' :
