@@ -214,7 +214,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
   }
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden box-border space-y-4 lg:space-y-6">
+    <div className="w-full max-w-full overflow-x-hidden box-border space-y-4 lg:space-y-4">
       {/* Mobile header with notification bell */}
       {isMobile && (
         <TopMenuBar
@@ -231,7 +231,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
         />
       )}
 
-      {/* Search Bar (First) */}
+      <div className="px-4 sm:px-5 lg:px-0 space-y-4">
       <div className="relative lg:hidden">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input
@@ -428,6 +428,7 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
         )}
       </div>
       )}
+      </div>
 
       {/* Single Detail Modal */}
       {selectedRequest && !showBulkDetail && (

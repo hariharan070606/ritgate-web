@@ -250,7 +250,7 @@ export default function HODDashboard() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden box-border lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
+    <div className="w-full max-w-full overflow-x-hidden box-border space-y-4 lg:space-y-4">
       {!isDesktop && <TopMenuBar
         greeting={getGreeting()}
         title={hodName.toUpperCase()}
@@ -264,7 +264,7 @@ export default function HODDashboard() {
         />
       )}
 
-      <div className="px-5 pt-4 space-y-4 lg:px-0 lg:pt-0 lg:space-y-5">
+      <div className="px-4 sm:px-5 lg:px-0 space-y-4">
         {/* Search Bar */}
         <div className="relative lg:hidden">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">

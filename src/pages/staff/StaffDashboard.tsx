@@ -314,7 +314,7 @@ export default function StaffDashboard() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden box-border md:bg-transparent md:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
+    <div className="w-full max-w-full overflow-x-hidden box-border space-y-4 lg:space-y-4">
       {!isDesktop && <TopMenuBar
         greeting={getGreeting()}
         title={staffName.toUpperCase()}
@@ -328,7 +328,7 @@ export default function StaffDashboard() {
         />
       )}
 
-      <div className="px-4 sm:px-5 pt-4 space-y-4 md:px-0 md:pt-0 md:space-y-5">
+      <div className="px-4 sm:px-5 lg:px-0 space-y-4">
         {/* Search Bar */}
         <div className="relative md:hidden">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
