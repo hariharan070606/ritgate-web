@@ -129,7 +129,7 @@ export default function NTFDashboard() {
   }
 
   return (
-    <div className="min-h-screen lg:bg-transparent lg:min-h-0 bg-[#F8FAFC] dark:bg-slate-950">
+    <div className="w-full max-w-full overflow-x-hidden box-border space-y-4 lg:space-y-4">
       {!isDesktop && (
         <TopMenuBar
           greeting={greeting.toUpperCase()}
@@ -137,7 +137,7 @@ export default function NTFDashboard() {
         />
       )}
 
-      <div className="px-5 pt-4 space-y-4 pb-28 lg:px-0 lg:pt-0 lg:pb-0 lg:space-y-8">
+      <div className="px-4 sm:px-5 lg:px-0 space-y-4">
       {isDesktop && (
         <DesktopPageHeader
           eyebrow={greeting.replace(',', '')}

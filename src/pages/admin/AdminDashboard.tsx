@@ -21,6 +21,7 @@ import { useToast } from '../../context/ToastContext';
 import { getVisitorRequestsForStaff } from '../../services/api.service';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import { relativeTime } from '../../utils/dateUtils';
+import { formatDateShort } from '../../utils/date';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { EMPTY_COPY } from '../../config/nativeCopy';
@@ -242,11 +243,11 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
               <table className="desktop-table">
                 <thead>
                   <tr>
-                    <th>Visitor</th>
-                    <th>Purpose</th>
-                    <th>Requested</th>
-                    <th className="!text-center">Status</th>
-                    <th className="!text-center">Action</th>
+                    <th>REQUESTER</th>
+                    <th>PURPOSE</th>
+                    <th>EXIT DATE</th>
+                    <th className="!text-center">STATUS</th>
+                    <th className="!text-center">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -254,11 +255,11 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
                     <tr key={req.requestId || req.id || i} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
                       <td>
                         <p className="font-bold text-slate-950 dark:text-white">{req.requesterName || req.name || 'Visitor'}</p>
-                        <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{req.visitorPhone || req.email || 'Website visitor'}</p>
+                        <p className="mt-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400">{req.visitorPhone ? `${req.visitorPhone}` : 'Website visitor'}{req.department ? ` • ${req.department}` : ''}</p>
                       </td>
-                      <td className="max-w-[360px] truncate">{req.purpose || 'Campus Visit'}</td>
-                      <td>{relativeTime(req.createdAt)}</td>
-                      <td><Badge status={req.status} size="sm" /></td>
+                      <td className="max-w-[360px] truncate font-semibold text-slate-800 dark:text-slate-100">{req.purpose || 'Campus Visit'}</td>
+                      <td className="font-medium text-slate-700 dark:text-slate-300">{formatDateShort(req.exitDateTime || req.requestDate || req.createdAt)}</td>
+                      <td className="text-center"><Badge status={req.status} size="sm" /></td>
                       <td className="text-center"><Button size="sm" variant="dark" onClick={() => openDetail(req)}>View</Button></td>
                     </tr>
                   ))}
