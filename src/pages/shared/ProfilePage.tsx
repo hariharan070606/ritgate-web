@@ -173,8 +173,8 @@ export default function ProfilePage({
               <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-7 shadow-sm flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-                    <div className="w-11 h-11 rounded-2xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center shrink-0 shadow-md">
-                      <UserCheck className="w-5 h-5" />
+                    <div className="w-11 h-11 rounded-2xl bg-slate-950 text-white dark:bg-slate-800 dark:text-white flex items-center justify-center shrink-0 shadow-md">
+                      <UserCheck className="w-5 h-5 text-white stroke-[2.5]" />
                     </div>
                     <div>
                       <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-slate-950 dark:text-white leading-tight">
@@ -190,8 +190,8 @@ export default function ProfilePage({
                     {/* ID Field */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
-                          <CreditCard className="w-4 h-4" />
+                        <div className="w-10 h-10 rounded-2xl bg-slate-950 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-md">
+                          <CreditCard className="w-5 h-5 text-white stroke-[2.5]" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -207,8 +207,8 @@ export default function ProfilePage({
                     {/* Email Field */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
-                          <Mail className="w-4 h-4" />
+                        <div className="w-10 h-10 rounded-2xl bg-slate-950 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-md">
+                          <Mail className="w-5 h-5 text-white stroke-[2.5]" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -224,8 +224,8 @@ export default function ProfilePage({
                     {/* Phone Field */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
-                          <Smartphone className="w-4 h-4" />
+                        <div className="w-10 h-10 rounded-2xl bg-slate-950 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-md">
+                          <Smartphone className="w-5 h-5 text-white stroke-[2.5]" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -245,8 +245,8 @@ export default function ProfilePage({
               <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-7 shadow-sm flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-                    <div className="w-11 h-11 rounded-2xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center shrink-0 shadow-md">
-                      <Building2 className="w-5 h-5" />
+                    <div className="w-11 h-11 rounded-2xl bg-slate-950 text-white dark:bg-slate-800 dark:text-white flex items-center justify-center shrink-0 shadow-md">
+                      <Building2 className="w-5 h-5 text-white stroke-[2.5]" />
                     </div>
                     <div>
                       <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-slate-950 dark:text-white leading-tight">
@@ -261,8 +261,8 @@ export default function ProfilePage({
                   <div className="space-y-4">
                     {/* Department */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
-                        <Building2 className="w-4 h-4" />
+                      <div className="w-10 h-10 rounded-2xl bg-slate-950 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-md">
+                        <Building2 className="w-5 h-5 text-white stroke-[2.5]" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -276,8 +276,8 @@ export default function ProfilePage({
 
                     {/* System Role */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
-                        <ShieldCheck className="w-4 h-4" />
+                      <div className="w-10 h-10 rounded-2xl bg-slate-950 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-md">
+                        <ShieldCheck className="w-5 h-5 text-white stroke-[2.5]" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -291,8 +291,8 @@ export default function ProfilePage({
 
                     {/* Campus Verification */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
-                        <UserCheck className="w-4 h-4" />
+                      <div className="w-10 h-10 rounded-2xl bg-slate-950 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-md">
+                        <UserCheck className="w-5 h-5 text-emerald-400 stroke-[2.5]" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
