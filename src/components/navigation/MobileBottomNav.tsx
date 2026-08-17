@@ -50,7 +50,7 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                   'flex flex-col items-center justify-center flex-1 gap-1 relative rounded-2xl',
                   'active:opacity-70 transition-all duration-150',
                   isActive
-                    ? 'text-[var(--color-primary)] dark:text-blue-400'
+                    ? 'text-slate-950 dark:text-white font-bold'
                     : 'text-slate-400 dark:text-slate-500',
                 )}
               >
@@ -71,7 +71,7 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                 <span className={cn(
                   'text-[11px] font-semibold leading-none',
                   isActive
-                    ? 'text-[var(--color-primary)] dark:text-blue-400'
+                    ? 'text-slate-950 dark:text-white font-bold'
                     : 'text-slate-400 dark:text-slate-500',
                 )}>
                   {item.label}
@@ -80,7 +80,7 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                 {isActive && !isNewPass && (
                   <motion.span
                     layoutId="bottomNavDot"
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-7 h-[3px] rounded-full bg-[var(--color-primary)] dark:bg-blue-400"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-7 h-[3px] rounded-full bg-slate-950 dark:bg-white"
                     transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                   />
                 )}

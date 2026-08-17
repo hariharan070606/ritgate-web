@@ -66,7 +66,7 @@ export default function TopMenuBar({
                 photoUrl={profileImage}
                 size={48}
                 fallback={
-                  <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white text-[14px] font-black">
+                  <div className="w-full h-full bg-slate-950 dark:bg-slate-900 flex items-center justify-center text-white text-[14px] font-black">
                     {initials}
                   </div>
                 }
