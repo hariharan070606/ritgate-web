@@ -38,6 +38,7 @@ import VisitorAvatar from '../../components/common/VisitorAvatar';
 import { resolveProfilePhoto } from '../../utils/profilePhoto';
 import { cn } from '../../utils/cn';
 import type { Staff } from '../../types';
+import { formatDateShort } from '../../utils/date';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 import { EMPTY_COPY } from '../../config/nativeCopy';
 import { useAdaptive } from '../../utils/useAdaptive';
