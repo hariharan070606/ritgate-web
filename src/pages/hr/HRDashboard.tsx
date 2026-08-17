@@ -4,6 +4,7 @@ import { QrCode, Search, AlertCircle, FileText, Users, Clock, CheckCircle2, XCir
 import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
 import Modal from '../../components/ui/Modal';
 import RequestTimeline from '../../components/common/RequestTimeline';
+import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import TopMenuBar from '../../components/common/TopMenuBar';
@@ -137,13 +138,14 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       ? parseInt(req.id.replace('VISITOR-', ''), 10)
       : req.id;
 
-  const handleApprove = async (req: any) => {
+  const handleApprove = async (req: any, remark?: string) => {
     setRequests(prev => prev.map(item => {
       if (item.id === req.id) {
         return {
           ...item,
           status: 'APPROVED',
           hrApproval: 'APPROVED',
+          hrRemark: remark || 'Approved by HR',
         };
       }
       return item;
@@ -166,15 +168,16 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
     }, 'Authorizing...');
   };
 
-  const handleReject = async (req: any) => {
-    if (!rejectReason.trim()) { showError('Required', 'Please provide a reason'); return; }
+  const handleReject = async (req: any, remark?: string) => {
+    const reason = remark || rejectReason.trim();
+    if (!reason) { showError('Required', 'Please provide a reason'); return; }
     setRequests(prev => prev.map(item => {
       if (item.id === req.id) {
         return {
           ...item,
           status: 'REJECTED',
           hrApproval: 'REJECTED',
-          hrRemark: rejectReason.trim(),
+          hrRemark: reason,
         };
       }
       return item;
@@ -186,8 +189,8 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       try {
         const numericId = toNumericId(req);
         const res = req.passType === 'VISITOR'
-          ? await rejectVisitorByHR(numericId, rejectReason.trim())
-          : await rejectGatePassByHR(hrCode, numericId, rejectReason.trim());
+          ? await rejectVisitorByHR(numericId, reason)
+          : await rejectGatePassByHR(hrCode, numericId, reason);
         if (res.success) { showSuccess('Rejected', 'Request has been rejected.'); setRejectReason(''); }
         else showError('Failed', res.message);
       } catch {
@@ -434,32 +437,21 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       )}
 
       {/* Single Detail Modal */}
-      <Modal isOpen={showDetail} onClose={() => setShowDetail(false)} title="Request Details" size="lg" presentation="page">
-        {selectedRequest && (
-          <div className="space-y-5 pt-2">
-            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
-              <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Requester</p>
-                <p className="text-sm font-bold text-slate-900 dark:text-white mt-1 uppercase">{selectedRequest.requestedByStaffName || selectedRequest.studentName || selectedRequest.regNo}</p>
-                {selectedRequest.department && <p className="text-[10px] text-[var(--color-primary)] font-bold mt-1 uppercase">{selectedRequest.department}</p>}
-              </div>
-              <Badge status={selectedRequest.status} size="md" />
-            </div>
-            <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 space-y-3">
-              <div><span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Purpose</span><span className="text-sm font-bold text-slate-900 dark:text-white">{selectedRequest.purpose}</span></div>
-              <div><span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Reason</span><span className="text-sm text-slate-600 dark:text-slate-300">{selectedRequest.reason}</span></div>
-              {selectedRequest.hodRemark && <div><span className="text-[10px] font-bold text-emerald-500 uppercase block mb-1">HOD Remark</span><span className="text-sm font-bold text-emerald-700 dark:text-emerald-400">"{selectedRequest.hodRemark}"</span></div>}
-            </div>
-            <RequestTimeline request={selectedRequest} />
-            {(selectedRequest.hrApproval === 'PENDING_HR' || selectedRequest.status === 'PENDING_HR' || (selectedRequest.passType === 'VISITOR' && selectedRequest.status === 'PENDING')) && (
-              <div className="flex gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-                <Button fullWidth variant="success" size="lg" onClick={() => handleApprove(selectedRequest)} disabled={processing}>Approve Request</Button>
-                <Button fullWidth variant="danger" size="lg" onClick={() => setShowReject(true)} disabled={processing}>Reject Request</Button>
-              </div>
-            )}
-          </div>
-        )}
-      </Modal>
+      {selectedRequest && !showBulkDetail && (
+        <SinglePassDetailsModal
+          isOpen={showDetail}
+          onClose={() => setShowDetail(false)}
+          request={selectedRequest}
+          showActions={selectedRequest.hrApproval === 'PENDING_HR' || selectedRequest.status === 'PENDING_HR' || (selectedRequest.passType === 'VISITOR' && selectedRequest.status === 'PENDING')}
+          onApprove={async (id, remark) => {
+            await handleApprove(selectedRequest, remark);
+          }}
+          onReject={async (id, remark) => {
+            await handleReject(selectedRequest, remark);
+          }}
+          viewerRole="hr"
+        />
+      )}
 
       {/* Bulk Detail Modal */}
       <Modal isOpen={showBulkDetail} onClose={() => setShowBulkDetail(false)} title="Bulk Student Pass Details" size="lg" presentation="page">
