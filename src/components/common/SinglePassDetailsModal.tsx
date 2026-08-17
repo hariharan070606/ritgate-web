@@ -516,46 +516,46 @@ export default function SinglePassDetailsModal({
           <footer className="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-3.5 z-30 shrink-0 shadow-lg mt-auto">
             <div className="max-w-3xl lg:max-w-4xl mx-auto w-full flex items-center justify-end gap-3">
               {canTakeAction ? (
-                <div className="w-full flex flex-col space-y-2.5">
-                  <div className="w-full">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Review Notes / Remarks</label>
-                    <textarea
+                <div className="w-full flex flex-col space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">REVIEW NOTES / REMARKS</label>
+                  <div className="flex items-center gap-3 w-full flex-wrap sm:flex-nowrap">
+                    <input
+                      type="text"
                       value={remark}
                       onChange={(e) => setRemark(e.target.value)}
                       placeholder="Add optional notes or mandatory rejection reason..."
-                      rows={2}
-                      className="w-full h-14 p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                      className="flex-1 min-w-[200px] h-11 px-4 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                     />
-                  </div>
-                  <div className="flex gap-2.5 justify-end">
-                    <Button
-                      variant="danger"
-                      size="md"
-                      className="w-28 sm:w-32 text-xs font-black uppercase tracking-wider"
-                      icon={<XCircle className="w-4 h-4" />}
-                      onClick={() => {
-                        if (!remark.trim()) {
-                          setShowRemarkError(true);
-                          return;
-                        }
-                        setShowRejectConfirm(true);
-                      }}
-                      isLoading={processing}
-                      disabled={processing}
-                    >
-                      Reject
-                    </Button>
-                    <Button
-                      variant="success"
-                      size="md"
-                      className="w-28 sm:w-32 text-xs font-black uppercase tracking-wider"
-                      icon={<CheckCircle2 className="w-4 h-4" />}
-                      onClick={() => setShowApproveConfirm(true)}
-                      isLoading={processing}
-                      disabled={processing}
-                    >
-                      Approve
-                    </Button>
+                    <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto justify-end">
+                      <Button
+                        variant="danger"
+                        size="md"
+                        className="h-11 px-5 text-xs font-black uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shrink-0"
+                        icon={<XCircle className="w-4 h-4" />}
+                        onClick={() => {
+                          if (!remark.trim()) {
+                            setShowRemarkError(true);
+                            return;
+                          }
+                          setShowRejectConfirm(true);
+                        }}
+                        isLoading={processing}
+                        disabled={processing}
+                      >
+                        Reject
+                      </Button>
+                      <Button
+                        variant="success"
+                        size="md"
+                        className="h-11 px-5 text-xs font-black uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shrink-0"
+                        icon={<CheckCircle2 className="w-4 h-4" />}
+                        onClick={() => setShowApproveConfirm(true)}
+                        isLoading={processing}
+                        disabled={processing}
+                      >
+                        Approve
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ) : (
