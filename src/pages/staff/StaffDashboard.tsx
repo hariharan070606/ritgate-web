@@ -449,11 +449,12 @@ export default function StaffDashboard() {
                           <td>
                             <span className={cn(
                               'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap',
-                              request.staffApproval === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :
-                              request.staffApproval === 'REJECTED' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' :
+                              (request.status === 'USED' || request.status === 'EXITED') ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700' :
+                              (request.status === 'APPROVED' || request.staffApproval === 'APPROVED') ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :
+                              (request.status === 'REJECTED' || request.staffApproval === 'REJECTED') ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' :
                               'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300'
                             )}>
-                              {request.staffApproval || 'PENDING'}
+                              {(request.status === 'USED' || request.status === 'EXITED') ? request.status : (request.staffApproval || request.status || 'PENDING')}
                             </span>
                           </td>
                           <td className="text-center">
@@ -482,6 +483,7 @@ export default function StaffDashboard() {
                 const requesterName = getRequesterName(request);
                 const requesterPhoto = getRequesterPhoto(request);
                 const isPending = isPendingRequest(request);
+                const displayStatus = (request.status === 'USED' || request.status === 'EXITED') ? request.status : (request.staffApproval || request.status || 'PENDING');
                 return (
                   <motion.div 
                     key={request.id}
@@ -548,10 +550,11 @@ export default function StaffDashboard() {
                     <div className="flex items-center justify-between mt-4">
                       <div className={cn(
                         "inline-flex items-center px-4 py-1.5 rounded-full",
-                        request.staffApproval === 'APPROVED' ? "bg-emerald-500" :
-                        request.staffApproval === 'REJECTED' ? "bg-rose-500" : "bg-amber-500"
+                        (request.status === 'USED' || request.status === 'EXITED') ? "bg-slate-600" :
+                        (request.staffApproval === 'APPROVED' || request.status === 'APPROVED') ? "bg-emerald-500" :
+                        (request.staffApproval === 'REJECTED' || request.status === 'REJECTED') ? "bg-rose-500" : "bg-amber-500"
                       )}>
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{request.staffApproval}</span>
+                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{displayStatus}</span>
                       </div>
                       <Button
                         size="sm"

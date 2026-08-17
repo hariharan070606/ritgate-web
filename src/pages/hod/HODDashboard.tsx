@@ -366,11 +366,12 @@ export default function HODDashboard() {
                           <td>{formatDateTime(request.exitDateTime || request.requestDate || request.createdAt)}</td>
                           <td>
                             <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
+                              (request.status === 'USED' || request.status === 'EXITED') ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700' :
                               (request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' :
                               request.status === 'REJECTED' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' :
                               'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300'
                             )}>
-                              {(request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') ? 'APPROVED' : (request.status === 'PENDING_HOD' || request.status === 'PENDING') ? 'PENDING' : request.status}
+                              {(request.status === 'USED' || request.status === 'EXITED') ? request.status : (request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') ? 'APPROVED' : (request.status === 'PENDING_HOD' || request.status === 'PENDING') ? 'PENDING' : request.status}
                             </span>
                           </td>
                           <td className="text-center py-5">
@@ -456,15 +457,17 @@ export default function HODDashboard() {
                       <div className="flex items-center gap-2">
                          <div className={cn(
                            "w-1.5 h-1.5 rounded-full",
+                           (request.status === 'USED' || request.status === 'EXITED') ? "bg-slate-500" :
                            (request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') ? "bg-emerald-500" :
                            request.status === 'REJECTED' ? "bg-rose-500" : "bg-amber-500"
                          )} />
                          <span className={cn(
                            "text-[10px] font-black uppercase tracking-widest",
+                           (request.status === 'USED' || request.status === 'EXITED') ? "text-slate-600 dark:text-slate-400" :
                            (request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') ? "text-emerald-600" :
                            request.status === 'REJECTED' ? "text-rose-600" : "text-amber-600"
                          )}>
-                           {(request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') ? 'APPROVED' : (request.status === 'PENDING_HOD' || request.status === 'PENDING') ? 'PENDING' : request.status}
+                           {(request.status === 'USED' || request.status === 'EXITED') ? request.status : (request.status === 'APPROVED' || request.status === 'APPROVED_BY_HOD') ? 'APPROVED' : (request.status === 'PENDING_HOD' || request.status === 'PENDING') ? 'PENDING' : request.status}
                          </span>
                       </div>
                       
