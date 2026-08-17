@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import VisitorAvatar from './VisitorAvatar';
 import { cn } from '../../utils/cn';
 
 interface AppHeaderProps {
@@ -11,6 +12,8 @@ interface AppHeaderProps {
   sidebarCollapsed: boolean;
   showBack?: boolean;
   onBack?: () => void;
+  isDashboard?: boolean;
+  profileImage?: string | null;
   className?: string;
 }
 
@@ -21,6 +24,8 @@ export default function AppHeader({
   actions,
   showBack = false,
   onBack,
+  isDashboard = false,
+  profileImage,
   className,
 }: AppHeaderProps) {
   return (
@@ -42,6 +47,16 @@ export default function AppHeader({
               <ArrowLeft className="h-5 w-5" />
             </button>
           )}
+
+          {isDashboard && (
+            <VisitorAvatar
+              name={title}
+              photoUrl={profileImage}
+              size={44}
+              className="shrink-0 border-2 border-white dark:border-slate-800 shadow-md ring-2 ring-slate-200/70 dark:ring-slate-800"
+            />
+          )}
+
           <div className="min-w-0">
             {label && (
               <p className="text-[12px] font-black uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500">

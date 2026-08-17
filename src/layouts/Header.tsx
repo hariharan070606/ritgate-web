@@ -3,6 +3,7 @@ import { CalendarDays } from 'lucide-react';
 import AppHeader from '../components/common/AppHeader';
 import NotificationBell from '../components/common/NotificationBell';
 import { useAuth } from '../context/AuthContext';
+import { useProfile } from '../context/ProfileContext';
 import { getNavItems } from '../config/navigation';
 
 interface HeaderProps {
@@ -179,6 +180,9 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
     navigate('/dashboard', { replace: true });
   };
 
+  const { profileImage } = useProfile();
+  const isDashboard = location.pathname === '/dashboard';
+
   return (
     <AppHeader
       label={copy.label}
@@ -188,6 +192,8 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
       sidebarCollapsed={sidebarCollapsed}
       showBack={showBack}
       onBack={handleBack}
+      isDashboard={isDashboard}
+      profileImage={profileImage}
       actions={
         (location.pathname === '/gate-logs' && (role === 'HR' || role === 'ADMIN_OFFICER')) ? null : (
           <>
