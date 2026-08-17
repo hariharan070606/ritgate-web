@@ -460,7 +460,7 @@ export default function StaffDashboard() {
                             <div className="flex justify-center">
                               <Button
                                 size="sm"
-                                variant="primary"
+                                variant="dark"
                                 onClick={(e) => { e.stopPropagation(); openReview(request); }}
                                 className="h-9 rounded-xl px-4 text-[11px] font-extrabold uppercase tracking-widest whitespace-nowrap"
                               >
@@ -555,7 +555,7 @@ export default function StaffDashboard() {
                       </div>
                       <Button
                         size="sm"
-                        variant="primary"
+                        variant="dark"
                         onClick={(e) => { e.stopPropagation(); openReview(request); }}
                         className="h-9 rounded-xl px-4 text-[11px] font-extrabold uppercase tracking-widest"
                       >
