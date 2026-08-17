@@ -203,17 +203,6 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
 
   const getInitials = (name: string) => (name || 'NA').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
-  if (isLoading && requests.length === 0) {
-    return (
-      <div className="space-y-4 animate-pulse">
-        <div className="flex items-center gap-3"><Skeleton className="w-12 h-12 rounded-full" /><div className="space-y-2"><Skeleton className="h-3 w-20" /><Skeleton className="h-5 w-40" /></div></div>
-        <Skeleton className="h-11 w-full rounded-xl" />
-        <Skeleton className="h-16 w-full rounded-xl" />
-        <SkeletonList count={4} />
-      </div>
-    );
-  }
-
   if (hasError) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center space-y-4">
@@ -293,7 +282,11 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       </div>
 
       {/* Request List */}
-      {isDesktop ? (
+      {isLoading && requests.length === 0 ? (
+        <div className="p-4 bg-white dark:bg-slate-900 rounded-[28px] border border-slate-100 dark:border-slate-800">
+          <SkeletonList count={4} />
+        </div>
+      ) : isDesktop ? (
         <section className="desktop-card overflow-hidden">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5 dark:border-slate-800">
             <div>
