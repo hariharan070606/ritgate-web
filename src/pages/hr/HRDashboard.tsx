@@ -239,6 +239,27 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
         />
       )}
 
+      {/* Search Bar (First) */}
+      <div className="relative lg:hidden">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <input
+          type="text"
+          placeholder="Search requests..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="w-full pl-11 pr-4 h-12 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm outline-none focus:ring-2 focus:ring-blue-500/10"
+        />
+      </div>
+
+      {isDesktop && (
+        <DesktopToolbar
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search by student, visitor, purpose, or request ID..."
+        />
+      )}
+
+      {/* Stat Cards (Second) */}
       {isDesktop && (
         <div className="grid grid-cols-3 gap-4">
           <DesktopStatCard label="Pending" value={stats.pending} icon={Clock} tone="amber" active={activeTab === 'PENDING'} onClick={() => setActiveTab('PENDING')} />
@@ -247,29 +268,21 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
         </div>
       )}
 
-      {/* Search */}
-      <div className="relative lg:hidden">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-        <input type="text" placeholder="Search requests..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/10 placeholder:text-slate-300" />
-      </div>
-
-      {isDesktop && (
-        <DesktopToolbar
-          searchValue={searchQuery}
-          onSearchChange={setSearchQuery}
-          searchPlaceholder="Search by purpose, HOD code, requester, or ID..."
-        />
-      )}
-
-      {/* Stats Tabs */}
-      <div className="flex border-b border-slate-100 dark:border-slate-800 lg:hidden">
+      {/* Mobile Stats Pill Tabs */}
+      <div className="flex bg-white dark:bg-slate-900 rounded-[24px] p-2 shadow-sm border border-slate-100 dark:border-slate-800 lg:hidden">
         {(['PENDING', 'APPROVED', 'REJECTED'] as Tab[]).map(t => (
-          <button key={t} onClick={() => setActiveTab(t)}
-            className={cn('flex-1 py-3 text-[11px] font-bold uppercase tracking-wider border-b-2 transition-colors',
-              activeTab === t ? t === 'PENDING' ? 'border-amber-500 text-amber-600' : t === 'APPROVED' ? 'border-emerald-500 text-emerald-600' : 'border-rose-500 text-rose-600' : 'border-transparent text-slate-400')}>
+          <button
+            key={t}
+            onClick={() => setActiveTab(t)}
+            className={cn(
+              'flex-1 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all text-center',
+              activeTab === t
+                ? 'bg-slate-900 text-white shadow-md dark:bg-white dark:text-slate-900'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            )}
+          >
             <div>{t}</div>
-            <div className={cn('text-xl font-bold mt-0.5', activeTab === t ? '' : 'text-slate-600 dark:text-white')}>
+            <div className="text-base font-black mt-0.5">
               {t === 'PENDING' ? stats.pending : t === 'APPROVED' ? stats.approved : stats.rejected}
             </div>
           </button>
@@ -279,12 +292,12 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
       {/* Request List */}
       {isDesktop ? (
         <section className="desktop-card overflow-hidden">
-          <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5 dark:border-slate-800">
             <div>
-              <h3 className="text-base font-bold text-slate-950 dark:text-white">Approval Queue</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Today&apos;s {activeTab.toLowerCase()} requests</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-950 dark:text-white">Requests Overview</h3>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Today&apos;s {activeTab.toLowerCase()} HR approvals & clearances</p>
             </div>
-            <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filtered.length} Requests</span>
+            <span className="text-xs font-black uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">{filtered.length} Requests</span>
           </div>
           {filtered.length === 0 ? (
             <EmptyState
