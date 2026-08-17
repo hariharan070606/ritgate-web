@@ -205,126 +205,15 @@ export default function PassVerificationPage() {
 
   const showReviewActions = canReview && !isDecided(request);
 
-  // Decided requests (approved/rejected/used/exited) — and viewers who cannot
-  // review — open the read-only "Request Details" modal on EVERY viewport,
-  // including desktop/tablet.
-  if (!showReviewActions) {
-    return (
-      <SinglePassDetailsModal
-        isOpen
-        onClose={handleClose}
-        request={request}
-        showActions={false}
-      />
-    );
-  }
-
-  // Pending request + reviewer on phone → the same modal with approve/reject.
-  if (!isDesktop) {
-    return (
-      <SinglePassDetailsModal
-        isOpen
-        onClose={handleClose}
-        request={request}
-        onApprove={handleApprove}
-        onReject={handleReject}
-        showActions={showReviewActions}
-        processing={processing}
-      />
-    );
-  }
-
-  // Pending request + reviewer on desktop → the dedicated approval page.
-  const status = getStatus(request);
-  const requesterName = getRequesterName(request);
-  const identifier = request.regNo || request.staffCode || userId || 'N/A';
-  const department = request.department || 'N/A';
-
   return (
-    <div className="mx-auto w-full max-w-[1180px]">
-      <section className="desktop-card overflow-hidden">
-        <div className="bg-transparent px-5 py-6 lg:px-6 lg:py-6">
-          <div className="space-y-5">
-            <div className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <div className="flex items-center gap-5">
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[26px] bg-amber-500 text-[28px] font-black text-white shadow-lg shadow-amber-100 dark:shadow-none">
-                  {getInitials(requesterName)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="truncate text-[24px] font-black uppercase tracking-tight text-slate-950 dark:text-white">
-                    {requesterName}
-                  </h3>
-                  <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                    {identifier} - {department}
-                  </p>
-                </div>
-                <span className={cn('shrink-0 rounded-xl px-4 py-2 text-[12px] font-black uppercase tracking-widest', getStatusClasses(status))}>
-                  {status}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 md:grid-cols-2">
-              <div className="border-b border-slate-50 p-6 dark:border-slate-800 md:border-b-0 md:border-r">
-                <SectionLabel icon={Target} className="mb-2.5">Purpose</SectionLabel>
-                <p className="text-lg font-black text-slate-950 dark:text-white">
-                  {request.purpose || 'General'}
-                </p>
-              </div>
-              <div className="p-6">
-                <SectionLabel icon={CalendarDays} className="mb-2.5">Date</SectionLabel>
-                <p className="text-lg font-black text-slate-950 dark:text-white">
-                  {formatDate(request.visitDate || request.exitDateTime || request.requestDate || request.createdAt)}
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <SectionLabel icon={StickyNote} className="mb-3">Reason</SectionLabel>
-              <p className="text-base font-semibold italic leading-relaxed text-slate-700 dark:text-slate-300">
-                {request.reason || 'No reason provided.'}
-              </p>
-            </div>
-
-            {showReviewActions && (
-              <div className="rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <textarea
-                  value={remark}
-                  onChange={(event) => setRemark(event.target.value)}
-                  placeholder="Add review notes (required for rejection)..."
-                  className="min-h-[82px] w-full resize-none rounded-2xl border border-slate-200 bg-white p-4 text-base font-semibold text-slate-900 outline-none placeholder:text-slate-400 focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-                  disabled={processing}
-                />
-                <div className="mt-5 grid grid-cols-2 gap-4">
-                  <Button
-                    variant="danger"
-                    size="xl"
-                    fullWidth
-                    icon={<AlertCircle className="h-5 w-5" />}
-                    onClick={handleDesktopReject}
-                    disabled={processing}
-                    className="h-[70px] rounded-[28px] text-[18px] uppercase tracking-[0.18em] shadow-xl shadow-rose-100 dark:shadow-none"
-                  >
-                    Reject
-                  </Button>
-                  <Button
-                    variant="success"
-                    size="xl"
-                    fullWidth
-                    icon={<CheckCircle2 className="h-5 w-5" />}
-                    onClick={handleDesktopApprove}
-                    isLoading={processing}
-                    disabled={processing}
-                    className="h-[70px] rounded-[28px] text-[18px] uppercase tracking-[0.18em] shadow-xl shadow-emerald-100 dark:shadow-none"
-                  >
-                    Approve
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-    </div>
+    <SinglePassDetailsModal
+      isOpen
+      onClose={handleClose}
+      request={request}
+      onApprove={handleApprove}
+      onReject={handleReject}
+      showActions={showReviewActions}
+      processing={processing}
+    />
   );
 }
