@@ -6,6 +6,7 @@ import { apiService } from '../../services/api.service';
 import SectionLabel from './SectionLabel';
 import { cn } from '../../utils/cn';
 import { formatDateShort } from '../../utils/date';
+import { formatDateTime } from '../../utils/dateUtils';
 import { isPdfAttachment } from '../../utils/attachmentUtils';
 import Badge from '../ui/Badge';
 import GatePassQRModal from './GatePassQRModal';
@@ -45,59 +46,57 @@ export default function MyRequestsBulkModal({
   const [showQR, setShowQR] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
   const [showFullscreen, setShowFullscreen] = useState(false);
-  const isPdf = isPdfAttachment(details?.attachmentUri);
-  const [participants, setParticipants] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const isPdf = isPdfAttachment(details?.attachmentUri);
   const [remark, setRemark] = useState('');
-  const [processing, setProcessing] = useState(false);
-  const isProcessing = externalProcessing ?? processing;
+  const [showRemarkError, setShowRemarkError] = useState(false);
   const [showApproveConfirm, setShowApproveConfirm] = useState(false);
   const [showRejectConfirm, setShowRejectConfirm] = useState(false);
-  const [showRemarkError, setShowRemarkError] = useState(false);
+  const [internalProcessing, setInternalProcessing] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && requestId) {
-      loadDetails();
-      setShowQR(false);
-      setRemark('');
-    }
-  }, [isOpen, requestId]);
+  const isProcessing = externalProcessing || internalProcessing;
 
   const loadDetails = async () => {
+    if (!requestId) return;
     setLoading(true);
     setError(null);
     try {
-      const response = await apiService.getBulkGatePassDetails(requestId);
-      if (response.success) {
-        const data = response.request || response.data || response;
-        setDetails(data);
-        setParticipants(
-          (data.participants) || (data.students) || []
-        );
+      const res = await apiService.getBulkGatePassDetails(requestId);
+      if (res.success && (res.details || res.request || res.data)) {
+        setDetails(res.details || res.request || res.data);
       } else {
-        setError(response.message || 'Failed to load details');
+        setError(res.message || 'Failed to fetch bulk request details.');
       }
-    } catch (err) {
-      setError('An unexpected error occurred');
+    } catch {
+      setError('An error occurred while loading details.');
     } finally {
       setLoading(false);
     }
   };
 
-  const getInitials = (name: string) =>
-    (name || 'BK').split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  useEffect(() => {
+    if (isOpen && requestId) {
+      loadDetails();
+      setShowQR(false);
+      setShowParticipants(false);
+      setRemark('');
+      setShowRemarkError(false);
+      setShowApproveConfirm(false);
+      setShowRejectConfirm(false);
+    }
+  }, [isOpen, requestId]);
 
-  const status = details?.status || 'PENDING';
-  const isApproved = status === 'APPROVED' || !!details?.qrCode;
-  const isRejected = status === 'REJECTED';
-  const hasQR = !!(details?.qrCode || details?.qrData?.qrString);
-  
+  const getInitials = (name: string) =>
+    (name || 'BK').split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+
+  const participants = details?.students || details?.participants || [];
+  const status = (details?.status || 'PENDING_HOD').toUpperCase();
+  const isApproved = status === 'APPROVED';
+  const isRejected = status === 'REJECTED' || status === 'REJECTED_BY_HOD';
+  const hasQR = Boolean(details?.qrCode || details?.qrData?.qrString);
+
   const isQROwner = currentUserId
-    ? (
-        String(currentUserId).trim() === String(details?.qrOwnerId || '').trim() ||
-        (details?.includeStaff && String(currentUserId).trim() === String(details?.requestedByStaffCode || details?.staffCode || '').trim()) ||
-        (!details?.qrOwnerId && String(currentUserId).trim() === String(details?.requestedByStaffCode || details?.staffCode || '').trim())
-      )
+    ? String(currentUserId).trim().toLowerCase() === String(details?.qrOwnerId || details?.requestedByStaffCode || details?.staffCode || '').trim().toLowerCase()
     : true;
 
   const appliedByName = details?.requestedByStaffName || null;
@@ -140,7 +139,9 @@ export default function MyRequestsBulkModal({
               >
                 <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
-              <h1 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">Bulk Pass Details</h1>
+              <h1 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
+                {!showActions ? 'Bulk Pass Details' : 'Pass Verification'}
+              </h1>
             </div>
             {!loading && !error && (
               <Badge variant={statusVariant} className="px-3 py-1 text-[10px] uppercase font-black tracking-widest">
@@ -170,7 +171,7 @@ export default function MyRequestsBulkModal({
               {/* Profile Row */}
               <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-3 lg:rounded-[22px] lg:p-5">
                 <div className={cn(
-                  "w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg font-black shadow-lg",
+                  "w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg font-black shadow-lg shrink-0",
                   isApproved ? "bg-emerald-500" : isRejected ? "bg-rose-500" : "bg-amber-500"
                 )}>
                   {getInitials(details?.requestedByStaffName || 'BK')}
@@ -179,12 +180,22 @@ export default function MyRequestsBulkModal({
                   <h2 className="text-base font-extrabold text-slate-900 dark:text-white truncate">
                     {details?.requestedByStaffName || 'N/A'}
                   </h2>
-                  <p className="text-xs text-slate-500 font-medium truncate uppercase tracking-tighter">
-                   {userRole} • {details?.department || 'N/A'}
+                  <p className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-tighter flex items-center flex-wrap gap-1">
+                    {(() => {
+                      const reqId = details?.requestedByStaffCode || details?.staffCode || details?.qrOwnerId || (details?.id ? `#${details.id}` : '');
+                      const dept = details?.department;
+                      return (
+                        <>
+                          {reqId && <span className="font-extrabold text-slate-700 dark:text-slate-200">ID: {reqId}</span>}
+                          {userRole && ` • ${userRole}`}
+                          {dept && ` • ${dept}`}
+                        </>
+                      );
+                    })()}
                   </p>
                 </div>
                 {participants.length > 0 && (
-                  <div className="bg-[var(--color-primary)] flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white shadow-md active:scale-95 transition-transform cursor-pointer" onClick={() => setShowParticipants(true)}>
+                  <div className="bg-[var(--color-primary)] flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white shadow-md active:scale-95 transition-transform cursor-pointer shrink-0" onClick={() => setShowParticipants(true)}>
                     <Users className="w-3.5 h-3.5" />
                     <span className="text-xs font-black">{participants.length}</span>
                   </div>
@@ -211,31 +222,55 @@ export default function MyRequestsBulkModal({
               {/* Info Grid */}
               <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 grid grid-cols-2 shadow-sm lg:rounded-[22px]">
                 <div className="p-4 border-r border-slate-50 dark:border-slate-800">
-                  <SectionLabel icon={Target} className="mb-2">Purpose</SectionLabel>
+                  <SectionLabel icon={Target} className="mb-2">PURPOSE</SectionLabel>
                   <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">
                     {details?.purpose || 'N/A'}
                   </p>
                 </div>
                 <div className="p-4">
-                  <SectionLabel icon={CalendarDays} className="mb-2">Date</SectionLabel>
+                  <SectionLabel icon={CalendarDays} className="mb-2">DATE & TIME</SectionLabel>
                   <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
-                    {formatDateShort(details?.exitDateTime || details?.requestDate)}
+                    {formatDateTime(details?.exitDateTime || details?.requestDate || details?.createdAt)}
                   </p>
                 </div>
               </div>
 
               {/* Reason */}
               <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm lg:rounded-[22px] lg:p-5">
-                <SectionLabel icon={StickyNote} className="mb-2.5">Reason</SectionLabel>
+                <SectionLabel icon={StickyNote} className="mb-2.5">REASON / NOTES</SectionLabel>
                 <p className="text-sm font-medium text-slate-600 dark:text-slate-400 leading-relaxed italic">
                   {details?.reason || 'No reason provided.'}
                 </p>
               </div>
 
+              {/* View Participants Button Box (Below Reason Box) */}
+              {participants.length > 0 && (
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between gap-3 lg:rounded-[22px]">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+                      <Users className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">PARTICIPANTS LIST</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white">{participants.length} Registered Students</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => setShowParticipants(true)}
+                    icon={<Users className="w-4 h-4" />}
+                    className="text-white text-xs font-bold uppercase tracking-wider px-4 shrink-0"
+                  >
+                    View Participants ({participants.length})
+                  </Button>
+                </div>
+              )}
+
               {/* Attachment Preview */}
               {details?.attachmentUri && (
                 <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
-                  <SectionLabel icon={Paperclip} className="mb-3">Preview</SectionLabel>
+                  <SectionLabel icon={Paperclip} className="mb-3">ATTACHMENT PREVIEW</SectionLabel>
                   <div 
                     className="relative w-40 h-24 bg-slate-900 rounded-xl overflow-hidden cursor-pointer group"
                     onClick={() => isPdf ? window.open(details.attachmentUri, '_blank') : setShowFullscreen(true)}
@@ -257,49 +292,51 @@ export default function MyRequestsBulkModal({
                 </div>
               )}
 
-              {/* Approval Timeline */}
-              <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm space-y-4">
-                <SectionLabel icon={ListChecks}>Approval Timeline</SectionLabel>
-                <div className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="w-[2px] h-10 bg-emerald-500 my-1 rounded-full" />
-                    <div className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
-                      isApproved ? "bg-emerald-500" : isRejected ? "bg-rose-500" : "bg-slate-100 dark:bg-slate-800"
-                    )}>
-                      {isApproved ? <CheckCircle2 className="w-5 h-5 text-white" /> : 
-                       isRejected ? <XCircle className="w-5 h-5 text-white" /> : 
-                       <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />}
-                    </div>
-                  </div>
-                  <div className="flex-1 pt-1.5 space-y-9">
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-none">Request Submitted</h4>
-                      <p className="text-xs font-bold text-emerald-500 uppercase mt-1">✓ Completed</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-none">HOD Approval</h4>
-                      <p className={cn(
-                        "text-xs font-bold uppercase mt-1",
-                         isApproved ? "text-emerald-500" : isRejected ? "text-rose-500" : "text-slate-400"
+              {/* Approval Timeline (Hidden in Pass Verification / Review Mode) */}
+              {!showActions && (
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm space-y-4">
+                  <SectionLabel icon={ListChecks}>APPROVAL TIMELINE</SectionLabel>
+                  <div className="flex gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="w-[2px] h-10 bg-emerald-500 my-1 rounded-full" />
+                      <div className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
+                        isApproved ? "bg-emerald-500" : isRejected ? "bg-rose-500" : "bg-slate-100 dark:bg-slate-800"
                       )}>
-                        {isApproved ? '✓ Completed' : isRejected ? '✗ Rejected' : 'Pending'}
-                      </p>
-                      {hodRemark && (
-                         <div className="mt-2 bg-slate-50 dark:bg-slate-800 p-2 rounded-lg border-l-2 border-amber-500 italic">
-                            <p className="text-[10px] font-black text-slate-400 uppercase mb-0.5">Remark:</p>
-                            <p className="text-xs font-medium text-slate-700 dark:text-slate-300">{hodRemark}</p>
-                         </div>
-                      )}
+                        {isApproved ? <CheckCircle2 className="w-5 h-5 text-white" /> : 
+                         isRejected ? <XCircle className="w-5 h-5 text-white" /> : 
+                         <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />}
+                      </div>
+                    </div>
+                    <div className="flex-1 pt-1.5 space-y-9">
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-none">Request Submitted</h4>
+                        <p className="text-xs font-bold text-emerald-500 uppercase mt-1">✓ Completed</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-none">HOD Approval</h4>
+                        <p className={cn(
+                          "text-xs font-bold uppercase mt-1",
+                           isApproved ? "text-emerald-500" : isRejected ? "text-rose-500" : "text-slate-400"
+                        )}>
+                          {isApproved ? '✓ Completed' : isRejected ? '✗ Rejected' : 'Pending'}
+                        </p>
+                        {hodRemark && (
+                           <div className="mt-2 bg-slate-50 dark:bg-slate-800 p-2 rounded-lg border-l-2 border-amber-500 italic">
+                              <p className="text-[10px] font-black text-slate-400 uppercase mb-0.5">Remark:</p>
+                              <p className="text-xs font-medium text-slate-700 dark:text-slate-300">{hodRemark}</p>
+                           </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
-              <div className="h-24 lg:h-4" />
+              <div className="h-12 lg:h-4" />
             </div>
           )}
         </div>
