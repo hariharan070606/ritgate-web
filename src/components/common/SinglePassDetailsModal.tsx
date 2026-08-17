@@ -295,21 +295,21 @@ export default function SinglePassDetailsModal({
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
-                <h1 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
                   {!showActions ? 'Request Details' : 'Pass Verification'}
                 </h1>
               </div>
               
               <div className="flex items-center gap-3">
-                <Badge status={status} className="scale-110" />
+                <Badge status={status} className="scale-105" />
               </div>
             </div>
           </header>
 
           {/* Content Body Container */}
-          <div className="flex-1 overflow-y-auto w-full max-w-5xl lg:max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 py-8 lg:py-10 space-y-6 sm:space-y-8">
+          <div className="flex-1 overflow-y-auto w-full max-w-5xl lg:max-w-6xl mx-auto px-5 sm:px-8 lg:px-10 py-6 sm:py-8 space-y-5 sm:space-y-6">
             {/* Student Info Card */}
-            <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 lg:p-9 rounded-[28px] lg:rounded-[32px] border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-5 sm:gap-6">
+            <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 lg:p-7 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-4 sm:gap-5">
               <button
                 type="button"
                 onClick={() => { if (requesterPhoto) setShowPhotoPreview(true); }}
@@ -320,19 +320,19 @@ export default function SinglePassDetailsModal({
                   name={requesterDisplayName}
                   photoUrl={requesterPhoto}
                   size="auto"
-                  className="w-16 h-16 sm:w-20 sm:h-20 shadow-md ring-4 ring-slate-100 dark:ring-slate-800"
+                  className="w-14 h-14 sm:w-16 sm:h-16 shadow-md ring-3 ring-slate-100 dark:ring-slate-800"
                   fallback={
-                    <div className="w-full h-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white font-black text-xl sm:text-2xl">
+                    <div className="w-full h-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white font-black text-lg sm:text-xl">
                       {getInitials(requesterDisplayName)}
                     </div>
                   }
                 />
               </button>
               <div className="min-w-0 flex-1">
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight truncate">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight truncate">
                   {requesterDisplayName}
                 </h3>
-                <p className="text-xs sm:text-base font-bold text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-tighter">
                   {request.rollNo || request.regNo || request.id ? `${request.rollNo || request.regNo || `#${request.id}`}` : ''}
                   {(request.department || request.dept) ? ` • ${request.department || request.dept}` : ''}
                 </p>
@@ -340,16 +340,16 @@ export default function SinglePassDetailsModal({
             </div>
 
             {/* Purpose & Date Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-              <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[28px] lg:rounded-[32px] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+              <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-center">
                 <SectionLabel icon={Target} className="mb-2">PURPOSE</SectionLabel>
-                <p className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
+                <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                   {request.purpose || request.reason || 'Campus Gate Access'}
                 </p>
               </div>
-              <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[28px] lg:rounded-[32px] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-center">
+              <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-center">
                 <SectionLabel icon={CalendarDays} className="mb-2">DATE & TIME</SectionLabel>
-                <p className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
+                <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                   {formatDateTime(request.requestDate || request.createdAt)}
                 </p>
               </div>
@@ -357,10 +357,10 @@ export default function SinglePassDetailsModal({
 
             {/* Reason Box */}
             {request.reason && (
-              <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 lg:p-9 rounded-[28px] lg:rounded-[32px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
+              <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2.5">
                 <SectionLabel icon={FileText} className="mb-1">REASON / NOTES</SectionLabel>
-                <div className="bg-slate-50 dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
-                  <p className="text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
+                  <p className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed italic">
                     "{request.reason}"
                   </p>
                 </div>
@@ -369,18 +369,18 @@ export default function SinglePassDetailsModal({
 
             {/* Attachment Preview */}
             {attachmentUri && (
-              <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 lg:p-9 rounded-[28px] lg:rounded-[32px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+              <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
                 <div className="flex items-center justify-between mb-1">
                   <SectionLabel icon={Paperclip}>ATTACHMENT PREVIEW</SectionLabel>
                   <a
                     href={attachmentUri}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1.5"
+                    className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1.5"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <span>Open Original</span>
-                    <Maximize2 className="w-4 h-4" />
+                    <Maximize2 className="w-3.5 h-3.5" />
                   </a>
                 </div>
                 {isPdf ? (
@@ -388,23 +388,23 @@ export default function SinglePassDetailsModal({
                     href={attachmentUri}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-3.5 p-5 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold text-sm sm:text-base hover:underline"
+                    className="flex items-center gap-3 p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold text-sm hover:underline"
                   >
-                    <FileText className="w-7 h-7 shrink-0" />
+                    <FileText className="w-6 h-6 shrink-0" />
                     <span>View PDF Attachment Document</span>
                   </a>
                 ) : (
                   <div 
                     onClick={() => setIsFullScreen(true)}
-                    className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 max-h-96 bg-slate-950 flex items-center justify-center group cursor-pointer hover:border-blue-500/50 transition-all shadow-sm"
+                    className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 max-h-80 bg-slate-950 flex items-center justify-center group cursor-pointer hover:border-blue-500/50 transition-all shadow-sm"
                   >
                     <img 
                       src={attachmentUri} 
                       alt="Attachment Preview" 
-                      className="max-h-96 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                      className="max-h-80 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm backdrop-blur-[2px]">
-                      <Maximize2 className="w-5 h-5" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-xs backdrop-blur-[2px]">
+                      <Maximize2 className="w-4 h-4" />
                       <span>Click to View Fullscreen</span>
                     </div>
                   </div>
@@ -414,19 +414,19 @@ export default function SinglePassDetailsModal({
 
             {/* Remarks Section if available */}
             {(request.staffRemark || request.hodRemark || request.hrRemark) && (
-              <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 lg:p-9 rounded-[28px] lg:rounded-[32px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+              <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
                 <SectionLabel icon={StickyNote} className="mb-1">AUTHORIZATION REMARKS</SectionLabel>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {request.staffRemark && (
-                    <div className="bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/80 p-4 rounded-2xl">
-                      <p className="text-[11px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1">Staff Note</p>
-                      <p className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">"{request.staffRemark}"</p>
+                    <div className="bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/80 p-3.5 rounded-xl">
+                      <p className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-0.5">Staff Note</p>
+                      <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">"{request.staffRemark}"</p>
                     </div>
                   )}
                   {request.hodRemark && (
-                    <div className="bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-800/80 p-4 rounded-2xl">
-                      <p className="text-[11px] font-black text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">HOD Note</p>
-                      <p className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">"{request.hodRemark}"</p>
+                    <div className="bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-800/80 p-3.5 rounded-xl">
+                      <p className="text-[10px] font-black text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-0.5">HOD Note</p>
+                      <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">"{request.hodRemark}"</p>
                     </div>
                   )}
                 </div>
@@ -435,8 +435,8 @@ export default function SinglePassDetailsModal({
 
             {/* Approval & Tracking Status Timeline */}
             {!showActions && activeTimeline && activeTimeline.length > 0 && (
-              <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 lg:p-10 rounded-[28px] lg:rounded-[32px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6">
-                <SectionLabel icon={ListChecks} className="mb-3">APPROVAL & TRACKING STATUS</SectionLabel>
+              <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 lg:p-7 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-5">
+                <SectionLabel icon={ListChecks} className="mb-2">APPROVAL & TRACKING STATUS</SectionLabel>
                 <div className="space-y-0 pt-2">
                   {activeTimeline.map((step, idx) => {
                     const isDone = step.status === 'done';
