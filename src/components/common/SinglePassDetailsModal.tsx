@@ -285,29 +285,29 @@ export default function SinglePassDetailsModal({
           className="w-full h-full flex flex-col bg-[#F8FAFC] dark:bg-slate-950 relative overflow-hidden"
         >
           {/* Fixed Top Header Bar */}
-          <header className="sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 sm:px-10 lg:px-12 h-18 sm:h-22 flex items-center justify-between z-40 shrink-0 shadow-xs">
-            <div className="flex items-center gap-4 max-w-5xl lg:max-w-6xl mx-auto w-full justify-between">
-              <div className="flex items-center gap-3.5">
+          <header className="sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-8 h-16 sm:h-18 flex items-center justify-between z-40 shrink-0 shadow-xs">
+            <div className="flex items-center gap-4 max-w-3xl lg:max-w-4xl mx-auto w-full justify-between">
+              <div className="flex items-center gap-3">
                 <button 
                   onClick={onClose}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-xs"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-xs"
                   aria-label="Back"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
-                <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                <h1 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">
                   {!showActions ? 'Request Details' : 'Pass Verification'}
                 </h1>
               </div>
               
               <div className="flex items-center gap-3">
-                <Badge status={status} className="scale-105" />
+                <Badge status={status} className="scale-100" />
               </div>
             </div>
           </header>
 
           {/* Content Body Container */}
-          <div className="flex-1 overflow-y-auto w-full max-w-5xl lg:max-w-6xl mx-auto px-5 sm:px-8 lg:px-10 py-6 sm:py-8 space-y-5 sm:space-y-6">
+          <div className="flex-1 overflow-y-auto w-full max-w-3xl lg:max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-6 space-y-4 sm:space-y-5">
             {/* Student Info Card */}
             <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 lg:p-7 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-4 sm:gap-5">
               <button
@@ -513,25 +513,26 @@ export default function SinglePassDetailsModal({
           </div>
 
           {/* Fixed Footer Action Bar */}
-          <footer className="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-5 sm:px-10 lg:px-12 py-5 z-30 shrink-0 shadow-lg mt-auto">
-            <div className="max-w-5xl lg:max-w-6xl mx-auto w-full flex items-center justify-end gap-4">
+          <footer className="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-3.5 z-30 shrink-0 shadow-lg mt-auto">
+            <div className="max-w-3xl lg:max-w-4xl mx-auto w-full flex items-center justify-end gap-3">
               {canTakeAction ? (
-                <div className="w-full flex flex-col space-y-3">
+                <div className="w-full flex flex-col space-y-2.5">
                   <div className="w-full">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Review Notes / Remarks</label>
                     <textarea
                       value={remark}
                       onChange={(e) => setRemark(e.target.value)}
                       placeholder="Add optional notes or mandatory rejection reason..."
-                      className="w-full h-20 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                      rows={2}
+                      className="w-full h-14 p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none resize-none"
                     />
                   </div>
-                  <div className="flex gap-3 justify-end">
+                  <div className="flex gap-2.5 justify-end">
                     <Button
                       variant="danger"
-                      size="xl"
-                      className="lg:w-36"
-                      icon={<XCircle className="w-5 h-5" />}
+                      size="md"
+                      className="w-28 sm:w-32 text-xs font-black uppercase tracking-wider"
+                      icon={<XCircle className="w-4 h-4" />}
                       onClick={() => {
                         if (!remark.trim()) {
                           setShowRemarkError(true);
@@ -546,9 +547,9 @@ export default function SinglePassDetailsModal({
                     </Button>
                     <Button
                       variant="success"
-                      size="xl"
-                      className="lg:w-36"
-                      icon={<CheckCircle2 className="w-5 h-5" />}
+                      size="md"
+                      className="w-28 sm:w-32 text-xs font-black uppercase tracking-wider"
+                      icon={<CheckCircle2 className="w-4 h-4" />}
                       onClick={() => setShowApproveConfirm(true)}
                       isLoading={processing}
                       disabled={processing}
@@ -558,22 +559,22 @@ export default function SinglePassDetailsModal({
                   </div>
                 </div>
               ) : (
-                <div className="flex gap-3 justify-end w-full sm:w-auto">
+                <div className="flex gap-2.5 justify-end w-full sm:w-auto">
                   {canShowQR ? (
                     <>
                       <Button
                         variant="primary"
-                        size="xl"
-                        className="w-full sm:w-36 whitespace-nowrap shrink-0"
+                        size="md"
+                        className="w-full sm:w-28 text-xs font-black uppercase tracking-wider whitespace-nowrap shrink-0"
                         onClick={onClose}
                       >
                         Close
                       </Button>
                       <Button
                         variant="success"
-                        size="xl"
-                        className="w-full sm:w-auto px-6 whitespace-nowrap shrink-0"
-                        icon={qrLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <QrCode className="w-5 h-5" />}
+                        size="md"
+                        className="w-full sm:w-auto px-5 text-xs font-black uppercase tracking-wider whitespace-nowrap shrink-0"
+                        icon={qrLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <QrCode className="w-4 h-4" />}
                         onClick={handleViewQR}
                         disabled={qrLoading}
                       >
@@ -583,8 +584,8 @@ export default function SinglePassDetailsModal({
                   ) : (
                     <Button
                       variant="primary"
-                      size="xl"
-                      className="w-full sm:w-36"
+                      size="md"
+                      className="w-full sm:w-28 text-xs font-black uppercase tracking-wider"
                       onClick={onClose}
                     >
                       Close
