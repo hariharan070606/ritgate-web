@@ -30,7 +30,6 @@ const getISTHour = () => {
 type Stage = 'SELECT' | 'SINGLE' | 'BULK' | 'GUEST';
 
 export default function HODNewPass() {
-  usePageTitle('New Pass');
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -39,6 +38,9 @@ export default function HODNewPass() {
   const params = new URLSearchParams(location.search);
   const stageParam = params.get('stage')?.toUpperCase() as Stage | null;
   const stage: Stage = (stageParam && ['SINGLE', 'BULK', 'GUEST'].includes(stageParam)) ? stageParam : 'SELECT';
+
+  const currentTitle = stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle;
+  usePageTitle(currentTitle);
 
   const passDisabled = getISTHour() >= 17;
 
