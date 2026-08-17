@@ -131,9 +131,9 @@ export default function ProfilePage({
             
             {/* Header Profile Hero Card */}
             <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 shadow-xl overflow-hidden">
-              {/* Top Gradient Banner */}
-              <div className="h-32 sm:h-44 bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 relative">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent" />
+              {/* Top Black Gradient Banner */}
+              <div className="h-32 sm:h-44 bg-gradient-to-br from-slate-900 via-slate-950 to-black relative">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent" />
               </div>
 
               {/* Avatar & User Details Overlap */}
@@ -144,7 +144,7 @@ export default function ProfilePage({
                     name={userName}
                     photoUrl={profileImage}
                     size="auto"
-                    className="w-28 h-28 sm:w-36 sm:h-36 border-4 border-white dark:border-slate-900 bg-white dark:bg-slate-900 shadow-2xl"
+                    className="w-28 h-28 sm:w-36 sm:h-36 border-4 border-white dark:border-slate-900 bg-slate-950 dark:bg-black shadow-2xl"
                     fallback={
                       <div className="w-full h-full bg-gradient-to-tr from-slate-900 via-slate-950 to-black flex items-center justify-center text-white text-3xl sm:text-4xl font-black">
                         {initials}
@@ -155,14 +155,12 @@ export default function ProfilePage({
 
                 {/* User Info Title */}
                 <div className="flex-1 text-center sm:text-left min-w-0">
-
-
-                  <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight truncate">
+                  <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-slate-950 dark:text-white truncate">
                     {userName}
                   </h1>
                   
-                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1">
-                    {department} • ID: <span className="font-mono text-slate-800 dark:text-slate-200 font-bold">{userId || "N/A"}</span>
+                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 mt-1">
+                    {department} • ID: <span className="font-mono text-slate-950 dark:text-white font-extrabold">{userId || "N/A"}</span>
                   </p>
                 </div>
               </div>
@@ -172,17 +170,17 @@ export default function ProfilePage({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               {/* Personal & Contact Details Card */}
-              <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm flex flex-col justify-between">
+              <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-7 shadow-sm flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
-                    <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div className="w-11 h-11 rounded-2xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center shrink-0 shadow-md">
                       <UserCheck className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
+                      <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-slate-950 dark:text-white leading-tight">
                         Contact Information
                       </h3>
-                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                         Primary communication channels
                       </p>
                     </div>
@@ -192,14 +190,14 @@ export default function ProfilePage({
                     {/* ID Field */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
                           <CreditCard className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                          <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                             Identification ID
                           </p>
-                          <p className="text-sm font-bold text-slate-900 dark:text-white font-mono truncate">
+                          <p className="text-sm font-extrabold text-slate-950 dark:text-white font-mono truncate">
                             {userId || "N/A"}
                           </p>
                         </div>
@@ -209,14 +207,14 @@ export default function ProfilePage({
                     {/* Email Field */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
                           <Mail className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                          <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                             Email Address
                           </p>
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                          <p className="text-sm font-bold text-slate-950 dark:text-white truncate">
                             {email || "N/A"}
                           </p>
                         </div>
@@ -226,14 +224,14 @@ export default function ProfilePage({
                     {/* Phone Field */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
                           <Smartphone className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                          <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                             Phone Number
                           </p>
-                          <p className="text-sm font-bold text-slate-900 dark:text-white font-mono truncate">
+                          <p className="text-sm font-extrabold text-slate-950 dark:text-white font-mono truncate">
                             {phone || "N/A"}
                           </p>
                         </div>
@@ -244,17 +242,17 @@ export default function ProfilePage({
               </div>
 
               {/* Academic & Access Information Card */}
-              <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm flex flex-col justify-between">
+              <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 p-6 sm:p-7 shadow-sm flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
-                    <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div className="w-11 h-11 rounded-2xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center shrink-0 shadow-md">
                       <Building2 className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
+                      <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-slate-950 dark:text-white leading-tight">
                         Institutional Details
                       </h3>
-                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                         Department & campus access rights
                       </p>
                     </div>
@@ -263,14 +261,14 @@ export default function ProfilePage({
                   <div className="space-y-4">
                     {/* Department */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
                         <Building2 className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                        <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                           Department / Branch
                         </p>
-                        <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                        <p className="text-sm font-bold text-slate-950 dark:text-white truncate">
                           {department}
                         </p>
                       </div>
@@ -278,14 +276,14 @@ export default function ProfilePage({
 
                     {/* System Role */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
                         <ShieldCheck className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                        <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                           Assigned System Role
                         </p>
-                        <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                        <p className="text-sm font-bold text-slate-950 dark:text-white truncate">
                           {roleLabel}
                         </p>
                       </div>
@@ -293,14 +291,14 @@ export default function ProfilePage({
 
                     {/* Campus Verification */}
                     <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center gap-3.5">
-                      <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-white flex items-center justify-center shrink-0 shadow-sm">
                         <UserCheck className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                        <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                           Gate Pass Access Status
                         </p>
-                        <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 truncate flex items-center gap-1.5">
+                        <p className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 truncate flex items-center gap-1.5">
                           <span>Verified Campus Credentials</span>
                         </p>
                       </div>
