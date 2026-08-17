@@ -131,19 +131,23 @@ export default function MyRequestsBulkModal({
       >
         <div className="flex min-h-0 w-full flex-1 flex-col bg-[#F8FAFC] dark:bg-slate-950 overflow-hidden">
         {/* Header */}
-        <header className="sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 px-4 sm:px-8 h-16 sm:h-20 flex items-center gap-3 z-30 shrink-0 shadow-sm">
-          <button 
-            onClick={onClose}
-            className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-transform"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="flex-1 text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">Bulk Pass Details</h1>
-          {!loading && !error && (
-            <Badge variant={statusVariant} className="px-3 py-1 text-[10px] uppercase font-black tracking-widest">
-              {status}
-            </Badge>
-          )}
+        <header className="sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between z-30 shrink-0 shadow-sm">
+          <div className="flex items-center gap-3 max-w-3xl lg:max-w-4xl mx-auto w-full justify-between">
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={onClose}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-transform"
+              >
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+              <h1 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">Bulk Pass Details</h1>
+            </div>
+            {!loading && !error && (
+              <Badge variant={statusVariant} className="px-3 py-1 text-[10px] uppercase font-black tracking-widest">
+                {status}
+              </Badge>
+            )}
+          </div>
         </header>
 
         {/* Content */}
@@ -162,7 +166,7 @@ export default function MyRequestsBulkModal({
               <Button variant="outline" onClick={loadDetails}>Retry</Button>
             </div>
           ) : (
-            <div className="p-4 pt-8 space-y-4 lg:p-6 lg:space-y-5">
+            <div className="max-w-3xl lg:max-w-4xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-6 space-y-4 sm:space-y-5">
               {/* Profile Row */}
               <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-3 lg:rounded-[22px] lg:p-5">
                 <div className={cn(
@@ -302,80 +306,83 @@ export default function MyRequestsBulkModal({
 
         {/* Footer */}
         {!loading && !error && (
-          <footer className="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 p-4 pb-safe space-y-3 shadow-[0_-8px_24px_rgba(0,0,0,0.05)] lg:p-5">
-            {showActions ? (
-              <>
-                <textarea
-                  value={remark}
-                  onChange={(e) => setRemark(e.target.value)}
-                  placeholder="Add review notes (required for rejection)..."
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all outline-none resize-none"
-                  rows={2}
-                  disabled={isProcessing}
-                />
-                <div className="flex gap-3">
+          <footer className="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 px-4 sm:px-6 py-3.5 z-30 shrink-0 shadow-lg mt-auto">
+            <div className="max-w-3xl lg:max-w-4xl mx-auto w-full flex items-center justify-end gap-3">
+              {showActions ? (
+                <div className="w-full flex flex-col space-y-2.5">
+                  <div className="w-full">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Review Notes / Remarks</label>
+                    <textarea
+                      value={remark}
+                      onChange={(e) => setRemark(e.target.value)}
+                      placeholder="Add optional notes or mandatory rejection reason..."
+                      rows={2}
+                      className="w-full h-14 p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                      disabled={isProcessing}
+                    />
+                  </div>
+                  <div className="flex gap-2.5 justify-end">
+                    <Button
+                      variant="danger"
+                      size="md"
+                      className="w-28 sm:w-32 text-xs font-black uppercase tracking-wider"
+                      icon={<XCircle className="w-4 h-4" />}
+                      onClick={() => {
+                        if (!remark.trim()) setShowRemarkError(true);
+                        else setShowRejectConfirm(true);
+                      }}
+                      disabled={isProcessing}
+                    >
+                      Reject
+                    </Button>
+                    <Button
+                      variant="success"
+                      size="md"
+                      className="w-28 sm:w-32 text-xs font-black uppercase tracking-wider"
+                      icon={<CheckCircle2 className="w-4 h-4" />}
+                      onClick={() => setShowApproveConfirm(true)}
+                      isLoading={isProcessing}
+                      disabled={isProcessing}
+                    >
+                      Approve
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex gap-2.5 justify-end w-full sm:w-auto flex-wrap sm:flex-nowrap">
+                  {isApproved && hasQR && isQROwner && (
+                    <Button
+                      variant="success"
+                      size="md"
+                      className="w-full sm:w-auto px-4 text-xs font-black uppercase tracking-wider"
+                      icon={<QrCode className="w-4 h-4" />}
+                      onClick={() => setShowQR(true)}
+                    >
+                      View QR & Code
+                    </Button>
+                  )}
+                  {participants.length > 0 && (
+                    <Button
+                      variant="primary"
+                      size="md"
+                      className="w-full sm:w-auto px-4 text-xs font-black uppercase tracking-wider text-white"
+                      icon={<Users className="w-4 h-4" />}
+                      onClick={() => setShowParticipants(true)}
+                    >
+                      Participants ({participants.length})
+                    </Button>
+                  )}
                   <Button
-                    variant="danger"
-                    fullWidth
-                    size="xl"
-                    icon={<XCircle className="w-5 h-5" />}
-                    onClick={() => {
-                      if (!remark.trim()) setShowRemarkError(true);
-                      else setShowRejectConfirm(true);
-                    }}
-                    disabled={isProcessing}
+                    variant="outline"
+                    size="md"
+                    onClick={onClose}
+                    className="w-full sm:w-28 text-xs font-black uppercase tracking-wider border-slate-200 bg-white/85 text-slate-700 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300"
                   >
-                    Reject
-                  </Button>
-                  <Button
-                    variant="success"
-                    fullWidth
-                    size="xl"
-                    icon={<CheckCircle2 className="w-5 h-5" />}
-                    onClick={() => setShowApproveConfirm(true)}
-                    isLoading={isProcessing}
-                    disabled={isProcessing}
-                  >
-                    Approve
+                    Close
                   </Button>
                 </div>
-              </>
-            ) : (
-              <>
-                {isApproved && hasQR && isQROwner && (
-                  <Button
-                    variant="success"
-                    fullWidth
-                    size="xl"
-                    icon={<QrCode className="w-5 h-5" />}
-                    onClick={() => setShowQR(true)}
-                  >
-                    View QR & Manual Code
-                  </Button>
-                )}
-                {participants.length > 0 && (
-                  <Button
-                    variant="primary"
-                    fullWidth
-                    size="xl"
-                    icon={<Users className="w-5 h-5" />}
-                    onClick={() => setShowParticipants(true)}
-                    className="text-white"
-                  >
-                    View Participants ({participants.length})
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  fullWidth
-                  size="xl"
-                  onClick={onClose}
-                  className="border-slate-200 bg-white/85 text-slate-700 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300"
-                >
-                  Close
-                </Button>
-              </>
-            )}
+              )}
+            </div>
           </footer>
         )}
         </div>
