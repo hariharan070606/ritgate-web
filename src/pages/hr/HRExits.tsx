@@ -158,28 +158,45 @@ export default function HRExits() {
               onSearchChange={setSearchQuery}
               searchPlaceholder="Search by name, ID, department, purpose..."
             >
-              <Button onClick={() => setShowDatePicker(true)} variant="secondary" className="gap-2">
-                <Calendar className="w-4 h-4" /> Date Range
+              <Button
+                type="button"
+                onClick={() => setShowDatePicker(true)}
+                variant="secondary"
+                icon={<Calendar className="w-4 h-4 text-slate-700 dark:text-slate-200 shrink-0" />}
+                className="h-11 px-4 text-xs font-black uppercase tracking-wider whitespace-nowrap flex-row inline-flex items-center gap-2 rounded-xl shrink-0"
+              >
+                Date Range
               </Button>
-              <Button onClick={handleExportCSV} disabled={gateLogs.length === 0} variant="success" className="gap-2">
-                <Download className="w-4 h-4" /> Export CSV
+              <Button
+                type="button"
+                onClick={handleExportCSV}
+                disabled={gateLogs.length === 0}
+                variant="success"
+                icon={<Download className="w-4 h-4 shrink-0" />}
+                className="h-11 px-4 text-xs font-black uppercase tracking-wider whitespace-nowrap flex-row inline-flex items-center gap-2 rounded-xl shrink-0"
+              >
+                Export CSV
               </Button>
             </DesktopToolbar>
           </div>
 
-          <div className="flex gap-3 lg:hidden">
+          <div className="flex flex-row items-center gap-3 lg:hidden">
             <button
+              type="button"
               onClick={() => setShowDatePicker(true)}
-              className="flex-1 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-center justify-center gap-2 text-[13px] font-black text-slate-700 dark:text-white shadow-sm"
+              className="flex-1 h-11 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex flex-row items-center justify-center gap-2 text-[12px] font-black uppercase tracking-wider text-slate-700 dark:text-white shadow-sm whitespace-nowrap px-3"
             >
-              <Calendar className="w-4 h-4 text-[var(--color-primary)]" /> Date Range
+              <Calendar className="w-4 h-4 text-[var(--color-primary)] shrink-0" />
+              <span>Date Range</span>
             </button>
             <button
+              type="button"
               onClick={handleExportCSV}
               disabled={gateLogs.length === 0}
-              className="flex-1 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center gap-2 text-[13px] font-black text-white shadow-sm disabled:opacity-40"
+              className="flex-1 h-11 bg-emerald-600 rounded-2xl flex flex-row items-center justify-center gap-2 text-[12px] font-black uppercase tracking-wider text-white shadow-sm disabled:opacity-40 whitespace-nowrap px-3"
             >
-              <Download className="w-4 h-4" /> Export CSV
+              <Download className="w-4 h-4 shrink-0" />
+              <span>Export CSV</span>
             </button>
           </div>
 

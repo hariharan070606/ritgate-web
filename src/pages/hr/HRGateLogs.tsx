@@ -120,29 +120,6 @@ export default function HRGateLogs({ onBack }: HRGateLogsProps) {
           </Button>
         }
       />
-      {/* Header */}
-      <div className="flex items-center justify-between lg:hidden">
-        <div className="flex items-center gap-3">
-          {onBack && (
-            <button onClick={onBack} className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center mr-1">
-              <X className="w-5 h-5 text-slate-500" />
-            </button>
-          )}
-          <div>
-            <div className="flex items-center gap-2 text-[var(--color-primary)] dark:text-blue-400 mb-1">
-              <ArrowUpDown className="w-3.5 h-3.5" />
-              <span className="text-[10px] font-bold tracking-widest uppercase">Gate Management</span>
-            </div>
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Gate Logs</h2>
-            <p className="text-xs text-slate-400 mt-1">
-              {rangeLabel} — {loading ? 'Loading…' : `${filtered.length} record${filtered.length !== 1 ? 's' : ''}`}
-            </p>
-          </div>
-        </div>
-        <button onClick={() => loadGateLogs(fromDate || undefined, toDate || undefined)} className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-          <RefreshCw className={cn('w-4 h-4 text-slate-500', loading && 'animate-spin')} />
-        </button>
-      </div>
 
       {/* Action Buttons */}
       <div className="hidden lg:block">
@@ -151,32 +128,49 @@ export default function HRGateLogs({ onBack }: HRGateLogsProps) {
           onSearchChange={setSearchQuery}
           searchPlaceholder="Search by name, ID, department, purpose..."
         >
-          <Button onClick={() => setShowDatePicker(true)} variant="secondary" className="gap-2">
-            <Calendar className="w-4 h-4" /> Date Range
+          <Button
+            type="button"
+            onClick={() => setShowDatePicker(true)}
+            variant="secondary"
+            icon={<Calendar className="w-4 h-4 text-slate-700 dark:text-slate-200 shrink-0" />}
+            className="h-11 px-4 text-xs font-black uppercase tracking-wider whitespace-nowrap flex-row inline-flex items-center gap-2 rounded-xl shrink-0"
+          >
+            Date Range
           </Button>
           <Button
+            type="button"
             onClick={handleExportCSV}
             variant={gateLogs.length > 0 ? 'success' : 'secondary'}
-            className="gap-2"
+            icon={<Download className="w-4 h-4 shrink-0" />}
+            className="h-11 px-4 text-xs font-black uppercase tracking-wider whitespace-nowrap flex-row inline-flex items-center gap-2 rounded-xl shrink-0"
             disabled={isDownloading || gateLogs.length === 0}
           >
-            <Download className="w-4 h-4" /> Export CSV
+            Export CSV
           </Button>
         </DesktopToolbar>
       </div>
 
-      <div className="flex gap-3 lg:hidden">
-        <Button onClick={() => setShowDatePicker(true)} variant="primary" size="sm" className="flex-1 gap-2">
-          <Calendar className="w-4 h-4" /> Date Range
+      <div className="flex flex-row items-center gap-3 lg:hidden">
+        <Button
+          type="button"
+          onClick={() => setShowDatePicker(true)}
+          variant="secondary"
+          size="sm"
+          icon={<Calendar className="w-4 h-4 shrink-0" />}
+          className="flex-1 h-11 text-xs font-black uppercase tracking-wider whitespace-nowrap flex-row inline-flex items-center justify-center gap-2 rounded-2xl"
+        >
+          Date Range
         </Button>
         <Button
+          type="button"
           onClick={handleExportCSV}
           variant={gateLogs.length > 0 ? 'success' : 'secondary'}
           size="sm"
-          className="flex-1 gap-2"
+          icon={<Download className="w-4 h-4 shrink-0" />}
+          className="flex-1 h-11 text-xs font-black uppercase tracking-wider whitespace-nowrap flex-row inline-flex items-center justify-center gap-2 rounded-2xl"
           disabled={isDownloading || gateLogs.length === 0}
         >
-          <Download className="w-4 h-4" /> Export CSV
+          Export CSV
         </Button>
       </div>
 
