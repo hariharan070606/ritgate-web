@@ -332,9 +332,19 @@ export default function SinglePassDetailsModal({
                 <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight truncate">
                   {requesterDisplayName}
                 </h3>
-                <p className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-tighter">
-                  {request.rollNo || request.regNo || request.id ? `${request.rollNo || request.regNo || `#${request.id}`}` : ''}
-                  {(request.department || request.dept) ? ` • ${request.department || request.dept}` : ''}
+                <p className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-tighter flex items-center flex-wrap gap-1">
+                  {(() => {
+                    const reqId = request.rollNo || request.regNo || request.staffCode || request.requestedByStaffCode || request.userId || (request.id ? `#${request.id}` : '');
+                    const dept = request.department || request.dept;
+                    const role = request.role || request.userType || (request.passType === 'VISITOR' ? 'VISITOR' : '');
+                    return (
+                      <>
+                        {reqId && <span className="font-extrabold text-slate-700 dark:text-slate-200">ID: {reqId}</span>}
+                        {role && ` • ${role}`}
+                        {dept && ` • ${dept}`}
+                      </>
+                    );
+                  })()}
                 </p>
               </div>
             </div>
