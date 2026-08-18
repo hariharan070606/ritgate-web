@@ -3,6 +3,8 @@ import { User, Users, UserPlus, ChevronRight, Ban } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 import { PASS_COPY } from '../../config/nativeCopy';
+import { isPastCurfew } from '../../utils/dateUtils';
+
 interface PassTypeBottomSheetProps {
   isOpen: boolean;
   onClose: () => void;
@@ -11,30 +13,12 @@ interface PassTypeBottomSheetProps {
   onSelectGuest?: () => void;
 }
 
-/** Returns current time in IST (UTC+5:30) as { hours, minutes } */
-const getISTTime = () => {
-  const now = new Date();
-  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
-  const istMs = utcMs + 5.5 * 60 * 60 * 1000;
-  const ist = new Date(istMs);
-  return { hours: ist.getHours(), minutes: ist.getMinutes() };
-};
-
-/** Staff / HOD / NTF / NCI: gate pass disabled after 17:00 IST */
-const isStaffPassDisabled = () => {
-  const { hours } = getISTTime();
-  return hours >= 17;
-};
-
 export default function PassTypeBottomSheet({ 
   isOpen, 
   onClose,
-  onSelectSingle,
-  onSelectBulk,
-  onSelectGuest
 }: PassTypeBottomSheetProps) {
   const navigate = useNavigate();
-  const passDisabled = isStaffPassDisabled();
+  const passDisabled = isPastCurfew('17:00');
 
   const handleSelect = (path: string, disabled: boolean = false) => {
     if (disabled) return;

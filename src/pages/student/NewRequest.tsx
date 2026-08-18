@@ -13,14 +13,8 @@ import SinglePassRequestForm from '../../components/common/SinglePassRequestForm
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import { getRequestDate } from '../../utils/dateUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
+import { useGatePassCurfew } from '../../hooks/useGatePassCurfew';
 import type { Student } from '../../types';
-
-/** Returns current hour in IST (UTC+5:30) */
-const getISTHour = () => {
-  const now = new Date();
-  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
-  return new Date(utcMs + 5.5 * 60 * 60 * 1000).getHours();
-};
 
 export default function NewRequest() {
   usePageTitle('New Request');
@@ -29,13 +23,14 @@ export default function NewRequest() {
   const user = rawUser as Student;
   const { isDesktop } = useAdaptive();
   const { withLock, isLocked } = useActionLock();
+  const { isCurfewPassed, curfewDisplay, loading: curfewLoading } = useGatePassCurfew();
 
-  // Block access after 15:00 IST
+  // Block access after curfew IST
   useEffect(() => {
-    if (getISTHour() >= 15) {
+    if (!curfewLoading && isCurfewPassed) {
       navigate('/dashboard', { replace: true });
     }
-  }, []);
+  }, [curfewLoading, isCurfewPassed, navigate]);
 
   const [purpose, setPurpose] = useState('');
   const [reason, setReason] = useState('');
@@ -55,6 +50,11 @@ export default function NewRequest() {
   const isFormValid = purpose.trim() && reason.trim();
 
   const handleSubmit = async () => {
+    if (isCurfewPassed) {
+      setErrorMessage(`Student gate pass requests are closed after ${curfewDisplay} IST.`);
+      setShowError(true);
+      return;
+    }
     if (!validateAll({ purpose, reason })) return;
     
     await withLock(async () => {

@@ -17,13 +17,7 @@ import HODNewPassRequest from './HODNewPassRequest';
 import HODBulkPass from './HODBulkPass';
 import GuestPreRequest from '../shared/GuestPreRequest';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
-
-/** Returns current hour in IST (UTC+5:30) */
-const getISTHour = () => {
-  const now = new Date();
-  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
-  return new Date(utcMs + 5.5 * 60 * 60 * 1000).getHours();
-};
+import { isPastCurfew } from '../../utils/dateUtils';
 
 type Stage = 'SELECT' | 'SINGLE' | 'BULK' | 'GUEST';
 
@@ -40,7 +34,7 @@ export default function HODNewPass() {
   const currentTitle = stage === 'SELECT' ? PASS_COPY.newRequest : stage === 'SINGLE' ? PASS_COPY.singleTitle : stage === 'BULK' ? PASS_COPY.bulkTitle : PASS_COPY.guestTitle;
   usePageTitle(currentTitle);
 
-  const passDisabled = getISTHour() >= 17;
+  const passDisabled = isPastCurfew('17:00');
 
   // Redirect if trying to access SINGLE or BULK after 17:00 IST
   useEffect(() => {

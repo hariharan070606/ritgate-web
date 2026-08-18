@@ -255,6 +255,15 @@ export async function getGatePassQRCode(requestId: number, identifier: string): 
   } catch (e) { return { success: false, message: extractError(e) }; }
 }
 
+export async function getGatePassConfig(): Promise<{ success: boolean; curfewTime: string }> {
+  try {
+    const { data } = await api.get('/gate-pass/config');
+    return { success: true, curfewTime: data?.curfewTime || '15:00' };
+  } catch {
+    return { success: false, curfewTime: '15:00' };
+  }
+}
+
 export async function getUserEntryHistory(userId: string): Promise<any[]> {
   try {
     const { data } = await api.get(`/entry-exit/history/${userId}`);

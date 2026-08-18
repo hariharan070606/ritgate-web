@@ -228,13 +228,42 @@ export const isThisMonth = (date: Date | string): boolean => {
   return d >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 };
 
-/** Check if current time is past 3 PM IST */
-export function isPast3PM(): boolean {
+/** Returns current time in IST (UTC+5:30) as { hours, minutes, date } */
+export function getISTTime() {
   const now = new Date();
-  const istHour = parseInt(
-    now.toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' })
-  );
-  return istHour >= 15;
+  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+  const istMs = utcMs + 5.5 * 60 * 60 * 1000;
+  const ist = new Date(istMs);
+  return { hours: ist.getHours(), minutes: ist.getMinutes(), date: ist };
+}
+
+/** Check if current IST time is past curfew time string (e.g. "16:00", "15:00") */
+export function isPastCurfew(curfewTime: string = '15:00'): boolean {
+  const { hours, minutes } = getISTTime();
+  const [cHour, cMin = 0] = (curfewTime || '15:00').split(':').map(Number);
+  if (isNaN(cHour)) return hours >= 15;
+  if (hours > cHour) return true;
+  if (hours === cHour && minutes >= cMin) return true;
+  return false;
+}
+
+/** Format 24h curfew time (e.g. "16:00" -> "4:00 PM", "15:00" -> "3:00 PM") */
+export function formatCurfewTime(curfewTime: string = '15:00'): string {
+  try {
+    const [h, m = 0] = (curfewTime || '15:00').split(':').map(Number);
+    if (isNaN(h)) return '3:00 PM';
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 || 12;
+    const minStr = m > 0 ? `:${String(m).padStart(2, '0')}` : ':00';
+    return `${hour12}${minStr} ${period}`;
+  } catch {
+    return '3:00 PM';
+  }
+}
+
+/** Check if current time is past 3 PM IST (legacy helper) */
+export function isPast3PM(): boolean {
+  return isPastCurfew('15:00');
 }
 
 // ── Numeric helpers ───────────────────────────────────────────────────────────

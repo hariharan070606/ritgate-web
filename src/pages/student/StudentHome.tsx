@@ -24,24 +24,10 @@ import type { Student } from '../../types';
 import { formatDateTime, isToday } from '../../utils/dateUtils';
 import { normalizeRequestStatus } from '../../utils/statusUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
+import { useGatePassCurfew } from '../../hooks/useGatePassCurfew';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import EmptyState from '../../components/ui/EmptyState';
 import Button from '../../components/ui/Button';
-
-/** Returns current time in IST (UTC+5:30) */
-const getISTTime = () => {
-  const now = new Date();
-  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
-  const istMs = utcMs + 5.5 * 60 * 60 * 1000;
-  const ist = new Date(istMs);
-  return { hours: ist.getHours(), minutes: ist.getMinutes() };
-};
-
-/** Students: gate pass disabled after 15:00 IST */
-const isStudentPassDisabled = () => {
-  const { hours } = getISTTime();
-  return hours >= 15;
-};
 
 function GatePassIllustration({ className, transparentBg = false }: { className?: string, transparentBg?: boolean }) {
   return (
@@ -202,7 +188,7 @@ export default function StudentHome() {
 
   const filteredRequests = requests;
 
-  const gatePassDisabled = isStudentPassDisabled();
+  const { isCurfewPassed: gatePassDisabled, curfewDisplay } = useGatePassCurfew();
   const displayName = `${user?.firstName || 'Student'} ${user?.lastName || ''}`.trim();
 
   const renderModals = () => (
@@ -260,7 +246,7 @@ export default function StudentHome() {
                       </h3>
                       <p className="mt-2 max-w-2xl text-sm font-medium leading-6 text-slate-600 dark:text-slate-400">
                         {gatePassDisabled
-                          ? 'Student gate pass requests are not available after 3:00 PM IST. You can still review your request history.'
+                          ? `Student gate pass requests are not available after ${curfewDisplay} IST. You can still review your request history.`
                           : 'Create a new student gate pass request and follow each approval stage without leaving the dashboard.'}
                       </p>
                     </div>
@@ -269,7 +255,7 @@ export default function StudentHome() {
                   <div className="flex shrink-0 items-center gap-3">
                     <span className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 xl:inline-flex">
                       <Clock3 className="h-4 w-4 text-slate-400" />
-                      Closes at 3:00 PM
+                      Closes at {curfewDisplay}
                     </span>
                     <button
                       type="button"
@@ -418,7 +404,7 @@ export default function StudentHome() {
 
                   <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 leading-snug mt-1">
                     {gatePassDisabled
-                      ? 'Student gate pass requests are closed after 3:00 PM IST.'
+                      ? `Student gate pass requests are closed after ${curfewDisplay} IST.`
                       : 'Apply for a new student gate pass and track real-time authorization.'}
                   </p>
 
@@ -426,7 +412,7 @@ export default function StudentHome() {
                     <div className="flex items-center gap-1.5 mt-2">
                       <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
                       <span className="text-[11px] font-bold text-rose-500 uppercase tracking-tight">
-                        Not available after 3:00 PM IST
+                        Not available after {curfewDisplay} IST
                       </span>
                     </div>
                   )}
