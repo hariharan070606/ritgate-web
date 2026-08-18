@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -7,11 +7,7 @@ import {
   Users, 
   CheckCircle2, 
   XCircle,
-  Clock,
-  RefreshCw,
-  LayoutGrid,
-  Check,
-  X
+  Clock
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
@@ -45,7 +41,7 @@ type ActiveTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 export default function HODDashboard() {
   usePageTitle('Dashboard');
   const { isDesktop } = useAdaptive();
-  const { user, logout, getUserId } = useAuth();
+  const { user, getUserId } = useAuth();
   const { refreshCount } = useRefresh();
   const { success: showToastSuccess, error: showToastError } = useToast();
   const { withLock } = useActionLock();
@@ -240,7 +236,6 @@ export default function HODDashboard() {
   };
 
   const hodName = (user as any)?.hodName || (user as any)?.name || 'HOD Member';
-  const initials = hodName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -352,7 +347,6 @@ export default function HODDashboard() {
                     {filteredRequests.map((request) => {
                       const isBulk = request.passType === 'BULK';
                       const isVisitor = request.passType === 'VISITOR';
-                      const isPending = activeTab === 'PENDING';
                       return (
                         <tr key={request.id} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
                           <td>
@@ -396,7 +390,6 @@ export default function HODDashboard() {
                 const reqInitials = (request.studentName || 'NA').split(' ').map((n: any) => n[0]).join('').slice(0, 2).toUpperCase();
                 const isBulk = request.passType === 'BULK';
                 const isVisitor = request.passType === 'VISITOR';
-                const isPending = activeTab === 'PENDING';
                 
                 return (
                   <motion.div 
@@ -531,8 +524,8 @@ export default function HODDashboard() {
               role: selectedRequest.userType || 'Staff',
               department: selectedRequest.department || ''
             }}
-            onApprove={(req, remark) => handleApprove(selectedRequest.id, remark || '')}
-            onReject={(req, remark) => handleReject(selectedRequest.id, remark)}
+            onApprove={(_req, remark) => handleApprove(selectedRequest.id, remark || '')}
+            onReject={(_req, remark) => handleReject(selectedRequest.id, remark)}
             showActions={activeTab === 'PENDING'}
             processing={processing}
           />

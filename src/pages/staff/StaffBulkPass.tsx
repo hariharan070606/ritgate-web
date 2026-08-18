@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PurposeSelect from '../../components/common/PurposeSelect';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, 
   Search, 
   CheckCircle2, 
   Circle, 
-  Info, 
   ChevronDown, 
   ChevronRight,
-  Send, 
   ShieldCheck,
-  Plus,
-  LayoutGrid,
   Check
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -38,7 +33,7 @@ interface StaffBulkPassProps {
 }
 
 export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
-  const { getUserId, user } = useAuth();
+  const { getUserId } = useAuth();
   const { success: showToastSuccess, error: showToastError } = useToast();
   const { withLock } = useActionLock();
   const staffCode = getUserId();

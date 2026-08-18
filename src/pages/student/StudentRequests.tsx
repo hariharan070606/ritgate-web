@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { 
   FileText, 
   Calendar, 
   Users, 
-  QrCode, 
-  Clock,
-  AlertCircle
+  QrCode
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
@@ -31,8 +29,7 @@ import EmptyState from '../../components/ui/EmptyState';
 
 export default function StudentRequests() {
   usePageTitle('My Requests');
-  const { user: rawUser, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user: rawUser } = useAuth();
   const location = useLocation();
   const { isDesktop } = useAdaptive();
   const user = rawUser as Student;

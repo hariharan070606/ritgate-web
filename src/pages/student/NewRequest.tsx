@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import {
-  ArrowLeft,
-  Loader2
-} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
-import { useToast } from '../../context/ToastContext';
 import { useActionLock } from '../../context/ActionLockContext';
 import { useFieldValidation } from '../../hooks/useFieldValidation';
 import { submitStudentGatePass } from '../../services/api.service';
@@ -15,10 +10,9 @@ import ConfirmationModal from '../../components/common/ConfirmationModal';
 import SuccessModal from '../../components/common/SuccessModal';
 import ErrorModal from '../../components/common/ErrorModal';
 import SinglePassRequestForm from '../../components/common/SinglePassRequestForm';
-import { cn } from '../../utils/cn';
+import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import { getRequestDate } from '../../utils/dateUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
-import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import type { Student } from '../../types';
 
 /** Returns current hour in IST (UTC+5:30) */
@@ -34,7 +28,6 @@ export default function NewRequest() {
   const { user: rawUser } = useAuth();
   const user = rawUser as Student;
   const { isDesktop } = useAdaptive();
-  const { error: showToastError } = useToast();
   const { withLock, isLocked } = useActionLock();
 
   // Block access after 15:00 IST

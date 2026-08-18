@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PurposeSelect from '../../components/common/PurposeSelect';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Users,
   Search,
   CheckCircle2,
   Circle,
@@ -11,7 +10,6 @@ import {
   ChevronRight,
   Send,
   ShieldCheck,
-  LayoutGrid,
   Check,
   UserCircle2,
   GraduationCap,

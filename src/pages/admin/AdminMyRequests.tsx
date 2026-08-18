@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, QrCode, FileText, Clock, RefreshCw, AlertCircle, Calendar } from 'lucide-react';
+import { Search, QrCode, FileText, RefreshCw, AlertCircle, Calendar } from 'lucide-react';
 import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import GatePassQRModal from '../../components/common/GatePassQRModal';
@@ -24,7 +24,7 @@ interface AdminMyRequestsProps {
   onBack?: () => void;
 }
 
-export default function AdminMyRequests({ onBack }: AdminMyRequestsProps = {}) {
+export default function AdminMyRequests({ onBack: _onBack }: AdminMyRequestsProps = {}) {
   usePageTitle('All Requests');
   const { isDesktop } = useAdaptive();
   const { getUserId, user } = useAuth();

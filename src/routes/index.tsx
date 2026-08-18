@@ -44,13 +44,11 @@ const HODBulkPass = lazy(() => import('../pages/hod/HODBulkPass'));
 const HRDashboard = lazy(() => import('../pages/hr/HRDashboard'));
 const HRMyRequests = lazy(() => import('../pages/hr/HRMyRequests'));
 const HRGateLogs = lazy(() => import('../pages/hr/HRGateLogs'));
-const HRNewPass = lazy(() => import('../pages/hr/HRNewPass'));
 const HRExits = lazy(() => import('../pages/hr/HRExits'));
 
 // Admin
 const AdminDashboard = lazy(() => import('../pages/admin/AdminDashboard'));
 const AdminMyRequests = lazy(() => import('../pages/admin/AdminMyRequests'));
-const AdminNewPass = lazy(() => import('../pages/admin/AdminNewPass'));
 const AdminScanHistory = lazy(() => import('../pages/admin/AdminScanHistory'));
 
 // Security

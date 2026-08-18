@@ -1,15 +1,13 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, AlertCircle, FileText, Users, QrCode, Clock, CheckCircle2, XCircle } from 'lucide-react';
-import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
+import { Search, AlertCircle, FileText, Users, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { SkeletonList } from '../../components/ui/Skeleton';
 import Modal from '../../components/ui/Modal';
 import Button from '../../components/ui/Button';
-import QRCodeModal from '../../components/common/QRCodeModal';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import {
-  getVisitorRequestsForStaff, approveVisitorRequest, rejectVisitorRequest,
-  getNTFOwnRequests, getGatePassQRCode
+  getVisitorRequestsForStaff, approveVisitorRequest, rejectVisitorRequest
 } from '../../services/api.service';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { cn } from '../../utils/cn';

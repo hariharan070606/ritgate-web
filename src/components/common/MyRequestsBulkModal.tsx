@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Users, UserCircle, QrCode, X, Search, Maximize2, Loader2, AlertCircle, CheckCircle2, XCircle, FileText, Target, CalendarDays, StickyNote, Paperclip, ListChecks } from 'lucide-react';
 import { apiService } from '../../services/api.service';
 import SectionLabel from './SectionLabel';
 import { cn } from '../../utils/cn';
-import { formatDateShort, formatDateTime } from '../../utils/dateUtils';
+import { formatDateTime } from '../../utils/dateUtils';
 import { isPdfAttachment } from '../../utils/attachmentUtils';
 import Badge from '../ui/Badge';
 import GatePassQRModal from './GatePassQRModal';
@@ -32,8 +32,8 @@ export default function MyRequestsBulkModal({
   requestId,
   userRole = 'STAFF',
   currentUserId,
-  viewerRole,
-  requesterInfo,
+  viewerRole: _viewerRole,
+  requesterInfo: _requesterInfo,
   onApprove,
   onReject,
   showActions,
@@ -51,9 +51,8 @@ export default function MyRequestsBulkModal({
   const [showRemarkError, setShowRemarkError] = useState(false);
   const [showApproveConfirm, setShowApproveConfirm] = useState(false);
   const [showRejectConfirm, setShowRejectConfirm] = useState(false);
-  const [internalProcessing, setInternalProcessing] = useState(false);
 
-  const isProcessing = externalProcessing || internalProcessing;
+  const isProcessing = externalProcessing ?? false;
 
   const loadDetails = async () => {
     if (!requestId) return;

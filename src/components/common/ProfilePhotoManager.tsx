@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Image as ImageIcon, Trash, X, User } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 interface ProfilePhotoManagerProps {
-  userId: string;
+  userId?: string;
   currentPhoto: string | null;
   onPhotoChange: (photoUri: string | null) => void;
   size?: number;
@@ -12,7 +12,7 @@ interface ProfilePhotoManagerProps {
 }
 
 export default function ProfilePhotoManager({
-  userId,
+  userId: _userId,
   currentPhoto,
   onPhotoChange,
   size = 100,
@@ -21,7 +21,7 @@ export default function ProfilePhotoManager({
   const [showOptions, setShowOptions] = useState(false);
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();

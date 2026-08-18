@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, 
   Users, 
   UserPlus, 
-  ArrowLeft,
+  ArrowLeft, 
   ChevronRight,
-  ShieldCheck,
-  Plus,
   Ban
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
@@ -55,8 +53,6 @@ export default function HODNewPass() {
     if (stage === 'SELECT') navigate('/dashboard');
     else navigate('/new-pass');
   };
-
-  const hodName = (user as any)?.hodName || (user as any)?.name || 'HOD Member';
 
   return (
     <div className="bg-[#F8FAFC] dark:bg-slate-950 min-h-screen w-full max-w-full overflow-x-hidden flex flex-col box-border">

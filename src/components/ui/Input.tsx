@@ -1,4 +1,4 @@
-import { forwardRef, useState, type InputHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -12,8 +12,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, icon, iconRight, helperText, className, id, required, ...props }, ref) => {
-    const [focused, setFocused] = useState(false);
-    const hasValue = !!props.value || !!props.defaultValue;
     const inputId = id || label.toLowerCase().replace(/\s+/g, '-');
 
     return (
@@ -44,8 +42,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               error && 'ring-2 ring-rose-500/20 bg-rose-50/10',
               className,
             )}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
             {...props}
           />
           {iconRight && (

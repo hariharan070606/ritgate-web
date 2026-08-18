@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QrCode, Search, FileText, Clock, RefreshCw, AlertCircle, Calendar } from 'lucide-react';
-import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
+import { QrCode, Search, FileText, RefreshCw, AlertCircle, Calendar } from 'lucide-react';
+import { SkeletonList } from '../../components/ui/Skeleton';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import GatePassQRModal from '../../components/common/GatePassQRModal';
 import Button from '../../components/ui/Button';

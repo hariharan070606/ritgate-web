@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Phone, Mail, Building2, Users, RefreshCw, X } from 'lucide-react';
+import { Search, Phone, Mail, Users, RefreshCw, X } from 'lucide-react';
 import Card from '../../components/ui/Card';
-import Badge from '../../components/ui/Badge';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import { useToast } from '../../context/ToastContext';
 import { getHODContacts } from '../../services/api.service';

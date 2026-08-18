@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QrCode, Search, AlertCircle, FileText, Users, Clock, CheckCircle2, XCircle } from 'lucide-react';
-import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
+import { Search, AlertCircle, FileText, Users, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { SkeletonList } from '../../components/ui/Skeleton';
 import Modal from '../../components/ui/Modal';
 import RequestTimeline from '../../components/common/RequestTimeline';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
@@ -19,11 +19,9 @@ import {
   rejectVisitorByHR,
 } from '../../services/api.service';
 import { useActionLock } from '../../context/ActionLockContext';
-import { isToday } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { useAdaptive } from '../../utils/useAdaptive';
-import type { GatePassRequest } from '../../types';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import DesktopStatCard from '../../components/desktop/DesktopStatCard';
@@ -39,15 +37,14 @@ interface HRDashboardProps {
   onNavigate?: (tag: string) => void;
 }
 
-export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
+export default function HRDashboard({ onNavigate: _onNavigate }: HRDashboardProps = {}) {
   usePageTitle('Dashboard');
-  const { getUserId, user, logout } = useAuth();
+  const { getUserId, user } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
   const { withLock } = useActionLock();
   const { isMobile, isDesktop } = useAdaptive();
   const hrCode = getUserId();
   const hrName = (user as any)?.hrName || (user as any)?.name || 'HR Executive';
-  const initials = hrName.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'GOOD MORNING,' : hour < 17 ? 'GOOD AFTERNOON,' : 'GOOD EVENING,';
 
@@ -325,7 +322,6 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
                       ? `${req.visitorPhone || 'Guest'} • ${req.department || 'Department'}`
                       : `${req.requestedByStaffCode || req.regNo || 'N/A'} • ${req.department || 'Department'}`;
                     const statusVal = isVisitor ? req.status : (req.hrApproval || req.status);
-                    const isPending = statusVal === 'PENDING_HR' || statusVal === 'PENDING';
                     return (
                       <tr key={`${req.passType}-${req.id}`} className="hover:bg-slate-50/80 transition-colors dark:hover:bg-slate-800/35">
                         <td>
@@ -373,7 +369,6 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
               const sub = isBulk ? `${req.userType || 'HOD'} • ${req.department || 'N/A'}` : isVisitor ? `${req.visitorPhone || ''} • ${req.department || 'Department'}` : `${req.requestedByStaffCode || req.regNo || 'N/A'} • ${req.department || 'Department'}`;
               const typeLabel = isBulk ? 'Bulk Gatepass' : isVisitor ? `${(req.role || 'VISITOR').toUpperCase()} Request` : 'Single Gatepass';
               const statusVal = isVisitor ? req.status : (req.hrApproval || req.status);
-              const isPending = statusVal === 'PENDING_HR' || statusVal === 'PENDING';
               const dateStr = req.exitDateTime || req.requestDate || req.createdAt || '';
 
               return (
@@ -441,10 +436,10 @@ export default function HRDashboard({ onNavigate }: HRDashboardProps = {}) {
           onClose={() => setShowDetail(false)}
           request={selectedRequest}
           showActions={selectedRequest.hrApproval === 'PENDING_HR' || selectedRequest.status === 'PENDING_HR' || (selectedRequest.passType === 'VISITOR' && selectedRequest.status === 'PENDING')}
-          onApprove={async (id, remark) => {
+          onApprove={async (_id, remark) => {
             await handleApprove(selectedRequest, remark);
           }}
-          onReject={async (id, remark) => {
+          onReject={async (_id, remark) => {
             await handleReject(selectedRequest, remark);
           }}
           viewerRole="hr"

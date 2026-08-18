@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -19,8 +19,6 @@ import { cn } from '../../utils/cn';
 import { getRequestDate } from '../../utils/dateUtils';
 import { PASS_COPY } from '../../config/nativeCopy';
 import StaffBulkPass from './StaffBulkPass';
-import HRNewPass from '../hr/HRNewPass';
-import AdminNewPass from '../admin/AdminNewPass';
 import GuestPreRequest from '../shared/GuestPreRequest';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import SinglePassRequestForm from '../../components/common/SinglePassRequestForm';
@@ -237,12 +235,6 @@ export default function StaffNewPass() {
                animate={{ opacity: 1, x: 0 }}
                className="space-y-6"
              >
-               {/* HR and ADMIN get their own instant-approval forms */}
-               {role === 'HR' ? (
-                 <HRNewPass />
-               ) : role === 'ADMIN_OFFICER' ? (
-                 <AdminNewPass />
-               ) : (
                 <SinglePassRequestForm
                   eyebrow="Single Pass Request"
                   title={PASS_COPY.singleTitle}
@@ -265,7 +257,6 @@ export default function StaffNewPass() {
                   disabled={!purpose.trim() || !reason.trim()}
                   onSubmit={submitSingle}
                 />
-               )}
              </motion.div>
           )}
 

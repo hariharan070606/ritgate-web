@@ -1,19 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  QrCode, 
-  CheckCircle, 
-  Info, 
-  Loader2, 
-  Copy, 
-  Check, 
   ArrowLeft,
   Smartphone,
   Users,
+  LayoutGrid,
+  Loader2,
   ShieldCheck,
-  Calendar,
-  LayoutGrid
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';

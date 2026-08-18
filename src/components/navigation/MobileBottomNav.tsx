@@ -11,7 +11,7 @@ interface MobileBottomNavProps {
   onTabChange?: (tab: string) => void;
 }
 
-export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottomNavProps = {}) {
+export default function MobileBottomNav({ activeTab: _activeTab, onTabChange: _onTabChange }: MobileBottomNavProps = {}) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { role } = useAuth();

@@ -3,11 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import {
   ArrowRight,
-  Fingerprint,
   QrCode,
   ChevronRight,
   Loader2,
-  Zap,
   X,
   RefreshCw,
   CheckCircle2,

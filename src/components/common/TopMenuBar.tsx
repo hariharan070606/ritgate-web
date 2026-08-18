@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { Bell, ArrowLeft, Sun, Moon } from 'lucide-react';
+import { Bell, ArrowLeft } from 'lucide-react';
 import { useNotifications } from '../../context/NotificationContext';
 import { useProfile } from '../../context/ProfileContext';
-import { useTheme } from '../../context/ThemeContext';
 import { useAdaptive } from '../../utils/useAdaptive';
 import VisitorAvatar from './VisitorAvatar';
 
@@ -30,7 +29,6 @@ export default function TopMenuBar({
   const navigate = useNavigate();
   const { unreadCount } = useNotifications();
   const { profileImage } = useProfile();
-  const { isDark, toggleTheme } = useTheme();
   const { isMobile } = useAdaptive();
 
   // Only render on mobile — desktop/tablet use the AppLayout Header

@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   LogIn, 
   LogOut, 
   AlertTriangle, 
   QrCode, 
   MapPin, 
-  Calendar,
   Clock,
   History
 } from 'lucide-react';
@@ -37,7 +36,7 @@ interface HistoryItem {
 
 export default function StudentHistory() {
   usePageTitle('History');
-  const { user: rawUser, logout } = useAuth();
+  const { user: rawUser } = useAuth();
   const { isDesktop } = useAdaptive();
   const user = rawUser as Student;
   const { refreshCount } = useRefresh();

@@ -9,14 +9,10 @@ import {
   User, 
   ArrowDownCircle, 
   ArrowUpCircle,
-  FileText,
-  FileSpreadsheet,
-  ChevronDown,
   Activity,
   ShieldCheck,
   AlertCircle,
-  Clock,
-  ExternalLink
+  Clock
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import Card from '../../components/ui/Card';

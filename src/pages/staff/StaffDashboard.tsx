@@ -1,18 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
   FileText, 
   Calendar, 
   Users, 
-  QrCode, 
   CheckCircle2,
   Clock,
-  AlertCircle,
-  RefreshCw,
-  LogOut
+  AlertCircle
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
 import { useRefresh } from '../../context/RefreshContext';
@@ -51,9 +47,8 @@ type ActiveTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export default function StaffDashboard() {
   usePageTitle('Dashboard');
-  const navigate = useNavigate();
   const { isDesktop } = useAdaptive();
-  const { user: rawUser, logout, getUserId } = useAuth();
+  const { user: rawUser, getUserId } = useAuth();
   const user = rawUser as Staff;
   const { refreshCount } = useRefresh();
   const { success: showToastSuccess, error: showToastError } = useToast();
@@ -255,33 +250,9 @@ export default function StaffDashboard() {
     }, 'Authorizing...');
   };
 
-  const handleViewQR = async (request: any) => {
-    setSelectedRequest(request);
-    setShowQRModal(true);
-    try {
-      const res = await getGatePassQRCode(request.id, staffCode);
-      if (res.success) {
-        setQrData({
-          code: res.qrCode || '',
-          manual: res.manualCode,
-          expires: res.qrExpiresAt
-        });
-      } else {
-        showToastError('QR Error', res.message || 'Could not fetch QR code');
-        setShowQRModal(false);
-      }
-    } catch {
-      showToastError('Error', 'Network error');
-      setShowQRModal(false);
-    }
-  };
-
   const closeRequestDetails = () => {
     setShowDetailModal(false);
   };
-
-  const staffName = (user as any)?.staffName || (user as any)?.name || (user as any)?.firstName || 'Staff Member';
-  const initials = staffName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   const getRequesterName = (request: any) =>
     request.studentName || request.requesterName || request.visitorName || request.name || 'Unknown';
@@ -305,6 +276,8 @@ export default function StaffDashboard() {
     if (request.passType === 'BULK') setShowBulkModal(true);
     else setShowDetailModal(true);
   };
+
+  const staffName = (user as any)?.staffName || (user as any)?.name || (user as any)?.firstName || 'Staff Member';
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -416,7 +389,6 @@ export default function StaffDashboard() {
                       const isVisitor = request.requestType === 'VISITOR';
                       const requesterName = getRequesterName(request);
                       const requesterPhoto = getRequesterPhoto(request);
-                      const isPending = isPendingRequest(request);
                       return (
                         <tr 
                           key={request.id} 
@@ -484,7 +456,6 @@ export default function StaffDashboard() {
                 const isVisitor = request.requestType === 'VISITOR';
                 const requesterName = getRequesterName(request);
                 const requesterPhoto = getRequesterPhoto(request);
-                const isPending = isPendingRequest(request);
                 const displayStatus = (request.status === 'USED' || request.status === 'EXITED') ? request.status : (request.staffApproval || request.status || 'PENDING');
                 return (
                   <motion.div 
@@ -620,8 +591,8 @@ export default function StaffDashboard() {
               role: selectedRequest.userType || 'Staff',
               department: selectedRequest.department || ''
             }}
-            onApprove={(req, remark) => handleApprove(selectedRequest.id, remark || '')}
-            onReject={(req, remark) => handleReject(selectedRequest.id, remark)}
+            onApprove={(_req, remark) => handleApprove(selectedRequest.id, remark || '')}
+            onReject={(_req, remark) => handleReject(selectedRequest.id, remark)}
             showActions={activeTab === 'PENDING'}
             processing={processing}
           />

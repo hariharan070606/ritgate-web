@@ -5,13 +5,11 @@ import {
   Search, 
   Plus, 
   Activity, 
-  ShieldCheck, 
   RefreshCcw, 
   AlertCircle,
+  Tag,
   ChevronRight,
-  User,
-  Phone,
-  Tag
+  ShieldCheck
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import Card from '../../components/ui/Card';
@@ -19,7 +17,7 @@ import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 import EmptyState from '../../components/ui/EmptyState';
-import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
+import { SkeletonList } from '../../components/ui/Skeleton';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { getVehicles, searchVehicle, registerVehicle } from '../../services/api.service';

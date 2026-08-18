@@ -24,7 +24,15 @@ interface AuthShellProps {
  * Responsive auth layout — clean, centered card layout.
  * Branding is placed above the card.
  */
-export default function AuthShell({ background, headline, subline, children, headerExtra, showBackButton, onBack }: AuthShellProps) {
+export default function AuthShell({
+  background: _background,
+  headline: _headline,
+  subline: _subline,
+  children,
+  headerExtra,
+  showBackButton,
+  onBack,
+}: AuthShellProps) {
   const navigate = useNavigate();
 
   const handleDefaultBack = () => {

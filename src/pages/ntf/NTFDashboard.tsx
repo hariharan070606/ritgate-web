@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, AlertCircle, Users, Clock, CheckCircle2, XCircle } from 'lucide-react';
-import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
+import { SkeletonList } from '../../components/ui/Skeleton';
 import Modal from '../../components/ui/Modal';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
@@ -277,7 +277,7 @@ export default function NTFDashboard() {
         ) : (
           <div className="space-y-3">
             <AnimatePresence mode="popLayout">
-              {filtered.map((req, i) => {
+              {filtered.map((req) => {
                 const id = req.requestId || req.id;
                 const name = req.requesterName || req.name || 'Visitor';
                 const isProcessing = processing === id;

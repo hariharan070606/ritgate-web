@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, X, ArrowRight, RotateCcw, Check, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Calendar, X, ArrowRight, RotateCcw, Check } from 'lucide-react';
 import Modal from '../ui/Modal';
 import { cn } from '../../utils/cn';
 
@@ -66,24 +65,19 @@ export default function DateRangeModal({
     const now = new Date();
     let startDate = new Date();
     let endDate = new Date();
-    let label = "Today's logs";
 
     if (preset === 'today') {
       startDate = now;
       endDate = now;
-      label = "Today's logs";
     } else if (preset === 'yesterday') {
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
       endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-      label = 'Yesterday';
     } else if (preset === 'week') {
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
       endDate = now;
-      label = 'Last 7 Days';
     } else if (preset === 'month') {
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29);
       endDate = now;
-      label = 'Last 30 Days';
     }
 
     const fromStr = toDateString(startDate);

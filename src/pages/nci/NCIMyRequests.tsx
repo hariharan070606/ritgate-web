@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, FileText, Calendar, Clock, CheckCircle, XCircle, QrCode } from 'lucide-react';
+import { Search, FileText, Calendar, Clock, QrCode } from 'lucide-react';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import GatePassQRModal from '../../components/common/GatePassQRModal';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { getNCIOwnRequests, getNTFOwnRequests, getVisitorRequestsForStaff, getGatePassQRCode } from '../../services/api.service';
+import { getNTFOwnRequests, getVisitorRequestsForStaff, getGatePassQRCode } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
 import { normalizeRequestStatus } from '../../utils/statusUtils';

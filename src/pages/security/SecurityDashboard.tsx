@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, LogOut, ArrowRight, Activity, Camera, ShieldCheck, MapPin, AlertCircle, ChevronRight, User } from 'lucide-react';
+import { Users, LogOut, ArrowRight, Activity, Camera, ShieldCheck, MapPin, AlertCircle } from 'lucide-react';
 import Card from '../../components/ui/Card';
 import KPICard from '../../components/common/KPICard';
 import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';

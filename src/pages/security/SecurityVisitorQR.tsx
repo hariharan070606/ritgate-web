@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowLeft, 
   Search, 
   Users, 
   QrCode, 
@@ -11,8 +10,7 @@ import {
   Copy, 
   CheckCircle2, 
   X,
-  RefreshCw,
-  Clock
+  RefreshCw
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';

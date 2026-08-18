@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   QrCode,
   AlertCircle,
@@ -8,7 +8,6 @@ import {
   ArrowRight,
   Clock3,
   Sparkles,
-  ShieldCheck,
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
@@ -22,7 +21,7 @@ import GatePassQRModal from '../../components/common/GatePassQRModal';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import { cn } from '../../utils/cn';
 import type { Student } from '../../types';
-import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';
+import { formatDateTime, isToday } from '../../utils/dateUtils';
 import { normalizeRequestStatus } from '../../utils/statusUtils';
 import { useAdaptive } from '../../utils/useAdaptive';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
@@ -102,11 +101,11 @@ function GatePassIllustration({ className, transparentBg = false }: { className?
 
 export default function StudentHome() {
   usePageTitle('Dashboard');
-  const { user: rawUser, logout } = useAuth();
+  const { user: rawUser } = useAuth();
   const { isDesktop } = useAdaptive();
   const user = rawUser as Student;
   const { refreshCount } = useRefresh();
-  const { success: showSuccess, error: showError } = useToast();
+  const { error: showError } = useToast();
 
   const [refreshing, setRefreshing] = useState(false);
   const [requests, setRequests] = useState<any[]>([]);

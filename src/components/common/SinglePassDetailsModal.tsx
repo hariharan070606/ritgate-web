@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
-  Calendar,
   FileText,
   CheckCircle2,
   XCircle,
   Maximize2,
-  FileIcon,
   Loader2,
-  ChevronRight,
   Check,
   X,
   Clock,
@@ -20,14 +17,13 @@ import {
   CalendarDays,
   StickyNote,
   Paperclip,
-  MessageSquare,
   ListChecks
 } from 'lucide-react';
 import SectionLabel from './SectionLabel';
 import { cn } from '../../utils/cn';
 import { isPdfAttachment } from '../../utils/attachmentUtils';
-import { formatDate, formatDateTime, isToday } from '../../utils/dateUtils';
-import { getStatusMeta, normalizeRequestStatus } from '../../utils/statusUtils';
+import { formatDateTime, isToday } from '../../utils/dateUtils';
+import { normalizeRequestStatus } from '../../utils/statusUtils';
 import { resolveProfilePhoto } from '../../utils/profilePhoto';
 import VisitorAvatar from './VisitorAvatar';
 import ImageLightbox from './ImageLightbox';
@@ -66,13 +62,12 @@ export default function SinglePassDetailsModal({
   showActions = false,
   onViewQR,
   timelineSteps,
-  viewerRole,
-  processing: externalProcessing,
+  viewerRole: _viewerRole,
+  processing = false,
 }: SinglePassDetailsModalProps) {
   const { getUserId } = useAuth();
   const [remark, setRemark] = useState('');
-  const [processing, setProcessing] = useState(false);
-  const isProcessing = externalProcessing ?? processing;
+  const isProcessing = processing;
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showPhotoPreview, setShowPhotoPreview] = useState(false);
   
@@ -158,7 +153,6 @@ export default function SinglePassDetailsModal({
   if (!request || !isOpen) return null;
 
   const status = normalizeRequestStatus(request);
-  const statusMeta = getStatusMeta(request);
   const isApproved = status === 'APPROVED';
   const isUsedOrExited = status === 'USED' || status === 'EXITED' || Boolean(request.isUsed);
   const dateVal = request.requestDate || request.createdAt || request.visitDate;
@@ -207,7 +201,6 @@ export default function SinglePassDetailsModal({
     const rawStatus = (request?.status || request?.approvalStatus || '').toUpperCase();
     const staffApproval = (request?.staffApproval || '').toUpperCase();
     const hodApproval = (request?.hodApproval || '').toUpperCase();
-    const hrApproval = (request?.hrApproval || '').toUpperCase();
 
     const isStaffDone =
       rawStatus === 'APPROVED' ||

@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimationControls, type Variants } from 'framer-motion';
-import { ArrowLeft, Loader2, RefreshCw, Mail, X, CheckCircle2 } from 'lucide-react';
+import { Loader2, RefreshCw, Mail, X, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { OTP_CONFIG } from '../../config/api.config';
 import type { UserRole } from '../../types';

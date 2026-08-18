@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, Users, Search, Activity, ShieldCheck, User, Clock, AlertCircle } from 'lucide-react';
+import { LogOut, Users, Search, Activity, ShieldCheck, Clock, AlertCircle } from 'lucide-react';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
@@ -10,7 +10,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { getActivePersons, manualExit } from '../../services/api.service';
 import { formatTime } from '../../utils/dateUtils';
-import { cn } from '../../utils/cn';
 import VisitorAvatar from '../../components/common/VisitorAvatar';
 import { resolveProfilePhoto } from '../../utils/profilePhoto';
 import { transitions } from '../../design-system/animations';

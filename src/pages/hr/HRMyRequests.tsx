@@ -8,7 +8,7 @@ import Button from '../../components/ui/Button';
 import PageHeader from '../../components/common/PageHeader';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { getStaffOwnRequests, getVisitorRequestsForStaff, getHRVisitorRequests, getGatePassQRCode } from '../../services/api.service';
+import { getStaffOwnRequests, getVisitorRequestsForStaff, getGatePassQRCode } from '../../services/api.service';
 import { cn } from '../../utils/cn';
 import { transitions } from '../../design-system/animations';
 import { formatDateTime, relativeTime, isToday } from '../../utils/dateUtils';

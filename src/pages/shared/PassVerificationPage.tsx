@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import EmptyState from '../../components/ui/EmptyState';
 import Button from '../../components/ui/Button';
-import { useActionLock } from '../../context/ActionLockContext';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import {
@@ -21,26 +20,19 @@ import {
   rejectGatePassByHR,
   rejectGatePassByStaff,
 } from '../../services/api.service';
-import { AlertCircle, CheckCircle2, FileText, Target, CalendarDays, StickyNote } from 'lucide-react';
-import SectionLabel from '../../components/common/SectionLabel';
-import { useAdaptive } from '../../utils/useAdaptive';
-import { cn } from '../../utils/cn';
-import { formatDate } from '../../utils/dateUtils';
+import { FileText } from 'lucide-react';
 
 export default function PassVerificationPage() {
   const { requestId } = useParams();
   const navigate = useNavigate();
   const { role, getUserId } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
-  const { withLock } = useActionLock();
-  const { isDesktop } = useAdaptive();
 
   const userId = getUserId();
   const numericRequestId = Number(requestId);
   const [request, setRequest] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
-  const [remark, setRemark] = useState('');
 
   const canReview = useMemo(
     () => ['STAFF', 'HOD', 'HR'].includes(role || ''),
@@ -96,38 +88,10 @@ export default function PassVerificationPage() {
     navigate(-1);
   };
 
-  // Use the request's real status (not the per-stage hrApproval flag, which
-  // wrongly showed PENDING for already-approved requests).
-  const getStatus = (item: any) => {
-    const raw = (item?.status || 'PENDING').toUpperCase();
-    if (raw.startsWith('PENDING')) return 'PENDING';
-    if (raw === 'APPROVED_BY_STAFF' || raw === 'APPROVED_BY_HOD') return 'IN REVIEW';
-    return raw;
-  };
-
-  // A decided request (approved/rejected/used/exited) is read-only — no review
-  // actions, so clicking "Details" on it opens an info view, not the approval UI.
   const isDecided = (item: any) => {
     const raw = (item?.status || '').toUpperCase();
     return raw === 'APPROVED' || raw === 'REJECTED' || raw === 'USED' || raw === 'EXITED';
   };
-
-  const getStatusClasses = (status: string) => {
-    if (status === 'APPROVED') return 'bg-emerald-500 text-white';
-    if (status === 'REJECTED') return 'bg-rose-500 text-white';
-    return 'bg-amber-500 text-white';
-  };
-
-  const getRequesterName = (item: any) =>
-    item?.studentName || item?.staffName || item?.requesterName || item?.regNo || 'Request User';
-
-  const getInitials = (name: string) =>
-    (name || 'RU')
-      .split(' ')
-      .map((part) => part[0])
-      .join('')
-      .slice(0, 2)
-      .toUpperCase();
 
   const handleApprove = async (id: number, remark: string) => {
     if (!userId || !role) return;
@@ -178,9 +142,6 @@ export default function PassVerificationPage() {
       setProcessing(false);
     }
   };
-
-  const handleDesktopApprove = () => handleApprove(request.id, remark);
-  const handleDesktopReject = () => handleReject(request.id, remark);
 
   if (loading) {
     return (

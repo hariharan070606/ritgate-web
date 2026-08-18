@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft, LogOut, Sun, Moon,
@@ -23,7 +23,6 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { theme, toggleTheme } = useTheme();
   const { hasAssignedEvents } = useStaffEventCheck();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const location = useLocation();
 
   const navItems = getNavItems(role || 'STUDENT', { hasAssignedEvents });
 

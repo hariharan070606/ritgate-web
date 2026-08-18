@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
   FileText, 
   Calendar, 
   Users, 
-  QrCode, 
-  Clock,
-  AlertCircle
+  QrCode
 } from 'lucide-react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../context/AuthContext';
@@ -33,7 +31,7 @@ import EmptyState from '../../components/ui/EmptyState';
 export default function StaffMyRequests() {
   usePageTitle('My Requests');
   const { isDesktop } = useAdaptive();
-  const { user: rawUser, logout, getUserId } = useAuth();
+  const { user: rawUser, getUserId } = useAuth();
   const user = rawUser as Staff;
   const { refreshCount } = useRefresh();
   const { error: showToastError } = useToast();

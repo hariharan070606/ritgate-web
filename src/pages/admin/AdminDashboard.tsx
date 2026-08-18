@@ -12,12 +12,10 @@ import {
 import { usePageTitle } from '../../hooks/usePageTitle';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
-import Input from '../../components/ui/Input';
 import Badge from '../../components/ui/Badge';
 import { SkeletonList, Skeleton } from '../../components/ui/Skeleton';
 import EmptyState from '../../components/ui/EmptyState';
 import { useAuth } from '../../context/AuthContext';
-import { useToast } from '../../context/ToastContext';
 import { getVisitorRequestsForStaff } from '../../services/api.service';
 import SinglePassDetailsModal from '../../components/common/SinglePassDetailsModal';
 import { formatDateShort, relativeTime } from '../../utils/dateUtils';
@@ -36,11 +34,10 @@ interface AdminDashboardProps {
   onLogout?: () => void;
 }
 
-export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps = {}) {
+export default function AdminDashboard({ onNavigate: _onNavigate, onLogout: _onLogout }: AdminDashboardProps = {}) {
   usePageTitle('Dashboard');
   const { getUserId, user } = useAuth();
   const { isDesktop, isMobile } = useAdaptive();
-  const { error: showError } = useToast();
   const adminId = getUserId();
 
   const [requests, setRequests] = useState<any[]>([]);

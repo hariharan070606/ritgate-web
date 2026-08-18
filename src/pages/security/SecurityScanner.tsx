@@ -21,7 +21,7 @@ import { cn } from '../../utils/cn';
 export default function SecurityScanner() {
   usePageTitle('QR Scanner');
   const navigate = useNavigate();
-  const { getUserId, user } = useAuth();
+  const { getUserId } = useAuth();
   const { error: showError } = useToast();
   const { withLock } = useActionLock();
   const securityId = getUserId();

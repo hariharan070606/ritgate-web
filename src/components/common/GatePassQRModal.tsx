@@ -1,9 +1,8 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Share2, Copy, CheckCircle } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { cn } from '../../utils/cn';
 
 interface GatePassQRModalProps {
   isOpen: boolean;
@@ -27,13 +26,13 @@ export default function GatePassQRModal({
   manualCode,
   reason,
   validUntil = 'One time',
-  qrExpiresAt,
+  qrExpiresAt: _qrExpiresAt,
   showShare = false,
 }: GatePassQRModalProps) {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Lock body scroll to prevent double scrollbars
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       const prevOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';

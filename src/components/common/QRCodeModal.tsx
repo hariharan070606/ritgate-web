@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Copy, CheckCircle, Share2, ShieldCheck, User, Calendar, ExternalLink, QrCode as QrIcon } from 'lucide-react';
+import { Download, Copy, CheckCircle, ShieldCheck, QrCode as QrIcon } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X as CloseIcon, AlertTriangle, Info, X } from 'lucide-react';
+import { Check, AlertTriangle, Info, X } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { cn } from '../../utils/cn';
 

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -34,7 +33,6 @@ export default function HODMyRequests() {
   const { isDesktop } = useAdaptive();
   const { refreshCount } = useRefresh();
   const { error: showToastError } = useToast();
-  const navigate = useNavigate();
   const hodCode = getUserId();
 
   const [refreshing, setRefreshing] = useState(false);

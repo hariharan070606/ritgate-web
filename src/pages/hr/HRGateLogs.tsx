@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Calendar, Download, Search, Clock, FileText, RefreshCw, X, ArrowUpDown } from 'lucide-react';
-import Button from '../../components/ui/Button';
+import { BookOpen, Calendar, Download, Search, Clock, RefreshCw, X, ArrowUpDown } from 'lucide-react';
 import Badge from '../../components/ui/Badge';
-import Modal from '../../components/ui/Modal';
+import Button from '../../components/ui/Button';
 import DateRangeModal from '../../components/common/DateRangeModal';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import PageHeader from '../../components/common/PageHeader';
@@ -37,7 +36,7 @@ interface HRGateLogsProps {
   onBack?: () => void;
 }
 
-export default function HRGateLogs({ onBack }: HRGateLogsProps = {}) {
+export default function HRGateLogs({ onBack: _onBack }: HRGateLogsProps = {}) {
   usePageTitle('Gate Logs');
   const { role } = useAuth();
   const { success: showSuccess, error: showError } = useToast();
@@ -85,47 +84,6 @@ export default function HRGateLogs({ onBack }: HRGateLogsProps = {}) {
   const handleRefresh = () => {
     setRefreshing(true);
     loadLogs(fromDate || undefined, toDate || undefined);
-  };
-
-  const handleApplyRange = () => {
-    if (!fromDate || !toDate) return;
-    setRangeLabel(`${fromDate} to ${toDate}`);
-    loadLogs(fromDate, toDate);
-    setShowDatePicker(false);
-  };
-
-  const handleClearRange = () => {
-    setFromDate('');
-    setToDate('');
-    setRangeLabel("Today's gate logs");
-    loadLogs();
-    setShowDatePicker(false);
-  };
-
-  const handlePreset = (preset: 'today' | 'yesterday' | 'week' | 'month') => {
-    const now = new Date();
-    const formatDateStr = (d: Date) => d.toISOString().slice(0, 10);
-    let start = new Date();
-    let end = new Date();
-
-    if (preset === 'today') {
-      // both today
-    } else if (preset === 'yesterday') {
-      start.setDate(now.getDate() - 1);
-      end.setDate(now.getDate() - 1);
-    } else if (preset === 'week') {
-      start.setDate(now.getDate() - 7);
-    } else if (preset === 'month') {
-      start.setDate(now.getDate() - 30);
-    }
-
-    const fromStr = formatDateStr(start);
-    const toStr = formatDateStr(end);
-    setFromDate(fromStr);
-    setToDate(toStr);
-    setRangeLabel(`${fromStr} to ${toStr}`);
-    loadLogs(fromStr, toStr);
-    setShowDatePicker(false);
   };
 
   const handleExportCSV = () => {

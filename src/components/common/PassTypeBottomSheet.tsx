@@ -1,10 +1,8 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Users, UserPlus, ChevronRight, Ban } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 import { PASS_COPY } from '../../config/nativeCopy';
-
 interface PassTypeBottomSheetProps {
   isOpen: boolean;
   onClose: () => void;

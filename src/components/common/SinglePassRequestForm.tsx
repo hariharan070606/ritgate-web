@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { AlignLeft, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
+import { AlignLeft, ArrowRight, Loader2 } from 'lucide-react';
 import PurposeSelect from './PurposeSelect';
 import AttachmentUpload from './AttachmentUpload';
 import { cn } from '../../utils/cn';
@@ -8,9 +8,9 @@ interface SinglePassRequestFormProps {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
-  profileName: string;
+  profileName?: string;
   profileMeta?: string;
-  initials: string;
+  initials?: string;
   purpose: string;
   onPurposeChange: (value: string) => void;
   purposeError?: string;
@@ -35,9 +35,9 @@ export default function SinglePassRequestForm({
   eyebrow = 'Single Pass Request',
   title = 'Gate Pass Request',
   subtitle = 'Provide the purpose, reason, and optional attachment for this request.',
-  profileName,
-  profileMeta,
-  initials,
+  profileName: _profileName,
+  profileMeta: _profileMeta,
+  initials: _initials,
   purpose,
   onPurposeChange,
   purposeError,

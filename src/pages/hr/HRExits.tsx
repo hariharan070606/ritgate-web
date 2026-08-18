@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogOut, Calendar, Download, Search, Clock, FileText, RefreshCw, X } from 'lucide-react';
-import Button from '../../components/ui/Button';
-import Modal from '../../components/ui/Modal';
 import DateRangeModal from '../../components/common/DateRangeModal';
 import { SkeletonList } from '../../components/ui/Skeleton';
+import Button from '../../components/ui/Button';
 import PageHeader from '../../components/common/PageHeader';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
 import { useToast } from '../../context/ToastContext';
@@ -67,21 +66,6 @@ export default function HRExits() {
   const handleRefresh = () => {
     setRefreshing(true);
     loadLogs(fromDate || undefined, toDate || undefined);
-  };
-
-  const handleApplyRange = () => {
-    if (!fromDate || !toDate) return;
-    setRangeLabel(`${fromDate} to ${toDate}`);
-    loadLogs(fromDate, toDate);
-    setShowDatePicker(false);
-  };
-
-  const handleClearRange = () => {
-    setFromDate('');
-    setToDate('');
-    setRangeLabel("Today's exits");
-    loadLogs();
-    setShowDatePicker(false);
   };
 
   const handleExportCSV = () => {
