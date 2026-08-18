@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LogOut, Calendar, Download, Search, Clock, FileText, RefreshCw, X } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
+import DateRangeModal from '../../components/common/DateRangeModal';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import PageHeader from '../../components/common/PageHeader';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
@@ -321,39 +322,26 @@ export default function HRExits() {
         </div>
       </TopRefreshControl>
 
-      <Modal isOpen={showDatePicker} onClose={() => setShowDatePicker(false)} title="Select Date Range" size="sm">
-        <div className="space-y-5 pt-2">
-          <div className="space-y-3">
-            <div>
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">From Date</label>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white outline-none"
-              />
-            </div>
-            <div>
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">To Date</label>
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                min={fromDate}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white outline-none"
-              />
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <Button onClick={handleClearRange} variant="secondary" size="sm" className="flex-1">
-              Clear
-            </Button>
-            <Button onClick={handleApplyRange} disabled={!fromDate || !toDate} size="sm" className="flex-[2]">
-              Apply Range
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      {/* Professional Date Range Modal */}
+      <DateRangeModal
+        isOpen={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        fromDate={fromDate}
+        toDate={toDate}
+        onApply={(from, to, label) => {
+          setFromDate(from);
+          setToDate(to);
+          setRangeLabel(label);
+          loadLogs(from, to);
+        }}
+        onReset={() => {
+          setFromDate('');
+          setToDate('');
+          setRangeLabel("Today's exits");
+          loadLogs();
+        }}
+        title="Select Exit Date Range"
+      />
     </div>
   );
 }

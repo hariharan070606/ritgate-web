@@ -4,6 +4,7 @@ import { BookOpen, Calendar, Download, Search, Clock, FileText, RefreshCw, X, Ar
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
+import DateRangeModal from '../../components/common/DateRangeModal';
 import { SkeletonList } from '../../components/ui/Skeleton';
 import PageHeader from '../../components/common/PageHeader';
 import TopRefreshControl from '../../components/common/TopRefreshControl';
@@ -416,55 +417,26 @@ export default function HRGateLogs({ onBack }: HRGateLogsProps = {}) {
         </div>
       </TopRefreshControl>
 
-      {/* Date Range Modal */}
-      <Modal isOpen={showDatePicker} onClose={() => setShowDatePicker(false)} title="Select Date Range" size="sm">
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-2">
-            <Button size="sm" variant="secondary" onClick={() => handlePreset('today')}>
-              Today
-            </Button>
-            <Button size="sm" variant="secondary" onClick={() => handlePreset('yesterday')}>
-              Yesterday
-            </Button>
-            <Button size="sm" variant="secondary" onClick={() => handlePreset('week')}>
-              Last 7 Days
-            </Button>
-            <Button size="sm" variant="secondary" onClick={() => handlePreset('month')}>
-              This Month
-            </Button>
-          </div>
-
-          <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-3">
-            <div>
-              <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">From Date</label>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                className="w-full mt-1 h-11 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-sm font-bold text-slate-900 dark:text-white outline-none"
-              />
-            </div>
-            <div>
-              <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">To Date</label>
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                className="w-full mt-1 h-11 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 text-sm font-bold text-slate-900 dark:text-white outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-2 pt-2">
-            <Button variant="secondary" className="flex-1" onClick={handleClearRange}>
-              Reset
-            </Button>
-            <Button variant="primary" className="flex-1" onClick={handleApplyRange} disabled={!fromDate || !toDate}>
-              Apply Filter
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      {/* Professional Date Range Modal */}
+      <DateRangeModal
+        isOpen={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        fromDate={fromDate}
+        toDate={toDate}
+        onApply={(from, to, label) => {
+          setFromDate(from);
+          setToDate(to);
+          setRangeLabel(label);
+          loadLogs(from, to);
+        }}
+        onReset={() => {
+          setFromDate('');
+          setToDate('');
+          setRangeLabel("Today's gate logs");
+          loadLogs();
+        }}
+        title="Select Date Range"
+      />
     </div>
   );
 }
