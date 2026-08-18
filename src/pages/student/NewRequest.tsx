@@ -149,7 +149,7 @@ export default function NewRequest() {
               setAttachmentUri(value);
               setAttachmentName(name);
             }}
-            submitText="Review & Submit Request"
+            submitText="Send Request"
             submitting={isLocked}
             disabled={!isFormValid || isLocked}
             onSubmit={() => setShowConfirmSubmit(true)}
