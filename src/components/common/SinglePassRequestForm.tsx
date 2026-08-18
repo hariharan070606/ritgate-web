@@ -130,17 +130,17 @@ export default function SinglePassRequestForm({
             onClick={onSubmit}
             disabled={disabled || submitting}
             className={cn(
-              'group flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-slate-950 hover:bg-black dark:bg-slate-900 dark:hover:bg-slate-800 text-white font-black px-6 text-[14px] uppercase tracking-[0.16em] shadow-xl shadow-slate-950/20 border border-slate-900 dark:border-slate-800 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] sm:ml-auto sm:max-w-[18rem]',
+              'group flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-white hover:bg-slate-100 text-black font-black px-6 text-[14px] uppercase tracking-[0.16em] shadow-lg shadow-slate-900/10 border-2 border-black transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] sm:ml-auto sm:max-w-[18rem]',
               (disabled || submitting) && 'cursor-not-allowed opacity-55 shadow-none hover:translate-y-0',
               submitDesktopOnly && 'hidden lg:flex'
             )}
           >
             {submitting ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin text-black" />
             ) : (
-              buttonIcon || <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              buttonIcon || <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1 text-black" />
             )}
-            <span>{submitting ? 'Submitting request' : submitText}</span>
+            <span className="text-black">{submitting ? 'Submitting request' : submitText}</span>
           </button>
         </div>
       </div>

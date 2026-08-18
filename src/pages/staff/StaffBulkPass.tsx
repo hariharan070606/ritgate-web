@@ -329,7 +329,7 @@ export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
              <button 
                 onClick={submitBulk}
                 disabled={selectedStudents.size === 0}
-                className="w-full h-14 bg-slate-950 hover:bg-black dark:bg-slate-900 dark:hover:bg-slate-800 text-white rounded-2xl font-black text-[14px] uppercase tracking-[0.16em] shadow-xl shadow-slate-950/20 border border-slate-900 dark:border-slate-800 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2.5 sm:ml-auto sm:max-w-[18rem] disabled:opacity-50"
+                className="w-full h-14 bg-white hover:bg-slate-100 text-black rounded-2xl font-black text-[14px] uppercase tracking-[0.16em] shadow-lg shadow-slate-900/10 border-2 border-black transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2.5 sm:ml-auto sm:max-w-[18rem] disabled:opacity-50"
              >
                Dispatch {selectedStudents.size} Passes
             </button>
