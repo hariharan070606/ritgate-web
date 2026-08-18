@@ -86,6 +86,17 @@ export default function MyRequestsBulkModal({
     }
   }, [isOpen, requestId]);
 
+  // Lock body scroll to prevent double scrollbars
+  useEffect(() => {
+    if (isOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [isOpen]);
+
   const getInitials = (name: string) =>
     (name || 'BK').split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 

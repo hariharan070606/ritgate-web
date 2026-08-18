@@ -32,6 +32,17 @@ export default function GatePassQRModal({
 }: GatePassQRModalProps) {
   const [copied, setCopied] = React.useState(false);
 
+  // Lock body scroll to prevent double scrollbars
+  React.useEffect(() => {
+    if (isOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [isOpen]);
+
   const formatValidUntil = (val: string) => {
     try {
       const d = new Date(val);

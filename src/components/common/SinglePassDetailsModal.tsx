@@ -97,6 +97,17 @@ export default function SinglePassDetailsModal({
     }
   }, [isOpen, request?.id]);
 
+  // Lock body scroll to prevent double scrollbars
+  useEffect(() => {
+    if (isOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     if (!isOpen || !request) return;
     if (request.requestType === 'VISITOR' || request.passType === 'VISITOR') return;
