@@ -1,5 +1,5 @@
 // ── API Configuration ─────────────────────────────────────────────────────────
-const PRODUCTION_URL = 'https://rit-gate.onrender.com/api';
+const PRODUCTION_URL = 'https://rit-gate-l7fq.onrender.com/api';
 
 export const API_CONFIG = {
   BASE_URL: PRODUCTION_URL,
