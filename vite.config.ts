@@ -53,7 +53,6 @@ export default defineConfig({
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor';
             if (id.includes('framer-motion')) return 'motion';
             if (id.includes('qrcode.react') || id.includes('html5-qrcode')) return 'qr';
-            if (id.includes('jspdf') || id.includes('jspdf-autotable')) return 'pdf';
             return 'vendor';
           }
         },

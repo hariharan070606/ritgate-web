@@ -26,8 +26,7 @@ import {
 import SectionLabel from './SectionLabel';
 import { cn } from '../../utils/cn';
 import { isPdfAttachment } from '../../utils/attachmentUtils';
-import { formatDate } from '../../utils/date';
-import { formatDateTime, isToday } from '../../utils/dateUtils';
+import { formatDate, formatDateTime, isToday } from '../../utils/dateUtils';
 import { getStatusMeta, normalizeRequestStatus } from '../../utils/statusUtils';
 import { resolveProfilePhoto } from '../../utils/profilePhoto';
 import VisitorAvatar from './VisitorAvatar';

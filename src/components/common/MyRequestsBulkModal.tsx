@@ -5,8 +5,7 @@ import { ArrowLeft, Users, UserCircle, QrCode, X, Search, Maximize2, Loader2, Al
 import { apiService } from '../../services/api.service';
 import SectionLabel from './SectionLabel';
 import { cn } from '../../utils/cn';
-import { formatDateShort } from '../../utils/date';
-import { formatDateTime } from '../../utils/dateUtils';
+import { formatDateShort, formatDateTime } from '../../utils/dateUtils';
 import { isPdfAttachment } from '../../utils/attachmentUtils';
 import Badge from '../ui/Badge';
 import GatePassQRModal from './GatePassQRModal';

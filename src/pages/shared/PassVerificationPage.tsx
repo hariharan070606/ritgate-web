@@ -25,7 +25,7 @@ import { AlertCircle, CheckCircle2, FileText, Target, CalendarDays, StickyNote }
 import SectionLabel from '../../components/common/SectionLabel';
 import { useAdaptive } from '../../utils/useAdaptive';
 import { cn } from '../../utils/cn';
-import { formatDate } from '../../utils/date';
+import { formatDate } from '../../utils/dateUtils';
 
 export default function PassVerificationPage() {
   const { requestId } = useParams();
