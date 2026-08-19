@@ -130,17 +130,18 @@ export default function SinglePassRequestForm({
             onClick={onSubmit}
             disabled={disabled || submitting}
             className={cn(
-              'group flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-white hover:bg-slate-100 text-black font-black px-6 text-[14px] uppercase tracking-[0.16em] shadow-lg shadow-slate-900/10 border-2 border-black transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] sm:ml-auto sm:max-w-[18rem]',
-              (disabled || submitting) && 'cursor-not-allowed opacity-55 shadow-none hover:translate-y-0',
+              'group flex h-14 w-full items-center justify-center gap-3 rounded-2xl font-black px-6 text-[14px] uppercase tracking-[0.16em] transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] sm:ml-auto sm:max-w-[18rem]',
+              'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/30 border border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white dark:border-blue-400 dark:shadow-blue-500/20',
+              'disabled:bg-slate-200 disabled:text-slate-400 disabled:border-slate-300 dark:disabled:bg-slate-800 dark:disabled:text-slate-400 dark:disabled:border-slate-700 disabled:shadow-none disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:opacity-75',
               submitDesktopOnly && 'hidden lg:flex'
             )}
           >
             {submitting ? (
-              <Loader2 className="h-5 w-5 animate-spin text-black" />
+              <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
-              buttonIcon || <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1 text-black" />
+              buttonIcon || <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             )}
-            <span className="text-black">{submitting ? 'Submitting request' : submitText}</span>
+            <span>{submitting ? 'Submitting request' : submitText}</span>
           </button>
         </div>
       </div>

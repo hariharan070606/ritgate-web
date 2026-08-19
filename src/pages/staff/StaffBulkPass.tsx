@@ -320,15 +320,15 @@ export default function StaffBulkPass({ onBack }: StaffBulkPassProps) {
 
          </div>
 
-         <div className="pt-4">
-             <button 
-                onClick={submitBulk}
-                disabled={selectedStudents.size === 0}
-                className="w-full h-14 bg-white hover:bg-slate-100 text-black rounded-2xl font-black text-[14px] uppercase tracking-[0.16em] shadow-lg shadow-slate-900/10 border-2 border-black transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2.5 sm:ml-auto sm:max-w-[18rem] disabled:opacity-50"
-             >
-               Dispatch {selectedStudents.size} Passes
-            </button>
-         </div>
+          <div className="pt-4">
+              <button 
+                 onClick={submitBulk}
+                 disabled={selectedStudents.size === 0}
+                 className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-[14px] uppercase tracking-[0.16em] shadow-lg shadow-blue-600/30 border border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white dark:border-blue-400 dark:shadow-blue-500/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:border-slate-300 dark:disabled:bg-slate-800 dark:disabled:text-slate-400 dark:disabled:border-slate-700 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2.5 sm:ml-auto sm:max-w-[18rem]"
+              >
+                Dispatch {selectedStudents.size} Passes
+             </button>
+          </div>
         </div>
       </div>
     </div>
