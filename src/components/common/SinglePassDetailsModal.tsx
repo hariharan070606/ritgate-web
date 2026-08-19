@@ -17,11 +17,13 @@ import {
   CalendarDays,
   StickyNote,
   Paperclip,
-  ListChecks
+  ListChecks,
+  Download,
+  ExternalLink
 } from 'lucide-react';
 import SectionLabel from './SectionLabel';
 import { cn } from '../../utils/cn';
-import { isPdfAttachment } from '../../utils/attachmentUtils';
+import { isPdfAttachment, openAttachment, downloadAttachment } from '../../utils/attachmentUtils';
 import { formatDateTime, isToday } from '../../utils/dateUtils';
 import { normalizeRequestStatus } from '../../utils/statusUtils';
 import { resolveProfilePhoto } from '../../utils/profilePhoto';
@@ -385,27 +387,66 @@ export default function SinglePassDetailsModal({
               <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl lg:rounded-[24px] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
                 <div className="flex items-center justify-between mb-1">
                   <SectionLabel icon={Paperclip}>ATTACHMENT PREVIEW</SectionLabel>
-                  <a
-                    href={attachmentUri}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1.5"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <span>Open Original</span>
-                    <Maximize2 className="w-3.5 h-3.5" />
-                  </a>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        downloadAttachment(attachmentUri, `pass-attachment-${request.id}.${isPdf ? 'pdf' : 'png'}`);
+                      }}
+                      className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 inline-flex items-center gap-1 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openAttachment(attachmentUri, `pass-attachment-${request.id}.${isPdf ? 'pdf' : 'png'}`);
+                      }}
+                      className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                    >
+                      <span>Open in New Tab</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
                 {isPdf ? (
-                  <a
-                    href={attachmentUri}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold text-sm hover:underline"
-                  >
-                    <FileText className="w-6 h-6 shrink-0" />
-                    <span>View PDF Attachment Document</span>
-                  </a>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 p-4 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-800/80">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <FileText className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                          PDF Attachment Document
+                        </p>
+                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                          Click to view in browser or download
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => openAttachment(attachmentUri, `pass-attachment-${request.id}.pdf`)}
+                        className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all active:scale-95"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>View Document</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => downloadAttachment(attachmentUri, `pass-attachment-${request.id}.pdf`)}
+                        className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-sm transition-all active:scale-95"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download</span>
+                      </button>
+                    </div>
+                  </div>
                 ) : (
                   <div 
                     onClick={() => setIsFullScreen(true)}

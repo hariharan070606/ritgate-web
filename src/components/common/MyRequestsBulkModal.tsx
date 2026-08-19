@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Users, UserCircle, QrCode, X, Search, Maximize2, Loader2, AlertCircle, CheckCircle2, XCircle, FileText, Target, CalendarDays, StickyNote, Paperclip, ListChecks } from 'lucide-react';
+import { ArrowLeft, Users, UserCircle, QrCode, X, Search, Maximize2, Loader2, AlertCircle, CheckCircle2, XCircle, FileText, Target, CalendarDays, StickyNote, Paperclip, ListChecks, Download, ExternalLink } from 'lucide-react';
 import { apiService } from '../../services/api.service';
 import SectionLabel from './SectionLabel';
 import { cn } from '../../utils/cn';
 import { formatDateTime } from '../../utils/dateUtils';
-import { isPdfAttachment } from '../../utils/attachmentUtils';
+import { isPdfAttachment, openAttachment, downloadAttachment } from '../../utils/attachmentUtils';
 import Badge from '../ui/Badge';
 import GatePassQRModal from './GatePassQRModal';
 import Button from '../ui/Button';
@@ -278,26 +278,81 @@ export default function MyRequestsBulkModal({
 
               {/* Attachment Preview */}
               {details?.attachmentUri && (
-                <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
-                  <SectionLabel icon={Paperclip} className="mb-3">ATTACHMENT PREVIEW</SectionLabel>
-                  <div 
-                    className="relative w-40 h-24 bg-slate-900 rounded-xl overflow-hidden cursor-pointer group"
-                    onClick={() => isPdf ? window.open(details.attachmentUri, '_blank') : setShowFullscreen(true)}
-                  >
-                    {isPdf ? (
-                      <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-800">
-                        <FileText className="h-8 w-8 text-white" />
-                        <span className="text-[10px] font-bold uppercase tracking-tighter text-white">Open PDF</span>
-                      </div>
-                    ) : (
-                      <>
-                        <img src={details.attachmentUri} alt="Pass Attachment" className="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                           <Maximize2 className="w-5 h-5 text-white" />
-                        </div>
-                      </>
-                    )}
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <SectionLabel icon={Paperclip}>ATTACHMENT PREVIEW</SectionLabel>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadAttachment(details.attachmentUri, `bulk-pass-attachment-${details.id || 'doc'}.${isPdf ? 'pdf' : 'png'}`);
+                        }}
+                        className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 inline-flex items-center gap-1 transition-colors"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openAttachment(details.attachmentUri, `bulk-pass-attachment-${details.id || 'doc'}.${isPdf ? 'pdf' : 'png'}`);
+                        }}
+                        className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                      >
+                        <span>Open in New Tab</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
+
+                  {isPdf ? (
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 p-4 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-800/80">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                            PDF Attachment Document
+                          </p>
+                          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                            Click to view in browser or download
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => openAttachment(details.attachmentUri, `bulk-pass-attachment-${details.id || 'doc'}.pdf`)}
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all active:scale-95"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>View Document</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => downloadAttachment(details.attachmentUri, `bulk-pass-attachment-${details.id || 'doc'}.pdf`)}
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-sm transition-all active:scale-95"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>Download</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div 
+                      className="relative w-40 h-24 bg-slate-900 rounded-xl overflow-hidden cursor-pointer group"
+                      onClick={() => setShowFullscreen(true)}
+                    >
+                      <img src={details.attachmentUri} alt="Pass Attachment" className="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Maximize2 className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
