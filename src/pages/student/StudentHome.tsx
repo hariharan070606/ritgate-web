@@ -382,27 +382,27 @@ export default function StudentHome() {
             whileTap={gatePassDisabled ? undefined : { scale: 0.98 }}
             onClick={() => !gatePassDisabled && (window.location.href = '/new-request')}
             className={cn(
-              "relative overflow-hidden rounded-[28px] border transition-all duration-300 p-5 sm:p-6 box-border w-full bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,0,0,0.03)]",
+              "relative overflow-hidden rounded-[22px] sm:rounded-[28px] border transition-all duration-300 p-4 sm:p-6 box-border w-full bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,0,0,0.03)]",
               !gatePassDisabled && "cursor-pointer"
             )}
           >
-            <div className="flex flex-col gap-4 w-full">
+            <div className="flex flex-col gap-3.5 sm:gap-4 w-full">
               {/* Top Row: Icon + Texts */}
-              <div className="flex items-start gap-3.5 min-w-0">
+              <div className="flex items-start gap-3 sm:gap-3.5 min-w-0">
                 {gatePassDisabled ? (
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 shadow-sm mt-0.5">
-                    <Ban className="w-6 h-6" />
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 border bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 shadow-sm mt-0.5">
+                    <Ban className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                 ) : (
-                  <GatePassIllustration className="w-12 h-12 shrink-0 drop-shadow-sm mt-0.5" transparentBg />
+                  <GatePassIllustration className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 drop-shadow-sm mt-0.5" transparentBg />
                 )}
 
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-[17px] sm:text-[19px] font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
+                  <h3 className="text-[16px] sm:text-[19px] font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
                     Request Gate Pass
                   </h3>
 
-                  <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 leading-snug mt-1">
+                  <p className="text-[12px] sm:text-[13px] font-medium text-slate-500 dark:text-slate-400 leading-relaxed mt-1">
                     {gatePassDisabled
                       ? `Student gate pass requests are closed after ${curfewDisplay} IST.`
                       : 'Apply for a new student gate pass and track real-time authorization.'}
@@ -411,7 +411,7 @@ export default function StudentHome() {
                   {gatePassDisabled && (
                     <div className="flex items-center gap-1.5 mt-2">
                       <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                      <span className="text-[11px] font-bold text-rose-500 uppercase tracking-tight">
+                      <span className="text-[10px] sm:text-[11px] font-bold text-rose-500 uppercase tracking-tight">
                         Not available after {curfewDisplay} IST
                       </span>
                     </div>
@@ -428,7 +428,7 @@ export default function StudentHome() {
                   if (!gatePassDisabled) window.location.href = '/new-request';
                 }}
                 className={cn(
-                  "w-full h-12 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.99]",
+                  "w-full h-11 sm:h-12 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.99]",
                   gatePassDisabled
                     ? "bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed shadow-none"
                     : "bg-[#0B0F19] text-white hover:bg-slate-900 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100"

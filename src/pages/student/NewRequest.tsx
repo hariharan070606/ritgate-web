@@ -9,6 +9,7 @@ import { submitStudentGatePass } from '../../services/api.service';
 import ConfirmationModal from '../../components/common/ConfirmationModal';
 import SuccessModal from '../../components/common/SuccessModal';
 import ErrorModal from '../../components/common/ErrorModal';
+import PageHeader from '../../components/common/PageHeader';
 import SinglePassRequestForm from '../../components/common/SinglePassRequestForm';
 import DesktopPageHeader from '../../components/desktop/DesktopPageHeader';
 import { getRequestDate } from '../../utils/dateUtils';
@@ -94,26 +95,11 @@ export default function NewRequest() {
     <div className="w-full max-w-full overflow-x-hidden flex flex-col box-border min-w-0 min-h-screen bg-[#F8FAFC] dark:bg-slate-950">
       {/* Mobile Header */}
       {!isDesktop && (
-        <header
-          className="sticky inset-x-0 top-0 z-[90] bg-white/95 dark:bg-slate-950/95 border-b border-slate-200/80 dark:border-slate-800 shadow-sm backdrop-blur-xl shrink-0 lg:hidden box-border"
-        >
-          <div className="relative flex items-center justify-between h-16 px-4 sm:px-6 w-full max-w-full box-border">
-            <button
-              onClick={handleGoBack}
-              className="w-10 h-10 rounded-full bg-slate-100/80 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-transform shrink-0 z-10"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <h1 className="absolute left-16 right-16 text-center text-[17px] font-black text-slate-900 dark:text-white tracking-wider leading-none truncate uppercase">
-              New Request
-            </h1>
-            <div className="w-10 shrink-0" />
-          </div>
-        </header>
+        <PageHeader title="New Request" onBack={handleGoBack} />
       )}
 
-      <main className="desktop-page flex-1 w-full max-w-full px-4 sm:px-5 pt-4 sm:pt-6 pb-32 lg:px-0 lg:pt-0 lg:pb-12 box-border overflow-x-hidden min-w-0">
-        <div className="w-full max-w-md mx-auto space-y-6 lg:max-w-2xl box-border min-w-0">
+      <main className="desktop-page flex-1 w-full max-w-full px-3 sm:px-5 pt-3 sm:pt-6 pb-28 sm:pb-32 lg:px-0 lg:pt-0 lg:pb-12 box-border overflow-x-hidden min-w-0">
+        <div className="w-full max-w-md mx-auto space-y-5 sm:space-y-6 lg:max-w-2xl box-border min-w-0">
           {isDesktop && (
             <DesktopPageHeader
               eyebrow="Gate Pass"

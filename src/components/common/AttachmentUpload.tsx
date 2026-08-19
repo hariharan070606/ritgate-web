@@ -88,26 +88,26 @@ export default function AttachmentUpload({
           readFile(event.dataTransfer.files?.[0]);
         }}
         className={cn(
-          'group flex min-h-[82px] cursor-pointer items-center gap-4 rounded-2xl border border-dashed bg-white/78 px-4 py-4 shadow-[0_12px_30px_-26px_rgba(15,23,42,0.7)] outline-none transition-all duration-200 dark:bg-slate-900/80',
+          'group flex min-h-[70px] sm:min-h-[80px] cursor-pointer items-center gap-3 sm:gap-4 rounded-xl sm:rounded-2xl border border-dashed bg-white/80 px-3 py-3 sm:px-4 sm:py-4 shadow-sm outline-none transition-all duration-200 dark:bg-slate-900/80',
           isDragging || value
-            ? 'border-blue-300 bg-blue-50/70 ring-4 ring-blue-500/10 dark:border-blue-700 dark:bg-blue-950/20'
+            ? 'border-blue-400 bg-blue-50/70 ring-4 ring-blue-500/10 dark:border-blue-600 dark:bg-blue-950/25'
             : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50/45 dark:border-slate-800 dark:hover:border-blue-800',
         )}
       >
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 transition-transform group-hover:-translate-y-0.5 dark:bg-blue-950/40 dark:text-blue-300 dark:ring-blue-900">
-          {value ? <FileText className="h-6 w-6" /> : <UploadCloud className="h-6 w-6" />}
+        <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 transition-transform group-hover:-translate-y-0.5 dark:bg-blue-950/40 dark:text-blue-300 dark:ring-blue-900">
+          {value ? <FileText className="h-5 w-5 sm:h-6 sm:w-6" /> : <UploadCloud className="h-5 w-5 sm:h-6 sm:w-6" />}
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[13px] font-black text-slate-900 dark:text-white">
-            {value ? fileName || 'Attachment selected' : 'Drag & drop file here or click to browse'}
+          <p className="truncate text-[12px] sm:text-[13px] font-bold text-slate-900 dark:text-white leading-tight">
+            {value ? fileName || 'Attachment selected' : 'Choose file or drag here'}
           </p>
-          <p className="mt-1 text-[10px] font-bold text-slate-400">
-            Supports PDF, JPG, PNG (Max. 10MB)
+          <p className="mt-0.5 text-[10px] sm:text-[11px] font-medium text-slate-400">
+            PDF, JPG, PNG (Max 10MB)
           </p>
         </div>
 
-        <span className="hidden shrink-0 rounded-xl border border-blue-100 bg-white px-4 py-2 text-[11px] font-black text-blue-700 shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:border-blue-200 sm:inline-flex dark:border-slate-700 dark:bg-slate-950 dark:text-blue-300">
+        <span className="hidden shrink-0 rounded-xl border border-blue-100 bg-white px-3.5 py-1.5 text-[11px] font-black text-blue-700 shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:border-blue-200 sm:inline-flex dark:border-slate-700 dark:bg-slate-950 dark:text-blue-300">
           Choose File
         </span>
       </div>
