@@ -16,6 +16,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { scanQRCode, scanLateEntry } from '../../services/api.service';
 import { useActionLock } from '../../context/ActionLockContext';
+import { extractIdentificationFromQR } from '../../utils/qrParser';
 import { cn } from '../../utils/cn';
 
 export default function SecurityScanner() {
@@ -76,7 +77,9 @@ export default function SecurityScanner() {
     await processCode(manualCode.trim(), true);
   };
 
-  const processCode = async (code: string, isManual: boolean) => {
+  const processCode = async (rawCode: string, isManual: boolean) => {
+    const code = extractIdentificationFromQR(rawCode) || rawCode.trim();
+    if (!code) return;
     await withLock(async () => {
       try {
         const res = isManual

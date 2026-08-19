@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { detectRole } from '../../services/api.service';
+import { extractIdentificationFromQR } from '../../utils/qrParser';
 import type { UserRole } from '../../types';
 import AuthShell from '../../components/auth/AuthShell';
 
@@ -48,10 +49,12 @@ export default function LoginPage() {
   useEffect(() => {
     const scannedId = (location.state as any)?.scannedId;
     if (scannedId) {
-      const id = String(scannedId).trim().toUpperCase();
+      const id = extractIdentificationFromQR(String(scannedId)).trim().toUpperCase();
       setUserId(id);
       window.history.replaceState({}, '');
-      setTimeout(() => handleSendOTP(id), 300);
+      if (id) {
+        setTimeout(() => handleSendOTP(id), 250);
+      }
     }
   }, []);
 
@@ -140,7 +143,24 @@ export default function LoginPage() {
                 type="text"
                 placeholder="Security ID / Staff ID / Roll No"
                 value={userId}
-                onChange={e => setUserId(e.target.value.toUpperCase())}
+                onChange={e => {
+                  const val = e.target.value;
+                  if (val.includes('http') || val.includes('?') || val.includes(':') || val.includes('{')) {
+                    setUserId(extractIdentificationFromQR(val));
+                  } else {
+                    setUserId(val.toUpperCase());
+                  }
+                }}
+                onPaste={e => {
+                  const pasted = e.clipboardData.getData('text');
+                  if (pasted && (pasted.includes('http') || pasted.includes('?') || pasted.includes(':') || pasted.includes('{') || pasted.length > 20)) {
+                    const extracted = extractIdentificationFromQR(pasted);
+                    if (extracted) {
+                      e.preventDefault();
+                      setUserId(extracted);
+                    }
+                  }
+                }}
                 onKeyDown={e => e.key === 'Enter' && handleSendOTP()}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}

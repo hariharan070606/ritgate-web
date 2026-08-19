@@ -5,6 +5,8 @@ import { Html5Qrcode } from 'html5-qrcode';
 import { ArrowLeft } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
+import { extractIdentificationFromQR } from '../../utils/qrParser';
+
 export default function LoginScanner() {
   const navigate = useNavigate();
   const { error: showError } = useToast();
@@ -21,7 +23,7 @@ export default function LoginScanner() {
       scannerRef.current = new Html5Qrcode('login-reader');
       await scannerRef.current.start(
         { facingMode: 'environment' },
-        { fps: 15, qrbox: { width: 9999, height: 9999 } }, // full area scan
+        { fps: 20, qrbox: { width: 9999, height: 9999 } }, // full area fast scan
         handleScanSuccess,
         () => {},
       );
@@ -38,21 +40,7 @@ export default function LoginScanner() {
 
   const handleScanSuccess = (decodedText: string) => {
     if (scanned) return;
-    let id = decodedText.trim();
-
-    try {
-      if (id.startsWith('{')) {
-        const data = JSON.parse(id);
-        id = data.id || data.rollNo || data.regNo || data.staffCode || data.hodCode || data.hrCode || data.securityId || id;
-      } else if (id.includes('?')) {
-        try {
-          const url = new URL(id.startsWith('http') ? id : `https://x.com?${id.split('?')[1]}`);
-          id = url.searchParams.get('id') || url.searchParams.get('rollNo') || url.searchParams.get('staffCode') || id;
-        } catch {}
-      }
-    } catch {}
-
-    id = id.trim().toUpperCase();
+    const id = extractIdentificationFromQR(decodedText);
     if (!id) return;
 
     setScanned(true);
